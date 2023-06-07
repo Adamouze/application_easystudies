@@ -79,43 +79,61 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
       ),
-      body: Stack(
-        children: <Widget>[
-          Center(
-            child: Container(
-              color: _backgroundColor,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  FittedBox(
-                    child: Text(
-                      'Nombre de fois où tu as cliqué petit malin :',
-                      style: Theme.of(context).textTheme.headlineLarge,
-                    ),
-                  ),
-                  Text(
-                    '$_counter',
-                    style: Theme.of(context).textTheme.headlineLarge?.copyWith(color: _currentColor),
-                  ),
-                ],
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            FractionallySizedBox(
+              widthFactor: 0.8,
+              child: ElevatedButton(
+                onPressed: () {
+                  // Action pour le bouton "News"
+                },
+                child: Text('News'),
               ),
             ),
-          ),
-          Positioned(
-            left: 15,  // 15 pixels from the left edge of the screen
-            bottom: 15,  // 15 pixels from the bottom edge of the screen
-            child: FloatingActionButton(
-              onPressed: _resetCounter,
-              tooltip: 'Reset',
-              child: const Icon(Icons.refresh),
+            const SizedBox(height: 16),
+            FractionallySizedBox(
+              widthFactor: 0.8,
+              child: ElevatedButton(
+                onPressed: () {
+                  // Action pour le bouton "Cours"
+                },
+                child: Text('Cours'),
+              ),
             ),
-          ),
-        ],
+            const SizedBox(height: 16),
+            FractionallySizedBox(
+              widthFactor: 0.8,
+              child: ElevatedButton(
+                onPressed: () {
+                  // Action pour le bouton "Autre Site"
+                },
+                child: Text('Autre Site'),
+              ),
+            ),
+            const SizedBox(height: 16),
+            const Text(
+              'Nombre de clics petit coquin :',
+            ),
+            const Text(
+              'Deuxième ligne de texte (oui oui baguette)',
+            ),
+            Text(
+              '$_counter',
+              style: const TextStyle(
+                color: Colors.black, // Texte en noir
+                fontSize: 24, // Taille de police personnalisée (optionnel)
+                fontWeight: FontWeight.bold, // Poids de police personnalisé (optionnel)
+              ),
+            ),
+          ],
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
+        tooltip: 'Incrément du compteur',
+        child: const Icon(Icons.add_circle_rounded),
       ),
     );
   }
