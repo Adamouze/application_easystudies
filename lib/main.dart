@@ -4,39 +4,119 @@ void main() {
   runApp(const MyApp());
 }
 
-
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({Key? key}) : super(key: key);
 
-
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Test de notre application',
+      title: 'EasyStudies',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a blue toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.orangeAccent),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Test - Easy Studies'),
+      home: const SplashScreen(),
     );
   }
+}
+
+class SplashScreen extends StatefulWidget {
+  const SplashScreen({Key? key}) : super(key: key);
+
+  @override
+  // ignore: library_private_types_in_public_api
+  _SplashScreenState createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMixin {
+  late AnimationController _animationController;
+  late Animation<double> _animation;
+
+  @override
+  void initState() {
+  super.initState();
+  _animationController = AnimationController(
+    duration: const Duration(seconds: 3),
+    vsync: this,
+  );
+
+  _animation = Tween<double>(
+    begin: 0.0,
+    end: 1.0,
+  ).animate(_animationController);
+
+  _animationController.forward();
+
+  Future.delayed(const Duration(seconds: 4), () {
+    Navigator.push(
+      context,
+      PageRouteBuilder(
+        transitionDuration: const Duration(seconds: 2),  // duration of the transition
+        transitionsBuilder: (context, animation, animationTime, child) {
+          var begin = const Offset(1.0, 0.0);  // start position of the page
+          var end = Offset.zero;  // end position of the page
+          var tween = Tween(begin: begin, end: end);  // defines the transition from beginning position to end
+          var offsetAnimation = animation.drive(tween);  // applies the transition to the animation
+
+          return SlideTransition(
+            position: offsetAnimation,
+            child: child,
+          );
+        },
+        pageBuilder: (context, _, __) => const MyHomePage(title: 'Test - Easy Studies'),
+      ),
+    );
+  });
   }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Container(
+        color: Colors.white,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            const Spacer(flex: 2),
+            FadeTransition(
+              opacity: _animation,
+              child: const Text(
+                'Bienvenue',
+                style: TextStyle(fontSize: 40, color: Colors.orangeAccent),
+                textAlign: TextAlign.center,
+              ),
+            ),
+            FadeTransition(
+              opacity: _animation,
+              child: const Text(
+                'sur',
+                style: TextStyle(fontSize: 40, color: Colors.orangeAccent),
+                textAlign: TextAlign.center,
+              ),
+            ),
+            FadeTransition(
+              opacity: _animation,
+              child: SizedBox(
+                width: 200,
+                height: 200,
+                child: Image.asset('assets/EasyStudies.png'), // Replace with your logo image asset
+              ),
+            ),
+            const Spacer(flex: 2),
+          ],
+        ),
+      ),
+    );
+  }
+}
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
