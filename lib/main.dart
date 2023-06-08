@@ -29,52 +29,40 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMixin {
-  late AnimationController _animationController;
-  late Animation<double> _animation;
+  late AnimationController fadeController;
+  late Animation<double> fadeAnimation;
+  late AnimationController scaleController;
+  late Animation<double> scaleAnimation;
 
   @override
   void initState() {
-  super.initState();
-  _animationController = AnimationController(
-    duration: const Duration(seconds: 3),
-    vsync: this,
-  );
+    super.initState();
+    fadeController = AnimationController(vsync: this, duration: const Duration(seconds: 4));
+    fadeAnimation = CurvedAnimation(parent: fadeController, curve: Curves.easeIn);
 
-  _animation = Tween<double>(
-    begin: 0.0,
-    end: 1.0,
-  ).animate(_animationController);
+    scaleController = AnimationController(vsync: this, duration: const Duration(seconds: 4));
+    scaleAnimation = CurvedAnimation(parent: scaleController, curve: Curves.easeIn);
 
-  _animationController.forward();
+    fadeController.forward();
+    scaleController.forward();
 
-  Future.delayed(const Duration(seconds: 4), () {
-    Navigator.push(
-      context,
-      PageRouteBuilder(
-        transitionDuration: const Duration(seconds: 2),  // duration of the transition
-        transitionsBuilder: (context, animation, animationTime, child) {
-          var begin = const Offset(1.0, 0.0);  // start position of the page
-          var end = Offset.zero;  // end position of the page
-          var tween = Tween(begin: begin, end: end);  // defines the transition from beginning position to end
-          var offsetAnimation = animation.drive(tween);  // applies the transition to the animation
-
-          return SlideTransition(
-            position: offsetAnimation,
-            child: child,
-          );
-        },
-        pageBuilder: (context, _, __) => const MyHomePage(title: 'Test - Easy Studies'),
-      ),
-    );
-  });
+    Future.delayed(const Duration(seconds: 6), () {
+      Navigator.push(
+        context,
+        PageRouteBuilder(
+          transitionDuration: const Duration(seconds: 2),
+          pageBuilder: (context, _, __) => const MyHomePage(title: 'Test - Easy Studies'),
+        ),
+      );
+    });
   }
 
   @override
   void dispose() {
-    _animationController.dispose();
+    fadeController.dispose();
+    scaleController.dispose();
     super.dispose();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -86,28 +74,17 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             const Spacer(flex: 2),
-            FadeTransition(
-              opacity: _animation,
-              child: const Text(
-                'Bienvenue',
-                style: TextStyle(fontSize: 40, color: Colors.orangeAccent),
-                textAlign: TextAlign.center,
-              ),
-            ),
-            FadeTransition(
-              opacity: _animation,
-              child: const Text(
-                'sur',
-                style: TextStyle(fontSize: 40, color: Colors.orangeAccent),
-                textAlign: TextAlign.center,
-              ),
-            ),
-            FadeTransition(
-              opacity: _animation,
-              child: SizedBox(
-                width: 200,
-                height: 200,
-                child: Image.asset('assets/EasyStudies.png'), // Replace with your logo image asset
+            Center(
+              child: FadeTransition(
+                opacity: fadeAnimation,
+                child: ScaleTransition(
+                  scale: scaleAnimation,
+                  child: SizedBox(
+                    width: 661,
+                    height: 169,
+                    child: Image.asset('assets/EasyStudies.png'), // Replace with your logo image asset
+                  ),
+                ),
               ),
             ),
             const Spacer(flex: 2),
@@ -117,6 +94,7 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
     );
   }
 }
+
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
