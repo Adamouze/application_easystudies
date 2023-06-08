@@ -1,8 +1,38 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:html/parser.dart' as parser;
+import 'package:html/dom.dart' as dom;
+
 
 void main() {
   runApp(const MyApp());
 }
+
+class NewsService {
+  Future<List<String>> fetchNewsData() async {
+    final url = Uri.parse('https://extranet.easystudies.fr/news');
+    final response = await http.get(url);
+    if (response.statusCode == 200) {
+      final document = parser.parse(response.body);
+      final newsElements = document.querySelectorAll('.news-item');
+      final newsData = newsElements.map((element) {
+        final title = element.querySelector('.news-title')?.text;
+        final description = element.querySelector('.news-description')?.text;
+        return '$title\n$description';
+      }).toList();
+      return newsData;
+    } else {
+      throw Exception('Failed to fetch news data');
+    }
+  }
+
+  Future<List<String>> simulateNewsData() async {
+    await Future.delayed(Duration(seconds: 2)); // Simuler un délai de 2 secondes
+    return ["News 1 : Aujourd'hui, maman est morte."  , "News 2 : Ou peut-être hier, je ne sais pas.", "News 3 : J’ai reçu un télégramme de l’asile : « Mère décédée. Enterrement demain. Sentiments distingués. »"];
+  }
+
+}
+
 
 
 class MyApp extends StatelessWidget {
@@ -33,7 +63,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.orangeAccent),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Test - Easy Studies'),
+      home: const MyHomePage(title: 'EasyStudies'),
     );
   }
   }
@@ -59,6 +89,9 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
 
+  final NewsService newsService = NewsService();
+  final MaterialAccentColor orangePerso = Colors.orangeAccent;
+
   void _incrementCounter() {
     setState(() {
       // This call to setState tells the Flutter framework that something has
@@ -74,39 +107,151 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
+        backgroundColor: orangePerso,
+        title: Row(
+          children: [
+            Container(
+              padding: EdgeInsets.all(0),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(0),
+                color: Colors.transparent,
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(50),
+                child: Image.asset(
+                  'assets/images/logo.png',
+                  width: MediaQuery.of(context).size.width * 0.20, // 25% de la largeur de l'écran pour le logo
+                  fit: BoxFit.contain,
+                ),
+              ),
+            ),
+            SizedBox(width: MediaQuery.of(context).size.width * 0.05), // Espacement de 5% de la largeur de l'écran
+            Expanded(
+              flex: 3,
+              child: Align(
+                alignment: Alignment.center,
+                child: Text(
+                  widget.title,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontFamily: 'Noto Sans',
+                    fontSize: 24, // 30% de la largeur de l'écran pour le titre
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(width: MediaQuery.of(context).size.width * 0.1), // Espacement de 10% de la largeur de l'écran
+            SizedBox(
+              width: 40.0,
+              height: 40.0,
+              child: ElevatedButton(
+                onPressed: () {
+                  // Action à effectuer lorsque le bouton "Login" est cliqué
+                },
+                style: ElevatedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  padding: EdgeInsets.all(8),
+                  backgroundColor: Colors.blue,
+                ),
+                child: Icon(
+                  Icons.account_circle_rounded,
+                  size: 24,
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
+
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             FractionallySizedBox(
-              widthFactor: 0.8,
-              child: ElevatedButton(
-                onPressed: () {
-                  // Action pour le bouton "News"
-                },
-                child: const Text('News'),
+              widthFactor: 0.95,
+              child: Container(
+                padding: EdgeInsets.all(16),
+                color: Colors.grey[200],
+                child: FutureBuilder<List<String>>(
+                  future: newsService.simulateNewsData(), // newsService.fetchNewsData(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      final newsData = snapshot.data!;
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: newsData.map((data) => Text(data)).toList(),
+                      );
+                    } else if (snapshot.hasError) {
+                      return Text('Failed to fetch news data');
+                    } else {
+                      return CircularProgressIndicator();
+                    }
+                  },
+                ),
               ),
             ),
             const SizedBox(height: 16),
             FractionallySizedBox(
-              widthFactor: 0.8,
-              child: ElevatedButton(
-                onPressed: () {
-                  // Action pour le bouton "Cours"
-                },
-                child: const Text('Cours'),
+              widthFactor: 0.95,
+              child: Card(
+                elevation: 3,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      height: 200,
+                      decoration: const BoxDecoration(
+                        borderRadius: BorderRadius.vertical(top: Radius.circular(10)),
+                        image: DecorationImage(
+                          image: NetworkImage('https://yt3.googleusercontent.com/ytc/AGIKgqO2HL50bKd5mp2fruEO76bn-Pu1SRNlzTTq6wME7g=s900-c-k-c0x00ffffff-no-rj'),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+                    const Padding(
+                      padding: EdgeInsets.all(8),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Dernière vidéo Youtube',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          SizedBox(height: 8),
+                          Text(
+                            'Récupérer le titre directement sur Youtube (dynamiquement)',
+                            style: TextStyle(fontSize: 16),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
+
             const SizedBox(height: 16),
             FractionallySizedBox(
-              widthFactor: 0.8,
+              widthFactor: 0.95,
               child: ElevatedButton(
                 onPressed: () {
                   // Action pour le bouton "Autre Site"
                 },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.pink, // Couleur de fond du bouton
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10), // Arrondi des bords
+                  ),
+                ),
                 child: const Text('Autre Site'),
               ),
             ),
