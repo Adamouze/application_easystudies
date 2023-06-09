@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'splash_screen.dart';
 
 import 'video_youtube.dart';
 import 'news.dart';
@@ -12,18 +13,18 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({Key? key}) : super(key: key);
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Test de notre application',
+      title: 'EasyStudies',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.orangeAccent),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'EasyStudies'),
+      home: const SplashScreen(), const MyHomePage(title: 'EasyStudies'),
+      
     );
   }
 }
