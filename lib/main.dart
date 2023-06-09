@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:html/parser.dart' as parser;
-import 'package:html/dom.dart' as dom;
+import 'dart:convert';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
+
+
+// import 'package:html/dom.dart' as dom;
 
 
 void main() {
@@ -27,11 +31,71 @@ class NewsService {
   }
 
   Future<List<String>> simulateNewsData() async {
-    await Future.delayed(Duration(seconds: 2)); // Simuler un délai de 2 secondes
-    return ["News 1 : Aujourd'hui, maman est morte."  , "News 2 : Ou peut-être hier, je ne sais pas.", "News 3 : J’ai reçu un télégramme de l’asile : « Mère décédée. Enterrement demain. Sentiments distingués. »"];
+    await Future.delayed(const Duration(seconds: 2)); // Simuler un délai de 2 secondes
+    return ["News 1" , "News 2", "News 3"];
   }
 
 }
+
+
+class VideoDetail {
+  final String thumbnailUrl;
+  final String title;
+  final String description;
+  final String videoId;
+
+  VideoDetail(this.thumbnailUrl, this.title, this.description, this.videoId);
+}
+
+
+class VideoPlayerPage extends StatefulWidget {
+  final String videoId;
+
+  VideoPlayerPage(this.videoId);
+
+  @override
+  _VideoPlayerPageState createState() => _VideoPlayerPageState();
+}
+
+class _VideoPlayerPageState extends State<VideoPlayerPage> {
+  late YoutubePlayerController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = YoutubePlayerController(
+      initialVideoId: widget.videoId,
+      flags: const YoutubePlayerFlags(
+        autoPlay: true,
+        mute: false,
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Video Player'),
+      ),
+      body: YoutubePlayer(
+        controller: _controller,
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _controller.dispose();
+  }
+}
+
+
+
+
+
+
 
 
 
@@ -87,196 +151,253 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
   final NewsService newsService = NewsService();
   final MaterialAccentColor orangePerso = Colors.orangeAccent;
 
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
+  Future<VideoDetail> fetchLatestVideoDetails() async {
+    const String channelId = 'UCm19VoVNI76RHqpaRbS1kgw';
+    const String apiKey = 'AIzaSyAbIR-eFQwQ6ESK_9OKhHYLo08Hn24MQwo';
+    final response = await http.get(Uri.parse(
+        'https://www.googleapis.com/youtube/v3/search?order=date&part=snippet&channelId=$channelId&maxResults=1&key=$apiKey'));
+
+    if (response.statusCode == 200) {
+      var data = jsonDecode(response.body)['items'][0];
+      return VideoDetail(
+        data['snippet']['thumbnails']['high']['url'],
+        data['snippet']['title'],
+        data['snippet']['description'],
+        data['id']['videoId'], // ajout de l'ID de la vidéo
+      );
+    } else {
+      throw Exception('Failed to load video');
+    }
   }
+
+
+
+
+
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: orangePerso,
-        title: Row(
-          children: [
-            Container(
-              padding: EdgeInsets.all(0),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(0),
-                color: Colors.transparent,
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(50),
-                child: Image.asset(
-                  'assets/images/logo.png',
-                  width: MediaQuery.of(context).size.width * 0.20, // 25% de la largeur de l'écran pour le logo
-                  fit: BoxFit.contain,
-                ),
-              ),
-            ),
-            SizedBox(width: MediaQuery.of(context).size.width * 0.05), // Espacement de 5% de la largeur de l'écran
-            Expanded(
-              flex: 3,
-              child: Align(
-                alignment: Alignment.center,
-                child: Text(
-                  widget.title,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontFamily: 'Noto Sans',
-                    fontSize: 24, // 30% de la largeur de l'écran pour le titre
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ),
-            SizedBox(width: MediaQuery.of(context).size.width * 0.1), // Espacement de 10% de la largeur de l'écran
-            SizedBox(
-              width: 40.0,
-              height: 40.0,
-              child: ElevatedButton(
-                onPressed: () {
-                  // Action à effectuer lorsque le bouton "Login" est cliqué
-                },
-                style: ElevatedButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  padding: EdgeInsets.all(8),
-                  backgroundColor: Colors.blue,
-                ),
-                child: Icon(
-                  Icons.account_circle_rounded,
-                  size: 24,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            FractionallySizedBox(
-              widthFactor: 0.95,
-              child: Container(
-                padding: EdgeInsets.all(16),
-                color: Colors.grey[200],
-                child: FutureBuilder<List<String>>(
-                  future: newsService.simulateNewsData(), // newsService.fetchNewsData(),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      final newsData = snapshot.data!;
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: newsData.map((data) => Text(data)).toList(),
-                      );
-                    } else if (snapshot.hasError) {
-                      return Text('Failed to fetch news data');
-                    } else {
-                      return CircularProgressIndicator();
-                    }
-                  },
-                ),
-              ),
-            ),
-            const SizedBox(height: 16),
-            FractionallySizedBox(
-              widthFactor: 0.95,
-              child: Card(
-                elevation: 3,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(80.0), // Increase this to increase space
+        child: AppBar(
+          toolbarHeight: 80.0, // Match this with preferredSize height
+          backgroundColor: orangePerso,
+          title: Row(
+            children: [
+              SizedBox(
+                width: 70,
+                height: 80,
+                child: Stack(
                   children: [
-                    Container(
-                      height: 200,
-                      decoration: const BoxDecoration(
-                        borderRadius: BorderRadius.vertical(top: Radius.circular(10)),
-                        image: DecorationImage(
-                          image: NetworkImage('https://yt3.googleusercontent.com/ytc/AGIKgqO2HL50bKd5mp2fruEO76bn-Pu1SRNlzTTq6wME7g=s900-c-k-c0x00ffffff-no-rj'),
-                          fit: BoxFit.cover,
+                    Positioned(
+                      top: 5, // adjust this to move logo vertically
+                      child: Container(
+                        width: 70,
+                        height: 70,
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.white,
                         ),
                       ),
                     ),
-                    const Padding(
-                      padding: EdgeInsets.all(8),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Dernière vidéo Youtube',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
+                    Positioned(
+                      top: 5, // match this with Container's top
+                      child: Container(
+                        width: 70,
+                        height: 70,
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.transparent,
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(150), // n'importe quoi > 35
+                          child: Image.asset(
+                            'assets/images/logo.png',
+                            fit: BoxFit.contain,
                           ),
-                          SizedBox(height: 8),
-                          Text(
-                            'Récupérer le titre directement sur Youtube (dynamiquement)',
-                            style: TextStyle(fontSize: 16),
-                          ),
-                        ],
+                        ),
                       ),
                     ),
                   ],
                 ),
               ),
-            ),
 
-            const SizedBox(height: 16),
-            FractionallySizedBox(
-              widthFactor: 0.95,
-              child: ElevatedButton(
-                onPressed: () {
-                  // Action pour le bouton "Autre Site"
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.pink, // Couleur de fond du bouton
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10), // Arrondi des bords
+              const Spacer(),
+              Expanded(
+                flex: 5,
+                child: Align(
+                  alignment: Alignment.center,
+                  child: Text(
+                    widget.title,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontFamily: 'Noto Sans',
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
-                child: const Text('Autre Site'),
               ),
-            ),
-            const SizedBox(height: 16),
-            const Text(
-              'Nombre de clics petit coquin :',
-            ),
-            const Text(
-              'Deuxième ligne de texte (oui oui baguette)',
-            ),
-            Text(
-              '$_counter',
-              style: const TextStyle(
-                color: Colors.black, // Texte en noir
-                fontSize: 24, // Taille de police personnalisée (optionnel)
-                fontWeight: FontWeight.bold, // Poids de police personnalisé (optionnel)
+              const Spacer(flex: 1),
+              SizedBox(
+                width: 50.0,
+                height: 50.0,
+                child: ElevatedButton(
+                  onPressed: () {},
+                  style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(150),
+                    ),
+                    padding: const EdgeInsets.all(10),
+                    backgroundColor: Colors.blue,
+                  ),
+                  child: const Icon(
+                    Icons.account_circle_rounded,
+                    size: 24,
+                  ),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Incrément du compteur',
-        child: const Icon(Icons.add_circle_rounded),
+
+
+
+      body: Align(
+        alignment: Alignment.topCenter,
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+
+              const SizedBox(height: 20),
+
+              FractionallySizedBox(
+                widthFactor: 0.95,
+                child: Container(
+                  padding: const EdgeInsets.all(16),
+                  color: Colors.grey[200],
+                  child: FutureBuilder<List<String>>(
+                    future: newsService.simulateNewsData(), // newsService.fetchNewsData(),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        final newsData = snapshot.data!;
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: newsData.map((data) => Text(data)).toList(),
+                        );
+                      } else if (snapshot.hasError) {
+                        return const Text('Failed to fetch news data');
+                      } else {
+                        return const CircularProgressIndicator();
+                      }
+                    },
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 16),
+
+              FractionallySizedBox(
+                widthFactor: 0.95,
+                child: FutureBuilder<VideoDetail>(
+                  future: fetchLatestVideoDetails(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      final videoDetail = snapshot.data!;
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => VideoPlayerPage(videoDetail.videoId),
+                            ),
+                          );
+                        },
+                        child: Card(
+                          elevation: 3,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                height: 200,
+                                decoration: BoxDecoration(
+                                  borderRadius: const BorderRadius.vertical(top: Radius.circular(10)),
+                                  image: DecorationImage(
+                                    image: NetworkImage(videoDetail.thumbnailUrl),
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      videoDetail.title,
+                                      style: const TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 8),
+                                    Text(
+                                      videoDetail.description,
+                                      style: const TextStyle(fontSize: 16),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+
+                    } else if (snapshot.hasError) {
+                      return const Text('Failed to fetch video details');
+                    } else {
+                      return const CircularProgressIndicator();
+                    }
+                  },
+                ),
+              ),
+
+              const SizedBox(height: 16),
+
+              FractionallySizedBox(
+                widthFactor: 0.95,
+                child: ElevatedButton(
+                  onPressed: () {
+                    // Action pour le bouton "Autre Site"
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.pink, // Couleur de fond du bouton
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10), // Arrondi des bords
+                    ),
+                  ),
+                  child: const Text('Autre Potentiel Site'),
+                ),
+              ),
+            const Text(
+              "TODO : Boutons des différents réseaux",
+              style: TextStyle(
+                fontSize: 18,
+                ),
+              ),
+            ],
+          ),
+        )
       ),
     );
   }
