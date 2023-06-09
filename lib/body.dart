@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'video_youtube.dart'; // Assurez-vous que cette importation est correcte.
-import 'news.dart'; // Assurez-vous que cette importation est correcte.
+import 'video_youtube.dart';
+import 'news.dart';
 
 class CustomBody extends StatelessWidget {
   CustomBody({Key? key}) : super(key: key);

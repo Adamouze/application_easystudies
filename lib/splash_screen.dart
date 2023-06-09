@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'home_page.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -28,14 +27,10 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
     scaleController.forward();
 
     Future.delayed(const Duration(seconds: 6), () {
-      Navigator.push(
-        context,
-        PageRouteBuilder(
-          transitionDuration: const Duration(seconds: 2),
-          pageBuilder: (context, _, __) => const MyHomePage(title: 'Test - Easy Studies'),
-        ),
-      );
+      Navigator.pushReplacementNamed(context, '/home');
     });
+
+
   }
 
   @override
@@ -63,7 +58,7 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
                   child: SizedBox(
                     width: 661,
                     height: 169,
-                    child: Image.asset('assets/EasyStudies.png'), // Replace with your logo image asset
+                    child: Image.asset('assets/images/EasyStudies.png'), // Replace with your logo image asset
                   ),
                 ),
               ),

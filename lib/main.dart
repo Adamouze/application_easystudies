@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'splash_screen.dart';
 
+import 'splash_screen.dart';
 import 'video_youtube.dart';
 import 'news.dart';
 import 'app_bar.dart';
@@ -23,8 +23,11 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.orangeAccent),
         useMaterial3: true,
       ),
-      home: const SplashScreen(), const MyHomePage(title: 'EasyStudies'),
-      
+      initialRoute: '/',
+      routes: {
+        '/': (context) => const SplashScreen(),
+        '/home': (context) => const MyHomePage(title: 'Easy Studies'),
+      },
     );
   }
 }
