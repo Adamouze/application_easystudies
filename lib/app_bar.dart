@@ -72,23 +72,28 @@ class CustomAppBar extends PreferredSize {
           const Spacer(flex: 1),
 
           SizedBox(
-            width: 50.0,
-            height: 50.0,
+            width: 50,
+            height: 50,
             child: ElevatedButton(
               onPressed: () {},
               style: ElevatedButton.styleFrom(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(150),
                 ),
-                padding: const EdgeInsets.all(10),
-                backgroundColor: Colors.blue,
+                padding: const EdgeInsets.all(3),
               ),
-              child: const Icon(
-                Icons.account_circle_rounded,
-                size: 24,
+              child: const FittedBox(
+                child: Icon(
+                  Icons.account_circle_rounded,
+                  size: 50,
+                  color: Colors.orangeAccent,
+                ),
               ),
             ),
           ),
+
+
+
         ],
       ),
     ),
