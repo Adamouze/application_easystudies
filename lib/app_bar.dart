@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 
+
 class CustomAppBar extends PreferredSize {
   final String title;
   final MaterialAccentColor color;
+  final BuildContext context;
 
-  CustomAppBar({Key? key, required this.title, required this.color,})
+  CustomAppBar({Key? key, required this.title, required this.color, required this.context})
       : super(
     key: key,
     preferredSize: const Size.fromHeight(80.0),
@@ -75,7 +77,9 @@ class CustomAppBar extends PreferredSize {
             width: 50,
             height: 50,
             child: ElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.pushNamed(context, '/login');
+              },
               style: ElevatedButton.styleFrom(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(150),
