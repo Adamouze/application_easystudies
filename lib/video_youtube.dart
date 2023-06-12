@@ -28,14 +28,16 @@ class YoutubeService {
       List<VideoDetail> videoDetails = [];
 
       for (var data in jsonData) {
-        String thumbnailUrl = data['snippet']['thumbnails']['medium']['url'] ??
-            '';
-        String title = data['snippet']['title'] ?? '';
-        String description = data['snippet']['description'] ?? '';
-        String videoId = data['id']['videoId'] ?? '';
+        // Vérifier si 'videoId' existe dans 'id'
+        if (data['id'].containsKey('videoId')) {
+          String thumbnailUrl = data['snippet']['thumbnails']['medium']['url'] ?? '';
+          String title = data['snippet']['title'] ?? '';
+          String description = data['snippet']['description'] ?? '';
+          String videoId = data['id']['videoId'] ?? '';
 
-        videoDetails.add(
-            VideoDetail(thumbnailUrl, title, description, videoId));
+          videoDetails.add(
+              VideoDetail(thumbnailUrl, title, description, videoId));
+        }
       }
 
       return videoDetails;
@@ -44,6 +46,7 @@ class YoutubeService {
     }
   }
 }
+
 
 
 
