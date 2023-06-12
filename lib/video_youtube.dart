@@ -16,8 +16,8 @@ class VideoDetail {
 class YoutubeService {
   Future<List<VideoDetail>> fetchAllVideoDetails() async {
     const String channelId = 'UCm19VoVNI76RHqpaRbS1kgw';
-    const String apiKey = 'AIzaSyAbIR-eFQwQ6ESK_9OKhHYLo08Hn24MQwo';
-    const int maxResults = 10; // Choisissez le nombre maximum de vidéos que vous voulez récupérer
+    const String apiKey = 'AIzaSyDXJhWtOn-ZehPdn5MsVSpOxWBItSH8svQ';
+    const int maxResults = 3; // Choisissez le nombre maximum de vidéos que vous voulez récupérer
 
     final response = await http.get(Uri.parse(
         'https://www.googleapis.com/youtube/v3/search?order=date&part=snippet&channelId=$channelId&maxResults=$maxResults&key=$apiKey'));
