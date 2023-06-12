@@ -14,20 +14,31 @@ class VideoDetail {
 }
 
 class YoutubeService {
-  Future<VideoDetail> fetchLatestVideoDetails() async {
+  Future<List<VideoDetail>> fetchAllVideoDetails() async {
     const String channelId = 'UCm19VoVNI76RHqpaRbS1kgw';
     const String apiKey = 'AIzaSyAbIR-eFQwQ6ESK_9OKhHYLo08Hn24MQwo';
+    const int maxResults = 10; // Choisissez le nombre maximum de vidéos que vous voulez récupérer
+
     final response = await http.get(Uri.parse(
-        'https://www.googleapis.com/youtube/v3/search?order=date&part=snippet&channelId=$channelId&maxResults=1&key=$apiKey'));
+        'https://www.googleapis.com/youtube/v3/search?order=date&part=snippet&channelId=$channelId&maxResults=$maxResults&key=$apiKey'));
 
     if (response.statusCode == 200) {
-      var data = jsonDecode(response.body)['items'][0];
-      return VideoDetail(
-        data['snippet']['thumbnails']['high']['url'],
-        data['snippet']['title'],
-        data['snippet']['description'],
-        data['id']['videoId'], // ajout de l'ID de la vidéo
-      );
+      var jsonData = jsonDecode(response.body)['items'] as List;
+
+      List<VideoDetail> videoDetails = [];
+
+      for (var data in jsonData) {
+        String thumbnailUrl = data['snippet']['thumbnails']['medium']['url'] ??
+            '';
+        String title = data['snippet']['title'] ?? '';
+        String description = data['snippet']['description'] ?? '';
+        String videoId = data['id']['videoId'] ?? '';
+
+        videoDetails.add(
+            VideoDetail(thumbnailUrl, title, description, videoId));
+      }
+
+      return videoDetails;
     } else {
       throw Exception('Failed to load video');
     }
@@ -36,12 +47,14 @@ class YoutubeService {
 
 
 
-class VideoPlayerPage extends StatefulWidget {
+
+    class VideoPlayerPage extends StatefulWidget {
   final String videoId;
   const VideoPlayerPage({Key? key, required this.videoId}) : super(key: key);
 
   @override
   // Warning qui ne pose pas de problème ici.
+  // ignore: library_private_types_in_public_api
   _VideoPlayerPageState createState() => _VideoPlayerPageState();
 }
 

@@ -46,71 +46,114 @@ class CustomBody extends StatelessWidget {
 
             FractionallySizedBox(
               widthFactor: 0.95,
-              child: FutureBuilder<VideoDetail>(
-                future: youtubeService.fetchLatestVideoDetails(),
+              child: FutureBuilder<List<VideoDetail>>(
+                future: youtubeService.fetchAllVideoDetails(),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
-                    final videoDetail = snapshot.data!;
-                    return GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => VideoPlayerPage(videoId: videoDetail.videoId),
-                          ),
-                        );
-                      },
-                      child: Card(
-                        elevation: 3,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Container(
-                              height: 200,
-                              decoration: BoxDecoration(
-                                borderRadius: const BorderRadius.vertical(top: Radius.circular(10)),
-                                image: DecorationImage(
-                                  image: NetworkImage(videoDetail.thumbnailUrl),
-                                  fit: BoxFit.cover,
+                    final videoDetails = snapshot.data!;
+                    final pageController = PageController();
+
+                    return Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        SizedBox(
+                          height:300,
+                          child: PageView.builder(
+                            controller: pageController,
+                            itemCount: videoDetails.length,
+                            itemBuilder: (context, index) {
+                            final videoDetail = videoDetails[index];
+                            return GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => VideoPlayerPage(videoId: videoDetail.videoId),
+                                  ),
+                                );
+                              },
+                              child: Card(
+                                elevation: 3,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Container(
+                                      height: 200,
+                                      decoration: BoxDecoration(
+                                        borderRadius: const BorderRadius.vertical(top: Radius.circular(10)),
+                                        image: DecorationImage(
+                                          image: NetworkImage(videoDetail.thumbnailUrl),
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            videoDetail.title,
+                                            style: const TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          const SizedBox(height: 8),
+                                          Text(
+                                            videoDetail.description,
+                                            style: const TextStyle(fontSize: 16),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(8),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    videoDetail.title,
-                                    style: const TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 8),
-                                  Text(
-                                    videoDetail.description,
-                                    style: const TextStyle(fontSize: 16),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
+                            );
+                          },
                         ),
-                      ),
-                    );
+                        ),
 
+                        // Boutons de navigation
+                        Positioned(
+                          left: 0,
+                          child: IconButton(
+                            icon: const Icon(Icons.arrow_back),
+                            onPressed: () {
+                              pageController.previousPage(
+                                duration: const Duration(milliseconds: 400),
+                                curve: Curves.easeInOut,
+                              );
+                            },
+                          ),
+                        ),
+                        Positioned(
+                          right: 0,
+                          child: IconButton(
+                            icon: const Icon(Icons.arrow_forward),
+                            onPressed: () {
+                              pageController.nextPage(
+                                duration: const Duration(milliseconds: 400),
+                                curve: Curves.easeInOut,
+                              );
+                            },
+                          ),
+                        ),
+                      ],
+                    );
                   } else if (snapshot.hasError) {
-                    return const Text('Failed to fetch video details');
+                    return Text('Failed to fetch video details: ${snapshot.error}');
                   } else {
                     return const CircularProgressIndicator();
                   }
                 },
               ),
             ),
+
 
             const SizedBox(height: 16),
 
