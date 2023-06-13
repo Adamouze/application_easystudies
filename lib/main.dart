@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'splash_screen.dart';
 import 'video_youtube.dart';
-import 'news.dart';
+import 'facebook_news.dart';
 import 'app_bar.dart';
 import 'body.dart';
 import 'login_screen.dart';
@@ -67,7 +67,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final newsService = NewsService();
+  final facebookService = FacebookService();
   final MaterialAccentColor orangePerso = Colors.orangeAccent;
   final youtubeService = YoutubeService();
 
