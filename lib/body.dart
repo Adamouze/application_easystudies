@@ -1,4 +1,4 @@
-// ignore_for_file: deprecated_member_use
+// ignore_for_file: deprecated_member_use, constant_identifier_names, non_constant_identifier_names, duplicate_ignore
 
 import 'package:flutter/material.dart';
 import 'video_youtube.dart';
@@ -9,6 +9,22 @@ class CustomBody extends StatelessWidget {
   CustomBody({Key? key}) : super(key: key);
   final facebookService = FacebookService();
   final youtubeService = YoutubeService();
+
+  static const String _url_facebook = 'https://www.facebook.com/easystudies';
+  static const String _url_tel = 'tel:0664021773';
+  final Uri _url_mail = Uri(scheme: 'mailto', path: 'easystudies@outlook.fr',);
+  //ignore: non_constant_identifier_names
+  void _launchURL(String url) async {
+    if (!await launch(url)) throw 'Could not launch $_url_facebook';
+  }
+  void _launchmail(Uri url) async {
+    if(await canLaunchUrl(url)){
+      launchUrl(url);
+    }
+    else {
+      throw Exception('Could not launch $url');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +53,7 @@ class CustomBody extends StatelessWidget {
                     child: const Padding(
                       padding: EdgeInsets.all(8.0),
                       child: Text(
-                        'Dernière News',
+                        'Dernière News - செய்திகள்',
                         style: TextStyle(
                             color: Colors.white,
                             fontFamily: 'Noto Sans',
@@ -302,29 +318,20 @@ class CustomBody extends StatelessWidget {
                         children: <Widget>[
                           GestureDetector(
                             onTap: () async {
-                              const url = 'mailto:easystudies@outlook.fr';
-                              if (await canLaunchUrl(url as Uri)) {
-                                await launchUrl(url as Uri);
-                              }
+                              _launchmail(_url_mail);
                             },
                             child: const Icon(Icons.mail, color: Colors.orangeAccent),
                           ),
                           GestureDetector(
                             onTap: () async {
-                              const url = 'tel:0664021773';
-                              if (await canLaunchUrl(url as Uri)) {
-                                await launchUrl(url as Uri);
-                              }
+                              _launchURL(_url_tel);
                             },
                             child: const Icon(Icons.phone, color: Colors.orangeAccent),
                           ),
                           GestureDetector(
                             onTap: () async {
-                              const url = 'https://www.facebook.com/easystudies';
-                              if (await canLaunchUrl(url as Uri)) {
-                                await launchUrl(url as Uri);
-                              }
-                            },
+                              _launchURL(_url_facebook);
+                              },
                             child: const Icon(Icons.facebook, color: Colors.orangeAccent),
                           ),
                         ],
