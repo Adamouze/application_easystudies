@@ -103,10 +103,6 @@ class CustomBody extends StatelessWidget {
                                             ),
                                           ),
                                           const SizedBox(height: 8),
-                                          Text(
-                                            videoDetail.description,
-                                            style: const TextStyle(fontSize: 16),
-                                          ),
                                         ],
                                       ),
                                     ),
@@ -121,20 +117,35 @@ class CustomBody extends StatelessWidget {
                         // Boutons de navigation
                         Positioned(
                           left: 0,
-                          child: IconButton(
-                            icon: const Icon(Icons.arrow_back),
-                            onPressed: () {
-                              pageController.previousPage(
+                           child: Container(
+                              decoration: const BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.orangeAccent,
+                              ),
+                              child: IconButton(
+                                icon: const Icon(Icons.arrow_back,
+                                      color: Colors.white,
+                                ),
+                                onPressed: () {
+                                  pageController.previousPage(
                                 duration: const Duration(milliseconds: 400),
                                 curve: Curves.easeInOut,
                               );
                             },
                           ),
                         ),
+                        ),
                         Positioned(
                           right: 0,
-                          child: IconButton(
-                            icon: const Icon(Icons.arrow_forward),
+                          child: Container(
+                            decoration: const BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.orangeAccent,
+                            ),
+                            child: IconButton(
+                              icon: const Icon(Icons.arrow_forward,
+                              color: Colors.white,
+                              ),
                             onPressed: () {
                               pageController.nextPage(
                                 duration: const Duration(milliseconds: 400),
@@ -142,6 +153,7 @@ class CustomBody extends StatelessWidget {
                               );
                             },
                           ),
+                        ),
                         ),
                       ],
                     );
