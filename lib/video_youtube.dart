@@ -80,7 +80,7 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Video Player'),
+        title: const Text('Lecteur vidéo'),
       ),
       body: YoutubePlayer(
         controller: _controller,
