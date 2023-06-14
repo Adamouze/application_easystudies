@@ -1,6 +1,9 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'video_youtube.dart';
 import 'facebook_news.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class CustomBody extends StatelessWidget {
   CustomBody({Key? key}) : super(key: key);
@@ -292,23 +295,43 @@ class CustomBody extends StatelessWidget {
                         ),
                       ],
                     ),
-                    child: const Padding(
-                      padding: EdgeInsets.all(16),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
                       child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: <Widget>[
-                          Icon(Icons.mail, color: Colors.orangeAccent),
-                          SizedBox(width: 10),
-                          Text(
-                            'atchuthen@outlook.fr',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontFamily: 'NotoSans',
-                            ),
+                          GestureDetector(
+                            onTap: () async {
+                              const url = 'mailto:easystudies@outlook.fr';
+                              if (await canLaunchUrl(url as Uri)) {
+                                await launchUrl(url as Uri);
+                              }
+                            },
+                            child: const Icon(Icons.mail, color: Colors.orangeAccent),
+                          ),
+                          GestureDetector(
+                            onTap: () async {
+                              const url = 'tel:0664021773';
+                              if (await canLaunchUrl(url as Uri)) {
+                                await launchUrl(url as Uri);
+                              }
+                            },
+                            child: const Icon(Icons.phone, color: Colors.orangeAccent),
+                          ),
+                          GestureDetector(
+                            onTap: () async {
+                              const url = 'https://www.facebook.com/easystudies';
+                              if (await canLaunchUrl(url as Uri)) {
+                                await launchUrl(url as Uri);
+                              }
+                            },
+                            child: const Icon(Icons.facebook, color: Colors.orangeAccent),
                           ),
                         ],
                       ),
                     ),
                   ),
+
                 ],
               ),
             )
