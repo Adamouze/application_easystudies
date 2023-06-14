@@ -144,7 +144,7 @@ class CustomBody extends StatelessWidget {
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
                           final videoDetails = snapshot.data!;
-                          final pageController = PageController();
+                          final pageController = PageController(initialPage: videoDetails.length * 1000);
 
                           return Stack(
                             alignment: Alignment.center,
@@ -153,9 +153,9 @@ class CustomBody extends StatelessWidget {
                                 height: 300,
                                 child: PageView.builder(
                                   controller: pageController,
-                                  itemCount: videoDetails.length,
+                                  itemCount: videoDetails.length * 100000,
                                   itemBuilder: (context, index) {
-                                    final videoDetail = videoDetails[index];
+                                    final videoDetail = videoDetails[index % videoDetails.length];
                                     return GestureDetector(
                                       onTap: () {
                                         Navigator.push(
@@ -180,8 +180,8 @@ class CustomBody extends StatelessWidget {
                                                 ),
                                               ),
                                             ),
-                                           Container(
-                                             color: Colors.grey[200],
+                                            Container(
+                                              color: Colors.grey[200],
                                               padding: const EdgeInsets.all(8),
                                               child: Column(
                                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -205,7 +205,7 @@ class CustomBody extends StatelessWidget {
                                 ),
                               ),
 
-                              // Boutons de navigation
+                              // Navigation buttons
                               Positioned(
                                 left: 0,
                                 child: Container(
@@ -259,6 +259,8 @@ class CustomBody extends StatelessWidget {
                 ],
               ),
             ),
+
+
 
             const SizedBox(height: 16),
 
