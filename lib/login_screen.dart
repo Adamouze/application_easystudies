@@ -151,9 +151,10 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           ),
                           onPressed: () {
+                            final Logger logger = Logger();
                             if (_formKey.currentState!.validate()) {
                               _formKey.currentState!.save();
-                              print('Nom d\'utilisateur: $_username, Mot de passe: $_password');
+                              logger.d('Nom d\'utilisateur: $_username, Mot de passe: $_password');
                             }
                           },
                           child: const Text('Se connecter'),
