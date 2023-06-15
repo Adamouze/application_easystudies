@@ -1,3 +1,4 @@
+import 'package:EasyStudies/login_screen.dart';
 import 'package:flutter/material.dart';
 
 
@@ -78,7 +79,21 @@ class CustomAppBar extends PreferredSize {
             height: 50,
             child: ElevatedButton(
               onPressed: () {
-                Navigator.pushNamed(context, '/login');
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return Dialog(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20.0),
+                      ),
+                      child: const FractionallySizedBox(
+                        heightFactor: 0.4,  // You can adjust this as per your requirement
+                        widthFactor: 1,  // You can adjust this as per your requirement
+                        child: LoginScreen(),  // Your LoginScreen widget
+                      ),
+                    );
+                  },
+                );
               },
               style: ElevatedButton.styleFrom(
                 shape: RoundedRectangleBorder(
@@ -98,8 +113,11 @@ class CustomAppBar extends PreferredSize {
 
 
 
+
         ],
       ),
     ),
   );
 }
+
+
