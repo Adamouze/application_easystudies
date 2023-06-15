@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -10,8 +11,10 @@ class VideoDetail {
   final String title;
   final String description;
   final String videoId;
+
   VideoDetail(this.thumbnailUrl, this.title, this.description, this.videoId);
 }
+
 
 class YoutubeService {
   Future<List<VideoDetail>> fetchAllVideoDetails() async {
@@ -51,9 +54,10 @@ class YoutubeService {
 
 
 
-    class VideoPlayerPage extends StatefulWidget {
+class VideoPlayerPage extends StatefulWidget {
   final String videoId;
-  const VideoPlayerPage({Key? key, required this.videoId}) : super(key: key);
+  final VideoDetail videoDetail;
+  const VideoPlayerPage({Key? key, required this.videoId, required this.videoDetail}) : super(key: key);
 
   @override
   // Warning qui ne pose pas de problème ici.
@@ -74,23 +78,46 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
         mute: false,
       ),
     );
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
+  }
+
+  @override
+  void dispose() {
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: SystemUiOverlay.values);
+    super.dispose();
+    _controller.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Video Player'),
-      ),
-      body: YoutubePlayer(
-        controller: _controller,
+      body: YoutubePlayerBuilder(
+        player: YoutubePlayer(
+          controller: _controller,
+          showVideoProgressIndicator: true,
+          progressIndicatorColor: Colors.deepOrange, // Couleur de la barre de lecture
+          progressColors: const ProgressBarColors(
+            playedColor: Colors.deepOrange, // Couleur de la barre de progression jouée
+            handleColor: Colors.deepOrange, // Couleur de la poignée de la barre de progression
+          ),
+        ),
+        builder: (context, player) {
+          return MediaQuery(
+            data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+            child: Container(
+              width: double.infinity,
+              height: double.infinity,
+              color: Colors.grey[900],
+              child: Center(
+                child: AspectRatio(
+                  aspectRatio: 16 / 9,
+                  child: player,
+                ),
+              ),
+            ),
+          );
+        },
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _controller.dispose();
   }
 }
