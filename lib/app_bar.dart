@@ -37,21 +37,27 @@ class _AnimatedDialogState extends State<AnimatedDialog> with SingleTickerProvid
 
   @override
   Widget build(BuildContext context) {
+    var height = MediaQuery.of(context).size.height * 0.5;  // 50% of screen height
+    var width = MediaQuery.of(context).size.width; // 100% of screen width
     return SlideTransition(
       position: _offsetAnimation,
       child: Dialog(
+        elevation: 0, // removes the shadow
+        backgroundColor: Colors.transparent, // Set the background color to transparent
+        insetPadding: EdgeInsets.zero, // removes padding around the dialog
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20.0),
         ),
-        child: const FractionallySizedBox(
-          heightFactor: 0.4,  // You can adjust this as per your requirement
-          widthFactor: 1,  // You can adjust this as per your requirement
-          child: LoginScreen(),  // Your LoginScreen widget
+        child: SizedBox(
+          height: height,  // set dialog height
+          width: width,  // set dialog width
+          child: const LoginScreen(),
         ),
       ),
     );
   }
 }
+
 
 
 class CustomAppBar extends PreferredSize {
