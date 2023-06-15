@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
+
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -52,10 +54,11 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               ElevatedButton(
                 onPressed: () {
+                  final Logger logger = Logger();
                   if (_formKey.currentState!.validate()) {
                     _formKey.currentState!.save();
                     // Vérifiez l'authentification et faites la navigation ici
-                    print('Nom d\'utilisateur: $_username, Mot de passe: $_password');
+                    logger.d('Nom d\'utilisateur: $_username, Mot de passe: $_password');
                   }
                 },
                 child: const Text('Se connecter'),
