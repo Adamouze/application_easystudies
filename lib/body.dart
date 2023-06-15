@@ -161,7 +161,7 @@ class CustomBody extends StatelessWidget {
                                         Navigator.push(
                                           context,
                                           MaterialPageRoute(
-                                            builder: (context) => VideoPlayerPage(videoId: videoDetail.videoId),
+                                            builder: (context) => VideoPlayerPage(videoId: videoDetail.videoId, videoDetail: videoDetail),
                                           ),
                                         );
                                       },
