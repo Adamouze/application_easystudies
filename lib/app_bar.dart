@@ -1,6 +1,58 @@
 import 'package:EasyStudies/login_screen.dart';
 import 'package:flutter/material.dart';
 
+class AnimatedDialog extends StatefulWidget {
+  const AnimatedDialog({Key? key}) : super(key: key);
+
+  @override
+  // ignore: library_private_types_in_public_api
+  _AnimatedDialogState createState() => _AnimatedDialogState();
+}
+
+class _AnimatedDialogState extends State<AnimatedDialog> with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+  late final Animation<Offset> _offsetAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(seconds: 1),
+      vsync: this,
+    )..forward();
+    _offsetAnimation = Tween<Offset>(
+      begin: const Offset(0.0, -1.0),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeInOut,
+    ));
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _controller.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SlideTransition(
+      position: _offsetAnimation,
+      child: Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20.0),
+        ),
+        child: const FractionallySizedBox(
+          heightFactor: 0.4,  // You can adjust this as per your requirement
+          widthFactor: 1,  // You can adjust this as per your requirement
+          child: LoginScreen(),  // Your LoginScreen widget
+        ),
+      ),
+    );
+  }
+}
+
 
 class CustomAppBar extends PreferredSize {
   final String title;
@@ -80,19 +132,10 @@ class CustomAppBar extends PreferredSize {
             child: ElevatedButton(
               onPressed: () {
                 showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return Dialog(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20.0),
-                      ),
-                      child: const FractionallySizedBox(
-                        heightFactor: 0.4,  // You can adjust this as per your requirement
-                        widthFactor: 1,  // You can adjust this as per your requirement
-                        child: LoginScreen(),  // Your LoginScreen widget
-                      ),
-                    );
-                  },
+                    context: context,
+                    builder: (BuildContext context) {
+                      return const AnimatedDialog();
+                    },
                 );
               },
               style: ElevatedButton.styleFrom(
