@@ -38,7 +38,7 @@ class _AnimatedDialogState extends State<AnimatedDialog> with SingleTickerProvid
   @override
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height * 0.5;  // 50% of screen height
-    var width = MediaQuery.of(context).size.width; // 100% of screen width
+    var width = MediaQuery.of(context).size.width * 0.85; // 100% of screen width
     return SlideTransition(
       position: _offsetAnimation,
       child: Dialog(

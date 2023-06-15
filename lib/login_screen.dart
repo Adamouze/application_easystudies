@@ -49,7 +49,8 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
             child: Container(
               decoration: BoxDecoration(
                 color: Colors.orangeAccent,
-                borderRadius: BorderRadius.circular(10.0),
+                borderRadius: BorderRadius.circular(20.0),
+                border: Border.all(color: Colors.white, width: 8),
               ),
               child: Padding(
                 padding: const EdgeInsets.all(8),
