@@ -1,6 +1,7 @@
 // ignore_for_file: library_private_types_in_public_api
 
 import 'package:flutter/material.dart';
+import 'liste_identifiant_test.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -13,6 +14,32 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
   final _formKey = GlobalKey<FormState>();
   String _username = '';
   String _password = '';
+
+  bool isLoginValid(String username, String password) {
+    for (var identifiant in listeIdentifiants) {
+      if (identifiant['username'] == username && identifiant['password'] == password) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  void tryLogin() {
+    String username = _username;
+    String password = _password;
+    if (isLoginValid(username, password)) {
+      // ici, naviguez vers la page d'accueil et affichez un message de bienvenue
+      Navigator.of(context).pushNamed('/home');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Connecté en tant que $username')),
+      );
+    } else {
+      // ici, montrez une erreur indiquant que le couple identifiant/mot de passe est invalide
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Le couple identifiant/mot de passe n\'est pas valide')),
+      );
+    }
+  }
 
   late AnimationController _controller;
   late Animation<Offset> _offsetAnimation;
@@ -182,7 +209,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                             onPressed: () {
                               if (_formKey.currentState!.validate()) {
                                 _formKey.currentState!.save();
-                                print('Nom d\'utilisateur: $_username, Mot de passe: $_password');
+                                tryLogin();
                               }
                             },
                             child: const Text('Se connecter'),
