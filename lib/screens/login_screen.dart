@@ -3,6 +3,75 @@
 import 'package:flutter/material.dart';
 import '../liste_identifiant_test.dart';
 
+
+/*
+
+class LoginScreen extends StatefulWidget {
+  @override
+  _LoginScreenState createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  TextEditingController _identifier = new TextEditingController();
+  TextEditingController _password = new TextEditingController();
+
+  Future<void> _login() async {
+    try {
+      final response = await http.post(
+        Uri.parse("<TODO par Stéphane>"),
+        body: {
+          "_identifier": _identifier.text,
+          "_password": _password.text,
+        },
+      );
+
+      if (response.statusCode == 200) {
+        var jsonData = json.decode(response.body);
+
+        if (jsonData["_result"] == "Data Matched") {
+          addIdentifierToSF(jsonData["_identifier"]);
+
+          if (jsonData["_userType"] == "prof") {
+            print("Connexion PROF");
+            Navigator.push(
+              context,
+              new MaterialPageRoute(
+                builder: (context) => StudentsList(title: "EasyStudies"),
+              ),
+            );
+          } else if (jsonData["_userType"] == "eleve") {
+            print("Connexion ELEVE");
+            Navigator.push(
+              context,
+              new MaterialPageRoute(
+                builder: (context) => FicheEleve(Eleve.id(jsonData["_identifier"])),
+              ),
+            );
+          } else if (jsonData["_userType"] == "super_user") {
+            print("Connexion SUPER USER");
+            // Naviguer vers la page de l'utilisateur super
+            // Replacez SuperUserScreen par la page de l'utilisateur super
+            Navigator.push(
+              context,
+              new MaterialPageRoute(
+                builder: (context) => SuperUserScreen(),
+              ),
+            );
+          }
+        }
+      } else {
+        print('Erreur du serveur : ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Une erreur s\'est produite pendant la requête HTTP : $e');
+    }
+  }
+}
+
+*/
+
+
+
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
 
@@ -24,7 +93,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
     return false;
   }
 
-  void tryLogin() {
+  void tryLogin() { // TODO : à adapter lorsqu'on aura la requête HTTP
     String username = _username;
     String password = _password;
     if (isLoginValid(username, password)) {
