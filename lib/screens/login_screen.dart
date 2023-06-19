@@ -29,7 +29,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
     String password = _password;
     if (isLoginValid(username, password)) {
       // ici, naviguez vers la page d'accueil et affichez un message de bienvenue
-      Navigator.of(context).pushNamed('/home');
+      Navigator.pushReplacementNamed(context, '/eleve');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Connecté en tant que $username')),
       );

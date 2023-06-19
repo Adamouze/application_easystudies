@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 
 import 'screens/splash_screen.dart';
+import 'screens/app_bar.dart';
+import 'screens/bodies/body_home.dart';
+import 'screens/login_screen.dart';
+import 'screens/eleve_screen.dart';
+
 import 'utilities/video_youtube.dart';
 import 'utilities/facebook_news.dart';
-import 'screens/app_bar.dart';
-import 'screens/body_home.dart';
-import 'screens/login_screen.dart';
+import 'utilities/constantes.dart';
+
 
 void main() {
   runApp(const MyApp());
@@ -52,6 +56,9 @@ class MyApp extends StatelessWidget {
             },
           );
         }
+        else if (settings.name == '/eleve') { // Ajout de la nouvelle route
+          return MaterialPageRoute(builder: (_) => const EleveScreen());
+        }
         return null;
       },
     );
@@ -68,7 +75,6 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final facebookService = FacebookService();
-  final MaterialAccentColor orangePerso = Colors.orangeAccent;
   final youtubeService = YoutubeService();
 
   @override

@@ -1,12 +1,12 @@
 // ignore_for_file: deprecated_member_use, constant_identifier_names, non_constant_identifier_names, duplicate_ignore
 
 import 'package:flutter/material.dart';
-import '../utilities/video_youtube.dart';
-import '../utilities/facebook_news.dart';
+import '../../utilities/video_youtube.dart';
+import '../../utilities/facebook_news.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class CustomBody extends StatelessWidget {
-  CustomBody({Key? key}) : super(key: key);
+class CustomBodyEleve extends StatelessWidget {
+  CustomBodyEleve({Key? key}) : super(key: key);
   final facebookService = FacebookService();
   final youtubeService = YoutubeService();
 
