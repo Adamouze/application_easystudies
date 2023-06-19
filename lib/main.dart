@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-import 'splash_screen.dart';
-import 'video_youtube.dart';
-import 'facebook_news.dart';
-import 'app_bar.dart';
-import 'body.dart';
-import 'login_screen.dart';
+import 'screens/splash_screen.dart';
+import 'utilities/video_youtube.dart';
+import 'utilities/facebook_news.dart';
+import 'screens/app_bar.dart';
+import 'screens/body_home.dart';
+import 'screens/login_screen.dart';
 
 void main() {
   runApp(const MyApp());

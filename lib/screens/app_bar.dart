@@ -1,4 +1,4 @@
-import 'package:EasyStudies/login_screen.dart';
+import 'package:EasyStudies/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 
 class AnimatedDialog extends StatefulWidget {
