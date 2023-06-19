@@ -9,8 +9,8 @@ class EleveScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(title: 'Eleve', color: orangePerso, context: context), // Remplacer par votre AppBar personnalisé
-      body: CustomBodyEleve(), // Remplacer par votre corps de page BodyEleve
+      appBar: CustomAppBar(title: 'Eleve', color: orangePerso, context: context),
+      body: CustomBodyEleve(),
     );
   }
 }
