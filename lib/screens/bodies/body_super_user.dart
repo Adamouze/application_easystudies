@@ -5,8 +5,8 @@ import '../../utilities/video_youtube.dart';
 import '../../utilities/facebook_news.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class CustomBody extends StatelessWidget {
-  CustomBody({Key? key}) : super(key: key);
+class CustomBodySuperUser extends StatelessWidget {
+  CustomBodySuperUser({Key? key}) : super(key: key);
   final facebookService = FacebookService();
   final youtubeService = YoutubeService();
 
