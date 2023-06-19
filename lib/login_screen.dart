@@ -2,6 +2,9 @@
 
 import 'package:flutter/material.dart';
 import 'liste_identifiant_test.dart';
+import 'package:provider/provider.dart';
+import 'auth_stat.dart';
+
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -30,6 +33,8 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
     if (isLoginValid(username, password)) {
       // ici, naviguez vers la page d'accueil et affichez un message de bienvenue
       Navigator.of(context).pushNamed('/home');
+      // Mis à jour pour définir l'état d'authentification
+      Provider.of<AuthState>(context, listen: false).setAuthenticationStatus(true);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           shape: const RoundedRectangleBorder(

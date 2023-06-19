@@ -1,5 +1,7 @@
 import 'package:EasyStudies/login_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'auth_stat.dart';
 
 class AnimatedDialog extends StatefulWidget {
   const AnimatedDialog({Key? key}) : super(key: key);
@@ -70,6 +72,7 @@ class CustomAppBar extends PreferredSize {
     key: key,
     preferredSize: const Size.fromHeight(80.0),
     child: AppBar(
+      automaticallyImplyLeading: false,
       toolbarHeight: 80.0,
       backgroundColor: color,
       title: Row(
@@ -132,32 +135,65 @@ class CustomAppBar extends PreferredSize {
 
           const Spacer(flex: 1),
 
-          SizedBox(
-            width: 50,
-            height: 50,
-            child: ElevatedButton(
-              onPressed: () {
-                showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return const AnimatedDialog();
+          Consumer<AuthState>(
+            builder: (context, authState, _) {
+              if (authState.isAuthenticated) {
+                return SizedBox(
+                  width: 50,
+                  height: 50,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      // Ici, vous pouvez ouvrir la page des paramètres ou faire quelque chose d'autre
+                      // De plus, ici on appelle la méthode logout() quand le bouton est pressé
+                      Provider.of<AuthState>(context, listen: false).logout();
+                      // Redirige l'utilisateur vers la page de login ou vers une autre page appropriée
+                      Navigator.of(context).pushNamed('/home');
                     },
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(150),
+                      ),
+                      padding: const EdgeInsets.all(3),
+                    ),
+                    child: const FittedBox(
+                      child: Icon(
+                        Icons.settings,
+                        size: 50,
+                        color: Colors.orangeAccent,
+                      ),
+                    ),
+                  ),
                 );
-              },
-              style: ElevatedButton.styleFrom(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(150),
-                ),
-                padding: const EdgeInsets.all(3),
-              ),
-              child: const FittedBox(
-                child: Icon(
-                  Icons.account_circle_rounded,
-                  size: 50,
-                  color: Colors.orangeAccent,
-                ),
-              ),
-            ),
+              } else {
+                return SizedBox(
+                  width: 50,
+                  height: 50,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return const AnimatedDialog();
+                        },
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(150),
+                      ),
+                      padding: const EdgeInsets.all(3),
+                    ),
+                    child: const FittedBox(
+                      child: Icon(
+                        Icons.account_circle_rounded,
+                        size: 50,
+                        color: Colors.orangeAccent,
+                      ),
+                    ),
+                  ),
+                );
+              }
+            },
           ),
 
 
