@@ -31,15 +31,47 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
       // ici, naviguez vers la page d'accueil et affichez un message de bienvenue
       Navigator.of(context).pushNamed('/home');
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Connecté en tant que $username')),
+        SnackBar(
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(10),
+              topRight: Radius.circular(10),
+            ),
+          ),
+          backgroundColor: Colors.green,
+          content: Text('Connecté en tant que $username',
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 16,
+              fontFamily: 'NotoSans',
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
       );
     } else {
       // ici, montrez une erreur indiquant que le couple identifiant/mot de passe est invalide
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Le couple identifiant/mot de passe n\'est pas valide')),
+        SnackBar(
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20.0),
+          ),
+          backgroundColor: Colors.red,
+          content: const Text(
+            'Le couple identifiant/mot de passe n\'est pas valide',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 16,
+              fontFamily: 'NotoSans',
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
       );
     }
   }
+
 
   late AnimationController _controller;
   late Animation<Offset> _offsetAnimation;
