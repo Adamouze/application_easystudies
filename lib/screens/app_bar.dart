@@ -159,10 +159,6 @@ class CustomAppBar extends PreferredSize {
               ),
             ),
           ),
-
-
-
-
         ],
       ),
     ),
