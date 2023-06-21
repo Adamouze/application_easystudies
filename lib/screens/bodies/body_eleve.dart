@@ -340,7 +340,6 @@ class CustomBodyEleve extends StatelessWidget {
                       ),
                     ),
                   ),
-
                 ],
               ),
             )
