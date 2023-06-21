@@ -1,4 +1,4 @@
-// ignore_for_file: non_constant_identifier_names, library_private_types_in_public_api, depend_on_referenced_packages
+// ignore_for_file: non_constant_identifier_names, library_private_types_in_public_api, depend_on_referenced_packages, use_build_context_synchronously
 
 import 'package:EasyStudies/login_screen.dart';
 import 'package:flutter/material.dart';
@@ -143,6 +143,26 @@ class _LogoutDialogState extends State<LogoutDialog> with SingleTickerProviderSt
                 // Vous pouvez faire la déconnexion ici
                 Provider.of<AuthState>(context, listen: false).logout();
                 Navigator.of(context).pushNamed('/home');
+                // Show the snackbar
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(10),
+                        topRight: Radius.circular(10),
+                      ),
+                    ),
+                    backgroundColor: Colors.redAccent,
+                    content: Text('Déconnecté',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontFamily: 'NotoSans',
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                );
               },
               child: const Text('Oui',
                 style: TextStyle(
@@ -242,13 +262,24 @@ class CustomAppBar extends PreferredSize {
             builder: (context, authState, _) {
               if (authState.isAuthenticated) {
                 return PopupMenuButton<int>(
+                  color: Colors.orangeAccent,
                   itemBuilder: (context) => [
                     const PopupMenuItem(
                       value: 1,
                       child: Row(
                         children: [
-                          Icon(Icons.brightness_2), // Icone de lune pour le dark mode
-                          Text('DarkMode'),
+                          IconTheme(
+                            data: IconThemeData(color: Colors.white),
+                            child: Icon(Icons.brightness_3_rounded), // Icone de lune pour le dark mode
+                          ),
+                          DefaultTextStyle(
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: 'NotoSans',
+                            ),
+                            child: Text('DarkMode'),
+                          ),
                         ],
                       ),
                     ),
@@ -256,8 +287,18 @@ class CustomAppBar extends PreferredSize {
                       value: 2,
                       child: Row(
                         children: [
-                          Icon(Icons.logout), // Icone pour le logout
-                          Text('Déconnexion'),
+                          IconTheme(
+                            data: IconThemeData(color: Colors.white),
+                            child: Icon(Icons.logout), // Icone pour le logout
+                          ),
+                          DefaultTextStyle(
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: 'NotoSans',
+                            ),
+                            child: Text('Déconnexion'),
+                          ),
                         ],
                       ),
                     ),
@@ -278,7 +319,10 @@ class CustomAppBar extends PreferredSize {
                     size: 45,
                   ),
                 );
-              } else {
+              }
+
+
+              else {
                 return SizedBox(
                   width: 50,
                   height: 50,
