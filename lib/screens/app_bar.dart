@@ -115,15 +115,14 @@ class LogoutDialogState extends State<LogoutDialog> with SingleTickerProviderSta
         actions: <Widget>[
           Container(
             decoration: BoxDecoration(
-              color: Colors.orangeAccent,
+              color: Colors.white,
               borderRadius: BorderRadius.circular(20.0),
-              border: Border.all(color: Colors.white, width: 2),
             ),
             child: TextButton(
               onPressed: () => Navigator.pop(context, 'Non'),
               child: const Text('Non',
                 style: TextStyle(
-                  color: Colors.white,
+                  color: Colors.orangeAccent,
                   fontWeight: FontWeight.bold,
                   fontFamily: 'NotoSans',
                 ),
@@ -132,9 +131,8 @@ class LogoutDialogState extends State<LogoutDialog> with SingleTickerProviderSta
           ),
           Container(
             decoration: BoxDecoration(
-              color: Colors.orangeAccent,
+              color: Colors.white,
               borderRadius: BorderRadius.circular(20.0),
-              border: Border.all(color: Colors.white, width: 2),
             ),
             child: TextButton(
               onPressed: () {
@@ -164,7 +162,7 @@ class LogoutDialogState extends State<LogoutDialog> with SingleTickerProviderSta
               },
               child: const Text('Oui',
                 style: TextStyle(
-                  color: Colors.white,
+                  color: Colors.orangeAccent,
                   fontWeight: FontWeight.bold,
                   fontFamily: 'NotoSans',
                 ),
