@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import 'screens/splash_screen.dart';
 import 'screens/app_bar.dart';
@@ -9,10 +10,16 @@ import 'screens/eleve_screen.dart';
 import 'utilities/video_youtube.dart';
 import 'utilities/facebook_news.dart';
 import 'utilities/constantes.dart';
+import 'auth_stat.dart';
 
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => AuthState(),
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
