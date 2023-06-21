@@ -100,7 +100,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
     String password = _password;
     if (isLoginValid(username, password)) {
       // ici, naviguez vers la page d'accueil et affichez un message de bienvenue
-      Navigator.of(context).pushNamed('/home');
+      Navigator.of(context).pushNamed('/eleve');
       // Mis à jour pour définir l'état d'authentification
       Provider.of<AuthState>(context, listen: false).setAuthenticationStatus(true);
       ScaffoldMessenger.of(context).showSnackBar(
