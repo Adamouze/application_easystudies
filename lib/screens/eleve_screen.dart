@@ -182,7 +182,6 @@ class FancyFabState extends State<FancyFab> with SingleTickerProviderStateMixin 
       ),
     );
   }
-
 }
 
 
