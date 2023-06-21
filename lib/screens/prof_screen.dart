@@ -73,7 +73,7 @@ class FancyFabState extends State<FancyFab> with SingleTickerProviderStateMixin 
       tooltip: 'Notes',
       shape: const CircleBorder(),
       child: Icon(
-        Icons.gpp_good_outlined,
+        Icons.check_circle,
         color: widget.iconColor,
       ),
     );
@@ -109,23 +109,6 @@ class FancyFabState extends State<FancyFab> with SingleTickerProviderStateMixin 
 
     );
   }
-
-/*
-  Widget qrcode() {
-    return FloatingActionButton(
-      backgroundColor: Colors.blue,
-      onPressed: () {
-      },
-      heroTag: 4,
-      tooltip: 'QR Code',
-      shape: const CircleBorder(),
-      child: Icon(
-        Icons.qr_code_sharp,
-        color: widget.iconColor,
-      ),
-    );
-  }
-*/
 
   Widget toggle() {
     return FloatingActionButton(
@@ -230,7 +213,7 @@ class ProfScreen extends StatelessWidget {
                 elevation: 6.0,
                 shape: const CircleBorder(),
                 child: const Icon(
-                  Icons.qr_code_2_sharp,
+                  Icons.add_circle_sharp,
                   color: couleurIcone,
                   size: 32.0,
                 ),

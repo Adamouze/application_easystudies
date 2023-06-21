@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+
 import '../utilities/constantes.dart';
 import 'app_bar.dart';
 import 'bodies/body_eleve.dart';
+
+import 'action_buttons_eleve/qrcode_screen.dart';
 
 class FancyFab extends StatefulWidget {
   final VoidCallback onPressed;
@@ -73,7 +76,7 @@ class FancyFabState extends State<FancyFab> with SingleTickerProviderStateMixin 
       tooltip: 'Notes',
       shape: const CircleBorder(),
       child: Icon(
-        Icons.gpp_good_outlined,
+        Icons.check_circle,
         color: widget.iconColor,
       ),
     );
@@ -226,16 +229,22 @@ class EleveScreen extends StatelessWidget {
               scale: 1.4,
               child: FloatingActionButton(
                 backgroundColor: Colors.blue,
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const QRCodeScreen()),
+                  );
+                },
                 tooltip: 'QR Code',
                 elevation: 6.0,
                 shape: const CircleBorder(),
                 child: const Icon(
-                    Icons.qr_code_2_sharp,
-                    color: couleurIcone,
-                    size: 32.0,
+                  Icons.qr_code_2_sharp,
+                  color: couleurIcone,
+                  size: 32.0,
                 ),
               ),
+
             ),
           ),
         ],
