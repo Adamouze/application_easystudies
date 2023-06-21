@@ -10,7 +10,8 @@ import 'screens/eleve_screen.dart';
 import 'utilities/video_youtube.dart';
 import 'utilities/facebook_news.dart';
 import 'utilities/constantes.dart';
-import 'auth_stat.dart';
+
+import 'screens/logs/auth_stat.dart';
 
 
 void main() {
