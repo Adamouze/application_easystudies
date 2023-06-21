@@ -215,7 +215,6 @@ class EleveScreen extends StatelessWidget {
               backgroundColor: orangePerso,
               onPressed: () {},
               tooltip: 'Historique',
-              heroTag: "leftBtn",
               elevation: 6.0,
               shape: const CircleBorder(),
               child: const Icon(Icons.history, color: couleurIcone),
@@ -230,7 +229,6 @@ class EleveScreen extends StatelessWidget {
                 backgroundColor: Colors.blue,
                 onPressed: () {},
                 tooltip: 'QR Code',
-                heroTag: "centerBtn",
                 elevation: 6.0,
                 shape: const CircleBorder(),
                 child: const Icon(

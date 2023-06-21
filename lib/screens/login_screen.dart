@@ -3,8 +3,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'logs/liste_identifiant_test.dart';
-import 'logs/auth_stat.dart';
+import '../logs/liste_identifiant_test.dart';
+import '../logs/auth_stat.dart';
 
 
 /*
@@ -87,21 +87,32 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
   String _username = '';
   String _password = '';
 
-  bool isLoginValid(String username, String password) {
-    for (var identifiant in listeIdentifiants) {
-      if (identifiant['username'] == username && identifiant['password'] == password) {
-        return true;
-      }
+  String? getUserType(String username, String password) {
+    if (listeIdentifiantsEleves.any((identifiant) =>
+    identifiant['username'] == username &&
+        identifiant['password'] == password)) {
+      return 'eleve';
     }
-    return false;
+    if (listeIdentifiantsProfs.any((identifiant) =>
+    identifiant['username'] == username &&
+        identifiant['password'] == password)) {
+      return 'prof';
+    }
+    if (listeIdentifiantsSuperUsers.any((identifiant) =>
+    identifiant['username'] == username &&
+        identifiant['password'] == password)) {
+      return 'super_user';
+    }
+    return null;
   }
 
   void tryLogin() {
     String username = _username;
     String password = _password;
-    if (isLoginValid(username, password)) {
+    String? userType = getUserType(username, password);
+    if (userType != null) {
       // ici, naviguez vers la page d'accueil et affichez un message de bienvenue
-      Navigator.of(context).pushNamed('/eleve');
+      Navigator.of(context).pushNamed('/$userType');
       // Mis à jour pour définir l'état d'authentification
       Provider.of<AuthState>(context, listen: false).setAuthenticationStatus(true);
       ScaffoldMessenger.of(context).showSnackBar(

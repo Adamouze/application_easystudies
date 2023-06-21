@@ -1,7 +1,7 @@
 import 'package:EasyStudies/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'logs/auth_stat.dart';
+import '../logs/auth_stat.dart';
 
 class AnimatedDialog extends StatefulWidget {
   const AnimatedDialog({Key? key}) : super(key: key);

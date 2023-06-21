@@ -1,3 +1,4 @@
+import 'package:EasyStudies/screens/prof_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -6,12 +7,15 @@ import 'screens/app_bar.dart';
 import 'screens/bodies/body_home.dart';
 import 'screens/login_screen.dart';
 import 'screens/eleve_screen.dart';
+import 'screens/prof_screen.dart';
+import 'screens/super_user_screen.dart';
+
 
 import 'utilities/video_youtube.dart';
 import 'utilities/facebook_news.dart';
 import 'utilities/constantes.dart';
 
-import 'screens/logs/auth_stat.dart';
+import 'logs/auth_stat.dart';
 
 
 void main() {
@@ -64,8 +68,14 @@ class MyApp extends StatelessWidget {
             },
           );
         }
-        else if (settings.name == '/eleve') { // Ajout de la nouvelle route
+        else if (settings.name == '/eleve') {
           return MaterialPageRoute(builder: (_) => const EleveScreen());
+        }
+        else if (settings.name == '/prof') {
+          return MaterialPageRoute(builder: (_) => const ProfScreen());
+        }
+        else if (settings.name == '/super_user') {
+          return MaterialPageRoute(builder: (_) => const SuperUserScreen());
         }
         return null;
       },
