@@ -1,11 +1,14 @@
+// ignore_for_file: non_constant_identifier_names, library_private_types_in_public_api, depend_on_referenced_packages, use_build_context_synchronously
+
 import 'package:EasyStudies/screens/login_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../auth_stat.dart';
 
 class AnimatedDialog extends StatefulWidget {
   const AnimatedDialog({Key? key}) : super(key: key);
 
   @override
-  // ignore: library_private_types_in_public_api
   _AnimatedDialogState createState() => _AnimatedDialogState();
 }
 
@@ -19,7 +22,8 @@ class _AnimatedDialogState extends State<AnimatedDialog> with SingleTickerProvid
     _controller = AnimationController(
       duration: const Duration(seconds: 1),
       vsync: this,
-    )..forward();
+    )
+      ..forward();
     _offsetAnimation = Tween<Offset>(
       begin: const Offset(0.0, -1.0),
       end: Offset.zero,
@@ -27,12 +31,6 @@ class _AnimatedDialogState extends State<AnimatedDialog> with SingleTickerProvid
       parent: _controller,
       curve: Curves.easeInOut,
     ));
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _controller.dispose();
   }
 
   @override
@@ -56,7 +54,134 @@ class _AnimatedDialogState extends State<AnimatedDialog> with SingleTickerProvid
       ),
     );
   }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _controller.dispose();
+  }
 }
+
+class LogoutDialog extends StatefulWidget {
+  const LogoutDialog({super.key});
+
+  @override
+  _LogoutDialogState createState() => _LogoutDialogState();
+}
+
+class _LogoutDialogState extends State<LogoutDialog> with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+  late final Animation<Offset> _offsetAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(seconds: 1),
+      vsync: this,
+    )
+      ..forward();
+    _offsetAnimation = Tween<Offset>(
+      begin: const Offset(0.0, -1.0),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeInOut,
+    ));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SlideTransition(
+      position: _offsetAnimation,
+      child: AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20.0),
+          side: const BorderSide(color: Colors.white, width: 8),
+        ),
+        backgroundColor: Colors.orangeAccent,
+        title: const Text('Confirmation',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontFamily: 'NotoSans',
+          ),
+        ),
+        content: const Text('Voulez-vous vraiment vous déconnecter?',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontFamily: 'NotoSans',
+          ),
+        ),
+        actions: <Widget>[
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.orangeAccent,
+              borderRadius: BorderRadius.circular(20.0),
+              border: Border.all(color: Colors.white, width: 2),
+            ),
+            child: TextButton(
+              onPressed: () => Navigator.pop(context, 'Non'),
+              child: const Text('Non',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'NotoSans',
+                ),
+              ),
+            ),
+          ),
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.orangeAccent,
+              borderRadius: BorderRadius.circular(20.0),
+              border: Border.all(color: Colors.white, width: 2),
+            ),
+            child: TextButton(
+              onPressed: () {
+                // Vous pouvez faire la déconnexion ici
+                Provider.of<AuthState>(context, listen: false).logout();
+                Navigator.of(context).pushNamed('/home');
+                // Show the snackbar
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(10),
+                        topRight: Radius.circular(10),
+                      ),
+                    ),
+                    backgroundColor: Colors.redAccent,
+                    content: Text('Déconnecté',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontFamily: 'NotoSans',
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                );
+              },
+              child: const Text('Oui',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'NotoSans',
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+
+
+
 
 
 
@@ -70,6 +195,7 @@ class CustomAppBar extends PreferredSize {
     key: key,
     preferredSize: const Size.fromHeight(80.0),
     child: AppBar(
+      automaticallyImplyLeading: false,
       toolbarHeight: 80.0,
       backgroundColor: color,
       title: Row(
@@ -132,33 +258,105 @@ class CustomAppBar extends PreferredSize {
 
           const Spacer(flex: 1),
 
-          SizedBox(
-            width: 50,
-            height: 50,
-            child: ElevatedButton(
-              onPressed: () {
-                showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return const AnimatedDialog();
-                    },
-                );
-              },
-              style: ElevatedButton.styleFrom(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(150),
-                ),
-                padding: const EdgeInsets.all(3),
-              ),
-              child: const FittedBox(
-                child: Icon(
-                  Icons.account_circle_rounded,
-                  size: 50,
+          Consumer<AuthState>(
+            builder: (context, authState, _) {
+              if (authState.isAuthenticated) {
+                return PopupMenuButton<int>(
                   color: Colors.orangeAccent,
-                ),
-              ),
-            ),
+                  itemBuilder: (context) => [
+                    const PopupMenuItem(
+                      value: 1,
+                      child: Row(
+                        children: [
+                          IconTheme(
+                            data: IconThemeData(color: Colors.white),
+                            child: Icon(Icons.brightness_3_rounded), // Icone de lune pour le dark mode
+                          ),
+                          DefaultTextStyle(
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: 'NotoSans',
+                            ),
+                            child: Text('DarkMode'),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const PopupMenuItem(
+                      value: 2,
+                      child: Row(
+                        children: [
+                          IconTheme(
+                            data: IconThemeData(color: Colors.white),
+                            child: Icon(Icons.logout), // Icone pour le logout
+                          ),
+                          DefaultTextStyle(
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: 'NotoSans',
+                            ),
+                            child: Text('Déconnexion'),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                  onSelected: (value) {
+                    if (value == 2) { // si l'utilisateur a cliqué sur le bouton de déconnexion
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return const LogoutDialog();
+                        },
+                      );
+                    }
+                  },
+                  icon: const Icon(
+                    Icons.settings,
+                    color: Colors.white,
+                    size: 45,
+                  ),
+                );
+              }
+
+
+              else {
+                return SizedBox(
+                  width: 50,
+                  height: 50,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return const AnimatedDialog();
+                        },
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(150),
+                      ),
+                      padding: const EdgeInsets.all(3),
+                    ),
+                    child: const FittedBox(
+                      child: Icon(
+                        Icons.account_circle_rounded,
+                        size: 50,
+                        color: Colors.orangeAccent,
+                      ),
+                    ),
+                  ),
+                );
+              }
+            },
           ),
+
+
+
+
         ],
       ),
     ),
