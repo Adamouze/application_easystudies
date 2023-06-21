@@ -7,7 +7,6 @@ import 'screens/app_bar.dart';
 import 'screens/bodies/body_home.dart';
 import 'screens/login_screen.dart';
 import 'screens/eleve_screen.dart';
-import 'screens/prof_screen.dart';
 import 'screens/super_user_screen.dart';
 
 
