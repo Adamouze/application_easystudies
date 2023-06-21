@@ -64,42 +64,74 @@ class FancyFabState extends State<FancyFab> with SingleTickerProviderStateMixin 
     isOpened = !isOpened;
   }
 
-  Widget scan() {
+  Widget notes() {
     return FloatingActionButton(
       backgroundColor: Colors.blue,
       onPressed: () {
       },
       heroTag: 1,
-      tooltip: 'Scan',
+      tooltip: 'Notes',
       shape: const CircleBorder(),
       child: Icon(
-        Icons.center_focus_weak,
+        Icons.gpp_good_outlined,
         color: widget.iconColor,
       ),
     );
   }
 
-  Widget message() {
+  Widget bilan() {
     return FloatingActionButton(
       backgroundColor: Colors.blue,
       onPressed: () {
       },
       heroTag: 2,
-      tooltip: 'SMS',
+      tooltip: 'Bilan',
       shape: const CircleBorder(),
       child: Icon(
-        Icons.sms,
+        Icons.fact_check,
+        color: widget.iconColor,
+      ),
+    );
+  }
+
+  Widget commentaire() {
+    return FloatingActionButton(
+      backgroundColor: Colors.blue,
+      onPressed: () {
+      },
+      heroTag: 3,
+      tooltip: 'Commentaires',
+      shape: const CircleBorder(),
+      child: Icon(
+        Icons.comment,
         color: widget.iconColor,
       ),
 
     );
   }
 
+/*
+  Widget qrcode() {
+    return FloatingActionButton(
+      backgroundColor: Colors.blue,
+      onPressed: () {
+      },
+      heroTag: 4,
+      tooltip: 'QR Code',
+      shape: const CircleBorder(),
+      child: Icon(
+        Icons.qr_code_sharp,
+        color: widget.iconColor,
+      ),
+    );
+  }
+*/
+
   Widget toggle() {
     return FloatingActionButton(
       backgroundColor: _buttonColor.value,
       onPressed: animate,
-      heroTag: 3,
+      heroTag: 0,
       tooltip: 'Toggle',
       shape: const CircleBorder(),
       child: AnimatedIcon(
@@ -116,17 +148,25 @@ class FancyFabState extends State<FancyFab> with SingleTickerProviderStateMixin 
     return Align(
       alignment: Alignment.bottomRight,
       child: Padding(
-        padding: const EdgeInsets.only(bottom: 16.0, right: 16.0), // Espacement du bouton par rapport aux bords
+        padding: const EdgeInsets.only(bottom: 0.0, right: 0.0), // Espacement du bouton par rapport aux bords
         child: Column(
           mainAxisAlignment: MainAxisAlignment.end,
           children: <Widget>[
             Transform(
               transform: Matrix4.translationValues(
                 0.0,
+                _translateButton.value * 3.0,
+                0.0,
+              ),
+              child: notes(),
+            ),
+            Transform(
+              transform: Matrix4.translationValues(
+                0.0,
                 _translateButton.value * 2.0,
                 0.0,
               ),
-              child: scan(),
+              child: bilan(),
             ),
             Transform(
               transform: Matrix4.translationValues(
@@ -134,7 +174,7 @@ class FancyFabState extends State<FancyFab> with SingleTickerProviderStateMixin 
                 _translateButton.value,
                 0.0,
               ),
-              child: message(),
+              child: commentaire(),
             ),
             toggle(),
           ],
@@ -159,13 +199,46 @@ class EleveScreen extends StatelessWidget {
         children: <Widget>[
           CustomBodyEleve(),
           Positioned(
-            right: 0.0,
-            bottom: 0.0,
+            right: 16.0,
+            bottom: 16.0,
             child: FancyFab(
               onPressed: () {},
               tooltip: 'FancyFab',
               icon: Icons.menu,
-              iconColor: couleurIcone,// Remplacez par l'icône souhaitée.
+              iconColor: couleurIcone,
+            ),
+          ),
+          Positioned(
+            left: 16.0,
+            bottom: 16.0,
+            child: FloatingActionButton(
+              backgroundColor: orangePerso,
+              onPressed: () {},
+              tooltip: 'Historique',
+              heroTag: "leftBtn",
+              elevation: 6.0,
+              shape: const CircleBorder(),
+              child: const Icon(Icons.history, color: couleurIcone),
+            ),
+          ),
+          Positioned(
+            bottom: 26.0,
+            left: MediaQuery.of(context).size.width / 2 - 28, // for a FAB button of standard size (56.0)
+            child: Transform.scale(
+              scale: 1.4,
+              child: FloatingActionButton(
+                backgroundColor: Colors.blue,
+                onPressed: () {},
+                tooltip: 'QR Code',
+                heroTag: "centerBtn",
+                elevation: 6.0,
+                shape: const CircleBorder(),
+                child: const Icon(
+                    Icons.qr_code_2_sharp,
+                    color: couleurIcone,
+                    size: 32.0,
+                ),
+              ),
             ),
           ),
         ],
@@ -173,5 +246,6 @@ class EleveScreen extends StatelessWidget {
     );
   }
 }
+
 
 
