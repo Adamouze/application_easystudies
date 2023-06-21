@@ -1,9 +1,9 @@
 // ignore_for_file: library_private_types_in_public_api
 
 import 'package:flutter/material.dart';
-import 'liste_identifiant_test.dart';
+import '../liste_identifiant_test.dart';
 import 'package:provider/provider.dart';
-import 'auth_stat.dart';
+import '../auth_stat.dart';
 
 
 class LoginScreen extends StatefulWidget {

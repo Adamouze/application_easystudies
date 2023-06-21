@@ -1,9 +1,9 @@
 // ignore_for_file: non_constant_identifier_names, library_private_types_in_public_api, depend_on_referenced_packages, use_build_context_synchronously
 
-import 'package:EasyStudies/login_screen.dart';
+import 'package:EasyStudies/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'auth_stat.dart';
+import '../auth_stat.dart';
 
 class AnimatedDialog extends StatefulWidget {
   const AnimatedDialog({Key? key}) : super(key: key);

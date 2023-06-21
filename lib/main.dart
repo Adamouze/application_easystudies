@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'splash_screen.dart';
-import 'video_youtube.dart';
-import 'facebook_news.dart';
-import 'app_bar.dart';
-import 'body.dart';
-import 'login_screen.dart';
+import 'screens/splash_screen.dart';
+import 'utilities/video_youtube.dart';
+import 'utilities/facebook_news.dart';
+import 'screens/app_bar.dart';
+import 'screens/bodies/body_home.dart';
+import 'screens/login_screen.dart';
 import 'auth_stat.dart';
 
 void main() {
