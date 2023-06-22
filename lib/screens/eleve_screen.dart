@@ -73,7 +73,7 @@ class FancyFabState extends State<FancyFab> with SingleTickerProviderStateMixin 
       tooltip: 'Notes',
       shape: const CircleBorder(),
       child: Icon(
-        Icons.gpp_good_outlined,
+        Icons.check_circle,
         color: widget.iconColor,
       ),
     );
