@@ -11,7 +11,7 @@ import 'utilities/video_youtube.dart';
 import 'utilities/facebook_news.dart';
 import 'utilities/constantes.dart';
 
-import 'screens/logs/auth_stat.dart';
+import 'logs/auth_stat.dart';
 
 
 void main() {

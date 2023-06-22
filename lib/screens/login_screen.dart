@@ -3,8 +3,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'logs/liste_identifiant_test.dart';
-import 'logs/auth_stat.dart';
+import '../logs/liste_identifiant_test.dart';
+import '../logs/auth_stat.dart';
 
 
 /*
