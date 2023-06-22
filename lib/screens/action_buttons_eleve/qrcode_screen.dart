@@ -11,22 +11,28 @@ class QRCodeScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: orangePerso,
       body: Center(
-        child: Container(
-          width: 300,
-          height: 300,
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            shape: BoxShape.circle,
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: QrImageView(
-              data: 'https://www.youtube.com/watch?v=ZZ5LpwO-An4&list=PLDLnJA_LGxsJjv9-9ZmQtuOr5YuqK1ah6',
-              version: QrVersions.auto,
-              size: 100.0,
-            ),
-          ),
+        child: LayoutBuilder(
+          builder: (BuildContext context, BoxConstraints constraints) {
+            double diameter = MediaQuery.of(context).size.width * 0.9;
+            return Container(
+              width: diameter,
+              height: diameter,
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                shape: BoxShape.circle,
+              ),
+              child: Padding(
+                padding: EdgeInsets.all(diameter * 0.15),
+                child: QrImageView(
+                  data: 'https://www.youtube.com/watch?v=ZZ5LpwO-An4&list=PLDLnJA_LGxsJjv9-9ZmQtuOr5YuqK1ah6',
+                  version: QrVersions.auto,
+                  size: diameter * 0.7,
+                ),
+              ),
+            );
+          },
         ),
+
       ),
     );
   }
