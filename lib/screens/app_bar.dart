@@ -1,7 +1,9 @@
 import 'package:EasyStudies/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import '../logs/auth_stat.dart';
+import '../utilities/theme_provider.dart';
 
 class AnimatedDialog extends StatefulWidget {
   const AnimatedDialog({Key? key}) : super(key: key);
@@ -176,11 +178,6 @@ class LogoutDialogState extends State<LogoutDialog> with SingleTickerProviderSta
 }
 
 
-
-
-
-
-
 class CustomAppBar extends PreferredSize {
   final String title;
   final MaterialAccentColor color;
@@ -260,44 +257,66 @@ class CustomAppBar extends PreferredSize {
                 return PopupMenuButton<int>(
                   color: Colors.orangeAccent,
                   itemBuilder: (context) => [
-                    const PopupMenuItem(
+                    PopupMenuItem(
                       value: 1,
-                      child: Row(
-                        children: [
-                          IconTheme(
-                            data: IconThemeData(color: Colors.white),
-                            child: Icon(Icons.brightness_3_rounded), // Icone de lune pour le dark mode
-                          ),
-                          DefaultTextStyle(
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontFamily: 'NotoSans',
+                      child: Builder(
+                        builder: (newContext) {
+                          final themeProvider = Provider.of<ThemeProvider>(newContext, listen: false);
+                          return GestureDetector(
+                            onTap: () {
+                              themeProvider.toggleTheme();
+                              Navigator.pop(context);
+                            },
+                            child: Row(
+                              children: [
+                                IconTheme(
+                                  data: IconThemeData(
+                                      color: themeProvider.isDarkTheme ? Colors.black : Colors.white),
+                                  child: Icon(
+                                    themeProvider.isDarkTheme ? Icons.brightness_7_sharp : Icons.brightness_3_rounded,
+                                  ),
+                                ),
+                                DefaultTextStyle(
+                                  style: TextStyle(
+                                    color: themeProvider.isDarkTheme ? Colors.black : Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: 'NotoSans',
+                                  ),
+                                  child: Text(themeProvider.isDarkTheme ? 'Mode Clair' : 'Mode Sombre'),
+                                ),
+                              ],
                             ),
-                            child: Text('DarkMode'),
-                          ),
-                        ],
+                          );
+                        },
                       ),
                     ),
-                    const PopupMenuItem(
+
+                    PopupMenuItem(
                       value: 2,
-                      child: Row(
-                        children: [
-                          IconTheme(
-                            data: IconThemeData(color: Colors.white),
-                            child: Icon(Icons.logout), // Icone pour le logout
-                          ),
-                          DefaultTextStyle(
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontFamily: 'NotoSans',
-                            ),
-                            child: Text('Déconnexion'),
-                          ),
-                        ],
+                      child: Builder(
+                        builder: (newContext) {
+                          final themeProvider = Provider.of<ThemeProvider>(newContext, listen: false);
+                          return Row(
+                            children: [
+                              IconTheme(
+                                data: IconThemeData(
+                                    color: themeProvider.isDarkTheme ? Colors.black : Colors.white),
+                                child: const Icon(Icons.logout), // Icone pour le logout
+                              ),
+                              Text(
+                                'Déconnexion',
+                                style: TextStyle(
+                                  color: themeProvider.isDarkTheme ? Colors.black : Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: 'NotoSans',
+                                ),
+                              ),
+                            ],
+                          );
+                        },
                       ),
                     ),
+
                   ],
                   onSelected: (value) {
                     if (value == 2) { // si l'utilisateur a cliqué sur le bouton de déconnexion
@@ -349,10 +368,6 @@ class CustomAppBar extends PreferredSize {
               }
             },
           ),
-
-
-
-
         ],
       ),
     ),

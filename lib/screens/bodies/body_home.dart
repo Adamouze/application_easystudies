@@ -153,7 +153,7 @@ class CustomBody extends StatelessWidget {
                                 height: 300,
                                 child: PageView.builder(
                                   controller: pageController,
-                                  itemCount: videoDetails.length * 100000,
+                                  itemCount: videoDetails.length * 10,
                                   itemBuilder: (context, index) {
                                     final videoDetail = videoDetails[index % videoDetails.length];
                                     return GestureDetector(
@@ -259,8 +259,6 @@ class CustomBody extends StatelessWidget {
                 ],
               ),
             ),
-
-
 
             const SizedBox(height: 16),
 
