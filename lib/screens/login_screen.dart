@@ -153,12 +153,10 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
               fontWeight: FontWeight.bold,
             ),
           ),
-          duration: const Duration(seconds: 3),
         ),
       );
     }
   }
-
 
   late AnimationController _controller;
   late Animation<Offset> _offsetAnimation;

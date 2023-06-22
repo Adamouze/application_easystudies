@@ -157,6 +157,7 @@ class LogoutDialogState extends State<LogoutDialog> with SingleTickerProviderSta
                         fontWeight: FontWeight.bold,
                       ),
                     ),
+                    duration: Duration(seconds: 2),
                   ),
                 );
               },
