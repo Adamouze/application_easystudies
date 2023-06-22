@@ -17,10 +17,23 @@ class VideoDetail {
 
 
 class YoutubeService {
+  List<VideoDetail>? _cachedVideos;
+  static final YoutubeService _singleton = YoutubeService._internal();
+
+  factory YoutubeService() {
+    return _singleton;
+  }
+
+  YoutubeService._internal();
+
   Future<List<VideoDetail>> fetchAllVideoDetails() async {
+    if (_cachedVideos != null) {
+      return _cachedVideos!;
+    }
+
     const String channelId = 'UCm19VoVNI76RHqpaRbS1kgw';
     const String apiKey = 'AIzaSyD1E2sQsSIXbFMJpYUnHEpR8LwHnigjhHA';
-    const int maxResults = 3; // Choisissez le nombre maximum de vidéos que vous voulez récupérer
+    const int maxResults = 3;
 
     final response = await http.get(Uri.parse(
         'https://www.googleapis.com/youtube/v3/search?order=date&part=snippet&channelId=$channelId&maxResults=$maxResults&key=$apiKey'));
@@ -31,24 +44,24 @@ class YoutubeService {
       List<VideoDetail> videoDetails = [];
 
       for (var data in jsonData) {
-        // Vérifier si 'videoId' existe dans 'id'
         if (data['id'].containsKey('videoId')) {
           String thumbnailUrl = data['snippet']['thumbnails']['medium']['url'] ?? '';
           String title = data['snippet']['title'] ?? '';
           String description = data['snippet']['description'] ?? '';
           String videoId = data['id']['videoId'] ?? '';
 
-          videoDetails.add(
-              VideoDetail(thumbnailUrl, title, description, videoId));
+          videoDetails.add(VideoDetail(thumbnailUrl, title, description, videoId));
         }
       }
 
+      _cachedVideos = videoDetails;
       return videoDetails;
     } else {
       throw Exception('Failed to load video');
     }
   }
 }
+
 
 
 

@@ -121,6 +121,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
               fontWeight: FontWeight.bold,
             ),
           ),
+          duration: const Duration(seconds: 2),
         ),
       );
     } else {
@@ -141,6 +142,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
               fontWeight: FontWeight.bold,
             ),
           ),
+          duration: const Duration(seconds: 3),
         ),
       );
     }

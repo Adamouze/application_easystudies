@@ -17,16 +17,16 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
   @override
   void initState() {
     super.initState();
-    fadeController = AnimationController(vsync: this, duration: const Duration(seconds: 5));
+    fadeController = AnimationController(vsync: this, duration: const Duration(seconds: 3));
     fadeAnimation = CurvedAnimation(parent: fadeController, curve: Curves.easeIn);
 
-    scaleController = AnimationController(vsync: this, duration: const Duration(seconds: 4));
+    scaleController = AnimationController(vsync: this, duration: const Duration(seconds: 2));
     scaleAnimation = CurvedAnimation(parent: scaleController, curve: Curves.easeIn);
 
     fadeController.forward();
     scaleController.forward();
 
-    Future.delayed(const Duration(seconds: 6), () {
+    Future.delayed(const Duration(seconds: 3), () {
       Navigator.pushReplacementNamed(context, '/home');
     });
 
