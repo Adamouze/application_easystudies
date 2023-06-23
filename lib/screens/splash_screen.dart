@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../logs/auth_stat.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -27,7 +29,8 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
     scaleController.forward();
 
     Future.delayed(const Duration(seconds: 3), () {
-      Navigator.pushReplacementNamed(context, '/home');
+      String userType = Provider.of<AuthState>(context, listen: false).userType ?? 'home';
+      Navigator.pushReplacementNamed(context, '/$userType');
     });
 
 

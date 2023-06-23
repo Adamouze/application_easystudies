@@ -114,7 +114,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
       // ici, naviguez vers la page d'accueil et affichez un message de bienvenue
       Navigator.of(context).pushNamed('/$userType');
       // Mis à jour pour définir l'état d'authentification
-      Provider.of<AuthState>(context, listen: false).setAuthenticationStatus(true);
+      Provider.of<AuthState>(context, listen: false).setAuthenticationStatus(true,userType);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           shape: const RoundedRectangleBorder(
