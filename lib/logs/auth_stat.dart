@@ -9,31 +9,34 @@ class AuthState with ChangeNotifier {
   String? get userType => _userType;
 
   AuthState() {
-    loadAuthenticationStatus();
+    loadInitialData();
   }
 
-  void loadAuthenticationStatus() async {
+  Future<void> loadInitialData() async {
     final prefs = await SharedPreferences.getInstance();
     _isAuthenticated = prefs.getBool('isAuthenticated') ?? false;
     _userType = prefs.getString('userType');
+    print('Loaded userType: $_userType');
     notifyListeners();
   }
+
 
   void setAuthenticationStatus(bool status, String userType) async {
     final prefs = await SharedPreferences.getInstance();
     _isAuthenticated = status;
-    prefs.setBool('isAuthenticated', status);
     _userType = userType;
+    prefs.setBool('isAuthenticated', status);
     prefs.setString('userType', userType);
+    print('Set userType: $userType');
     notifyListeners();
   }
 
   void logout() async {
     final prefs = await SharedPreferences.getInstance();
     _isAuthenticated = false;
+    _userType = 'home';
     prefs.setBool('isAuthenticated', false);
-    _userType = null;
-    prefs.remove('userType');
+    prefs.setString('userType', 'home');
     notifyListeners();
   }
 }

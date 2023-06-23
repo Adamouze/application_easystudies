@@ -110,6 +110,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
     String username = _username;
     String password = _password;
     String? userType = getUserType(username, password);
+    print('getUserType returned: $userType');
     if (userType != null) {
       // ici, naviguez vers la page d'accueil et affichez un message de bienvenue
       Navigator.of(context).pushNamed('/$userType');

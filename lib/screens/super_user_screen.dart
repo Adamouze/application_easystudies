@@ -1,3 +1,5 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'package:flutter/material.dart';
 import '../utilities/constantes.dart';
 import 'app_bar.dart';
@@ -184,59 +186,76 @@ class FancyFabState extends State<FancyFab> with SingleTickerProviderStateMixin 
   }
 }
 
-class SuperUserScreen extends StatelessWidget {
+class SuperUserScreen extends StatefulWidget {
   const SuperUserScreen({Key? key}) : super(key: key);
 
   @override
+  _SuperUserScreenState createState() => _SuperUserScreenState();
+}
+
+class _SuperUserScreenState extends State<SuperUserScreen> {
+
+  Future<bool> _onWillPop() async {
+    return (await showDialog(
+      context: context,
+      builder: (context) => const LogoutDialog(),
+    )) ?? false;
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CustomAppBar(title: 'Super utilisateur', color: orangePerso, context: context),
-      body: Stack(
-        children: <Widget>[
-          CustomBody(userType: "super_user"),
-          Positioned(
-            right: 16.0,
-            bottom: 16.0,
-            child: FancyFab(
-              onPressed: () {},
-              tooltip: 'FancyFab',
-              icon: Icons.menu,
-              iconColor: couleurIcone,
-            ),
-          ),
-          Positioned(
-            left: 16.0,
-            bottom: 16.0,
-            child: FloatingActionButton(
-              backgroundColor: orangePerso,
-              onPressed: () {},
-              tooltip: 'Historique',
-              elevation: 6.0,
-              shape: const CircleBorder(),
-              child: const Icon(Icons.history, color: couleurIcone),
-            ),
-          ),
-          Positioned(
-            bottom: 26.0,
-            left: MediaQuery.of(context).size.width / 2 - 28, // for a FAB button of standard size (56.0)
-            child: Transform.scale(
-              scale: 1.4,
-              child: FloatingActionButton(
-                backgroundColor: Colors.blue,
+    return WillPopScope(
+      onWillPop: _onWillPop,
+      child: Scaffold(
+        appBar: CustomAppBar(title: 'Super utilisateur', color: orangePerso, context: context),
+        body: Stack(
+          children: <Widget>[
+            CustomBody(userType: "super_user"),
+            Positioned(
+              right: 16.0,
+              bottom: 16.0,
+              child: FancyFab(
                 onPressed: () {},
-                tooltip: 'QR Code',
+                tooltip: 'FancyFab',
+                icon: Icons.menu,
+                iconColor: couleurIcone,
+              ),
+            ),
+            Positioned(
+              left: 16.0,
+              bottom: 16.0,
+              child: FloatingActionButton(
+                backgroundColor: orangePerso,
+                onPressed: () {},
+                tooltip: 'Historique',
                 elevation: 6.0,
                 shape: const CircleBorder(),
-                child: const Icon(
-                  Icons.qr_code_2_sharp,
-                  color: couleurIcone,
-                  size: 32.0,
+                child: const Icon(Icons.history, color: couleurIcone),
+              ),
+            ),
+            Positioned(
+              bottom: 26.0,
+              left: MediaQuery.of(context).size.width / 2 - 28, // for a FAB button of standard size (56.0)
+              child: Transform.scale(
+                scale: 1.4,
+                child: FloatingActionButton(
+                  backgroundColor: Colors.blue,
+                  onPressed: () {},
+                  tooltip: 'QR Code',
+                  elevation: 6.0,
+                  shape: const CircleBorder(),
+                  child: const Icon(
+                    Icons.qr_code_2_sharp,
+                    color: couleurIcone,
+                    size: 32.0,
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 }
+

@@ -1,60 +1,71 @@
-// ignore_for_file: deprecated_member_use, constant_identifier_names, non_constant_identifier_names, duplicate_ignore
+// ignore_for_file: deprecated_member_use, constant_identifier_names, non_constant_identifier_names, duplicate_ignore, library_private_types_in_public_api
 
 import 'package:flutter/material.dart';
 import '../utilities/video_youtube.dart';
 import '../utilities/facebook_news.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class CustomBody extends StatelessWidget {
-  CustomBody({this.userType = "default", Key? key,}) : super(key: key);
+class CustomBody extends StatefulWidget {
+  const CustomBody({this.userType = "default", Key? key,}) : super(key: key);
 
   final String userType;
+
+  @override
+  _CustomBodyState createState() => _CustomBodyState();
+}
+
+class _CustomBodyState extends State<CustomBody> {
   final facebookService = FacebookService();
   final youtubeService = YoutubeService();
 
   static const String _url_facebook = 'https://www.facebook.com/easystudies';
   static const String _url_tel = 'tel:0664021773';
   final Uri _url_mail = Uri(scheme: 'mailto', path: 'easystudies@outlook.fr',);
-  //ignore: non_constant_identifier_names
+
   void _launchURL(String url) async {
-    if (!await launch(url)) throw 'Could not launch $_url_facebook';
+    if (!await canLaunch(url)) throw 'Could not launch $_url_facebook';
+    await launch(url);
   }
+
   void _launchmail(Uri url) async {
-    if(await canLaunchUrl(url)){
-      launchUrl(url);
-    }
-    else {
-      throw Exception('Could not launch $url');
+    final String urlString = url.toString();
+    if(await canLaunch(urlString)){
+      await launch(urlString);
+    } else {
+      throw 'Could not launch $urlString';
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context); // Accéder au ThemeData actuel
+    final theme = Theme.of(context);
 
-    return Align(
-      alignment: Alignment.topCenter,
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const SizedBox(height: 20),
+    return WillPopScope(
+        onWillPop: () async {
+          return false;
+    },
+    child: Align(
+    alignment: Alignment.topCenter,
+    child: SingleChildScrollView(
+    child: Column(
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: <Widget>[
+    const SizedBox(height: 20),
 
-            // Ici, nous utilisons la propriété userType pour afficher conditionnellement différents widgets.
-            if (userType == "eleve") ...[
-              Text(
-                "Vous êtes un élève !",
-                style: TextStyle(
-                  color: Theme.of(context).textTheme.bodyText1?.color,
-                )
-              ),
-            ] else if (userType == "prof") ...[
-              const Text("Vous êtes un professeur!"),
-            ] else if (userType == "super_user") ...[
-              const Text("Vous êtes un super utilisateur!"),
-            ],
+    if (widget.userType == "eleve") ...[
+    Text(
+    "Vous êtes un élève !",
+    style: TextStyle(
+    color: Theme.of(context).textTheme.bodyText1?.color,
+    ),
+    ),
+    ] else if (widget.userType == "prof") ...[
+    const Text("Vous êtes un professeur!"),
+    ] else if (widget.userType == "super_user") ...[
+    const Text("Vous êtes un super utilisateur!"),
+    ],
 
-            const SizedBox(height: 20),
+    const SizedBox(height: 20),
 
             FractionallySizedBox(
               widthFactor: 0.95,
@@ -366,6 +377,7 @@ class CustomBody extends StatelessWidget {
           ],
         ),
       ),
+    ),
     );
   }
 }

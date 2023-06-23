@@ -202,84 +202,95 @@ class EleveScreen extends StatefulWidget {
 class EleveScreenState extends State<EleveScreen> {
   final ValueNotifier<bool> _isFancyFabOpen = ValueNotifier<bool>(false);
 
+  Future<bool> _onWillPop() async {
+    return (await showDialog(
+      context: context,
+      builder: (context) => const LogoutDialog(),
+    )) ?? false;
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CustomAppBar(title: 'Eleve', color: orangePerso, context: context),
-      body: Stack(
-        children: <Widget>[
-          CustomBody(userType: "eleve"),
-          ValueListenableBuilder<bool>(
-            valueListenable: _isFancyFabOpen,
-            builder: (BuildContext context, bool isOpened, Widget? child) {
-              if (isOpened) {
-                return const ModalBarrier(dismissible: false, color: Colors.transparent);
-              } else {
-                return const SizedBox.shrink();
-              }
-            },
-          ),
-          Positioned(
-            right: 16.0,
-            bottom: 16.0,
-            child: FancyFab(
-              onPressed: () {
-                setState(() {
-                  _isFancyFabOpen.value = !_isFancyFabOpen.value;
-                });
+    return WillPopScope(
+      onWillPop: _onWillPop,
+      child: Scaffold(
+        appBar: CustomAppBar(title: 'Eleve', color: orangePerso, context: context),
+        body: Stack(
+          children: <Widget>[
+            CustomBody(userType: "eleve"),
+            ValueListenableBuilder<bool>(
+              valueListenable: _isFancyFabOpen,
+              builder: (BuildContext context, bool isOpened, Widget? child) {
+                if (isOpened) {
+                  return const ModalBarrier(dismissible: false, color: Colors.transparent);
+                } else {
+                  return const SizedBox.shrink();
+                }
               },
-              tooltip: 'Menu',
-              icon: Icons.menu,
-              iconColor: couleurIcone,
-              isOpened: _isFancyFabOpen,
             ),
-          ),
-          Positioned(
-            left: 16.0,
-            bottom: 16.0,
-            child: FloatingActionButton(
-              backgroundColor: orangePerso,
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const HistoryScreen()),
-                );
-              },
-              tooltip: 'Historique',
-              elevation: 6.0,
-              shape: const CircleBorder(),
-              child: const Icon(Icons.history, color: couleurIcone),
+            Positioned(
+              right: 16.0,
+              bottom: 16.0,
+              child: FancyFab(
+                onPressed: () {
+                  setState(() {
+                    _isFancyFabOpen.value = !_isFancyFabOpen.value;
+                  });
+                },
+                tooltip: 'Menu',
+                icon: Icons.menu,
+                iconColor: couleurIcone,
+                isOpened: _isFancyFabOpen,
+              ),
             ),
-          ),
-          Positioned(
-            bottom: 26.0,
-            left: MediaQuery.of(context).size.width / 2 - 28, // for a FAB button of standard size (56.0)
-            child: Transform.scale(
-              scale: 1.4,
+            Positioned(
+              left: 16.0,
+              bottom: 16.0,
               child: FloatingActionButton(
-                backgroundColor: Colors.blue,
+                backgroundColor: orangePerso,
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const QRCodeScreen()),
+                    MaterialPageRoute(builder: (context) => const HistoryScreen()),
                   );
                 },
-                tooltip: 'QR Code',
+                tooltip: 'Historique',
                 elevation: 6.0,
                 shape: const CircleBorder(),
-                child: const Icon(
-                  Icons.qr_code_2_sharp,
-                  color: couleurIcone,
-                  size: 32.0,
+                child: const Icon(Icons.history, color: couleurIcone),
+              ),
+            ),
+            Positioned(
+              bottom: 26.0,
+              left: MediaQuery.of(context).size.width / 2 - 28, // for a FAB button of standard size (56.0)
+              child: Transform.scale(
+                scale: 1.4,
+                child: FloatingActionButton(
+                  backgroundColor: Colors.blue,
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const QRCodeScreen()),
+                    );
+                  },
+                  tooltip: 'QR Code',
+                  elevation: 6.0,
+                  shape: const CircleBorder(),
+                  child: const Icon(
+                    Icons.qr_code_2_sharp,
+                    color: couleurIcone,
+                    size: 32.0,
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 }
+
 
 
 

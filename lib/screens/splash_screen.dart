@@ -28,13 +28,15 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
     fadeController.forward();
     scaleController.forward();
 
-    Future.delayed(const Duration(seconds: 3), () {
+    Provider.of<AuthState>(context, listen: false)
+        .loadInitialData()
+        .then((_) {
       String userType = Provider.of<AuthState>(context, listen: false).userType ?? 'home';
+      print('/$userType');
       Navigator.pushReplacementNamed(context, '/$userType');
     });
-
-
   }
+
 
   @override
   void dispose() {
