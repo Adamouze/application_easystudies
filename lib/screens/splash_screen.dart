@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../logs/auth_stat.dart';
@@ -30,7 +32,8 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
 
     Provider.of<AuthState>(context, listen: false)
         .loadInitialData()
-        .then((_) {
+        .then((_) async {
+      await Future.delayed(const Duration(seconds: 3));  // ajout d'un délai de 3 secondes
       String userType = Provider.of<AuthState>(context, listen: false).userType ?? 'home';
       print('/$userType');
       Navigator.pushReplacementNamed(context, '/$userType');

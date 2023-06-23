@@ -1,9 +1,105 @@
 // ignore_for_file: deprecated_member_use, constant_identifier_names, non_constant_identifier_names, duplicate_ignore, library_private_types_in_public_api
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../utilities/video_youtube.dart';
 import '../utilities/facebook_news.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+
+class QuitDialog extends StatefulWidget {
+  const QuitDialog({Key? key}) : super(key: key);
+
+  @override
+  QuitDialogState createState() => QuitDialogState();
+}
+
+class QuitDialogState extends State<QuitDialog> with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+  late final Animation<Offset> _offsetAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(seconds: 1),
+      vsync: this,
+    )
+      ..forward();
+    _offsetAnimation = Tween<Offset>(
+      begin: const Offset(0.0, -1.0),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeInOut,
+    ));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SlideTransition(
+      position: _offsetAnimation,
+      child: AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20.0),
+          side: const BorderSide(color: Colors.white, width: 8),
+        ),
+        backgroundColor: Colors.orangeAccent,
+        title: const Text('Confirmation',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontFamily: 'NotoSans',
+          ),
+        ),
+        content: const Text('Voulez-vous vraiment quitter l\'application ?',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontFamily: 'NotoSans',
+          ),
+        ),
+        actions: <Widget>[
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(20.0),
+            ),
+            child: TextButton(
+              onPressed: () => Navigator.pop(context, 'Non'),
+              child: const Text('Non',
+                style: TextStyle(
+                  color: Colors.orangeAccent,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'NotoSans',
+                ),
+              ),
+            ),
+          ),
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(20.0),
+            ),
+            child: TextButton(
+              onPressed: () {
+                SystemNavigator.pop();
+              },
+              child: const Text('Oui',
+                style: TextStyle(
+                  color: Colors.orangeAccent,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'NotoSans',
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 
 class CustomBody extends StatefulWidget {
   const CustomBody({this.userType = "default", Key? key,}) : super(key: key);
@@ -36,14 +132,19 @@ class _CustomBodyState extends State<CustomBody> {
     }
   }
 
+  Future<bool> _onWillPop() async {
+    return (await showDialog(
+      context: context,
+      builder: (context) => const QuitDialog(),
+    )) ?? false;
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
     return WillPopScope(
-        onWillPop: () async {
-          return false;
-    },
+      onWillPop: _onWillPop,
     child: Align(
     alignment: Alignment.topCenter,
     child: SingleChildScrollView(

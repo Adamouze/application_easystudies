@@ -107,7 +107,7 @@ class LogoutDialogState extends State<LogoutDialog> with SingleTickerProviderSta
             fontFamily: 'NotoSans',
           ),
         ),
-        content: const Text('Voulez-vous vraiment vous déconnecter?',
+        content: const Text('Voulez-vous vraiment vous déconnecter ?',
           style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,
