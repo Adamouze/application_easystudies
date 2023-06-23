@@ -4,7 +4,7 @@ import 'dart:convert';
 class FacebookService {
   Future<String?> fetchLatestNewsData() async {
     const String pageId = '1004307882934421'; // Remplacer par l'ID de votre page
-    const String accessToken = 'EAAOIk6MidKgBAL7IxQs2WUxBxMkcpeTUXddayOopKSJDEqt1D3PJOF6Mgjg0RVr0xLtDDstRo5oc3GL5ngGjH7ZCwl9HHfIS7URNOijZAxkXxH05KM8cjedfJPjQ4lZCVH2e5rYZBntKvUk29wmMsVfo5ZAT17PWzbYoZBoNgkQ9VDnmoh4bbUBHIV3jCtBMDPYFdVfHZAPz9pYyMOEwG58dEPLOyWDIzkeiTZCTjI6NEwPTtDTCCKjt'; // Remplacer par votre jeton d'accès
+    const String accessToken = 'EAAOIk6MidKgBAIZCChiRTONAtfLLvafMJ8mggsTZAi0pwAcZC6BtVWoCDmWVSUpZADdEoUj8houItqzSvsRclZBXZCnzZCW9QUFe3OZCivZBO6EJvqEr7nsYrG7dcyV6nRlpORZCA7edrBG3jUzMBuPZABuV5EbqdQq7k4jKhFuJ5ZCnWOJuYoLID8Uej3NFhWhMZBJpnAnBe4tYQ3mz6j9YbD2SYpatJtTRle6PI67HbVMyzLI0Wsl7jpwqu'; // Remplacer par votre jeton d'accès
     final url = Uri.parse('https://graph.facebook.com/$pageId/feed?access_token=$accessToken');
     final response = await http.get(url);
 

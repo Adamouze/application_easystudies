@@ -194,15 +194,15 @@ class CustomAppBar extends PreferredSize {
       title: Row(
         children: [
           SizedBox(
-            width: 70,
-            height: 80,
+            width: 65,
+            height: 65,
             child: Stack(
               children: [
                 Positioned(
-                  top: 5, // adjust this to move logo vertically
+                  bottom: 3, // adjust this to move logo vertically
                   child: Container(
-                    width: 70,
-                    height: 70,
+                    width: 60,
+                    height: 60,
                     decoration: const BoxDecoration(
                       shape: BoxShape.circle,
                       color: Colors.white,
@@ -210,16 +210,16 @@ class CustomAppBar extends PreferredSize {
                   ),
                 ),
                 Positioned(
-                  top: 5, // match this with Container's top
+                  bottom: 3, // match this with Container's top
                   child: Container(
-                    width: 70,
-                    height: 70,
+                    width: 60,
+                    height: 60,
                     decoration: const BoxDecoration(
                       shape: BoxShape.circle,
                       color: Colors.transparent,
                     ),
                     child: ClipRRect(
-                      borderRadius: BorderRadius.circular(150), // n'importe quoi > 35
+                      borderRadius: BorderRadius.circular(120), // n'importe quoi > 35
                       child: Image.asset(
                         'assets/images/logo.png',
                         fit: BoxFit.contain,
@@ -328,18 +328,43 @@ class CustomAppBar extends PreferredSize {
                       );
                     }
                   },
-                  icon: const Icon(
-                    Icons.settings,
+                  child: Card(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
                     color: Colors.white,
-                    size: 45,
+                    child: const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.settings,
+                            color: Colors.orangeAccent,
+                            size: 40,
+                          ),
+                          Text(
+                            'Paramètres',
+                            style: TextStyle(
+                              color: Colors.orangeAccent,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                 );
+
+
+
               }
 
 
               else {
                 return SizedBox(
-                  width: 50,
+                  width: 115,  // Augmentez la largeur pour tenir le bouton et le texte
                   height: 50,
                   child: ElevatedButton(
                     onPressed: () {
@@ -351,20 +376,37 @@ class CustomAppBar extends PreferredSize {
                       );
                     },
                     style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(150),
                       ),
                       padding: const EdgeInsets.all(3),
                     ),
-                    child: const FittedBox(
-                      child: Icon(
-                        Icons.account_circle_rounded,
-                        size: 50,
-                        color: Colors.orangeAccent,
-                      ),
+                    child: const Row(  // Utilisez un widget Row
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        FittedBox(
+                          child: Icon(
+                            Icons.account_circle_rounded,
+                            size: 50,
+                            color: Colors.orangeAccent,
+                          ),
+                        ),
+                        SizedBox(width: 0),  // Espacement entre l'icône et le texte
+                        Text(  // Ajoutez un widget Text pour 'Se connecter'
+                          'Connexion',
+                          style: TextStyle(
+                            color: Colors.orangeAccent,  // Mettez la couleur que vous voulez
+                            fontSize: 12,
+                            fontFamily: 'NotoSans',
+                            fontWeight: FontWeight.bold,// Ajustez la taille du texte
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 );
+
               }
             },
           ),
