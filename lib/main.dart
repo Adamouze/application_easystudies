@@ -1,136 +1,142 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:youtube_player_flutter/youtube_player_flutter.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
+import 'package:provider/provider.dart';
+
+import 'screens/splash_screen.dart';
+import 'screens/app_bar.dart';
+import 'screens/body.dart';
+import 'screens/login_screen.dart';
+import 'screens/eleve_screen.dart';
+import 'screens/prof_screen.dart';
+import 'screens/super_user_screen.dart';
 
 
+import 'utilities/video_youtube.dart';
+import 'utilities/facebook_news.dart';
+import 'utilities/constantes.dart';
+import 'utilities/theme_provider.dart';
 
-class VideoDetail {
-  final String thumbnailUrl;
-  final String title;
-  final String description;
-  final String videoId;
+import 'logs/auth_stat.dart';
 
-  VideoDetail(this.thumbnailUrl, this.title, this.description, this.videoId);
+
+void main() {
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (context) => AuthState(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => ThemeProvider(),
+        ),
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
 
-class YoutubeService {
-  List<VideoDetail>? _cachedVideos;
-  static final YoutubeService _singleton = YoutubeService._internal();
-
-  factory YoutubeService() {
-    return _singleton;
-  }
-
-  YoutubeService._internal();
-
-  Future<List<VideoDetail>> fetchAllVideoDetails() async {
-    if (_cachedVideos != null) {
-      return _cachedVideos!;
-    }
-
-    const String channelId = 'UCm19VoVNI76RHqpaRbS1kgw';
-    const String apiKey = 'AIzaSyD1E2sQsSIXbFMJpYUnHEpR8LwHnigjhHA';
-    const int maxResults = 3;
-
-    final response = await http.get(Uri.parse(
-        'https://www.googleapis.com/youtube/v3/search?order=date&part=snippet&channelId=$channelId&maxResults=$maxResults&key=$apiKey'));
-
-    if (response.statusCode == 200) {
-      var jsonData = jsonDecode(response.body)['items'] as List;
-
-      List<VideoDetail> videoDetails = [];
-
-      for (var data in jsonData) {
-        if (data['id'].containsKey('videoId')) {
-          String thumbnailUrl = data['snippet']['thumbnails']['medium']['url'] ?? '';
-          String title = data['snippet']['title'] ?? '';
-          String description = data['snippet']['description'] ?? '';
-          String videoId = data['id']['videoId'] ?? '';
-
-          videoDetails.add(VideoDetail(thumbnailUrl, title, description, videoId));
-        }
-      }
-
-      _cachedVideos = videoDetails;
-      return videoDetails;
-    } else {
-      throw Exception('Failed to load video');
-    }
-  }
-}
-
-
-
-
-
-
-class VideoPlayerPage extends StatefulWidget {
-  final String videoId;
-  final VideoDetail videoDetail;
-  const VideoPlayerPage({Key? key, required this.videoId, required this.videoDetail}) : super(key: key);
+class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
 
   @override
-  // Warning qui ne pose pas de problème ici.
-  // ignore: library_private_types_in_public_api
-  _VideoPlayerPageState createState() => _VideoPlayerPageState();
-}
+  Widget build(BuildContext context) {
+    return Consumer<ThemeProvider>(
+      builder: (context, themeProvider, child) {
+        return MaterialApp(
+          title: 'EasyStudies',
+          theme: ThemeData(
+            colorScheme: ColorScheme.fromSeed(seedColor: Colors.orangeAccent).copyWith(
+              background: Colors.white,  //couleur de fond pour le mode clair
+              shadow: Colors.grey.withOpacity(0.5),
+            ),
+            primaryColor: Colors.white,
+            textTheme: const TextTheme(
+              bodyLarge: TextStyle(
+                color: Colors.black,
+              ),
+            ),
+            useMaterial3: true,
+          ),
+          darkTheme: ThemeData(
+            colorScheme: ColorScheme.fromSeed(seedColor: Colors.orangeAccent).copyWith(
+              background: Colors.grey[850],  //couleur de fond pour le mode sombre
+              shadow: Colors.grey[850],
+            ),
+            primaryColor: Colors.black,
+            textTheme: const TextTheme(
+              bodyLarge: TextStyle(
+                color: Colors.white,
+              ),
+            ),
+            useMaterial3: true,
+          ),
 
-class _VideoPlayerPageState extends State<VideoPlayerPage> {
-  late YoutubePlayerController _controller;
+          themeMode: themeProvider.themeMode,
+          initialRoute: '/',
+          onGenerateRoute: (settings) {
+            if (settings.name == '/') {
+              return MaterialPageRoute(builder: (_) => const SplashScreen());
+            } else if (settings.name == '/home') {
+              return PageRouteBuilder(
+                pageBuilder: (_, __, ___) => const MyHomePage(title: 'EasyStudies'),
+                transitionsBuilder: (_, animation, __, child) {
+                  return FadeTransition(
+                    opacity: animation,
+                    child: child,
+                  );
+                },
+              );
+            } else if (settings.name == '/login') {
+              return PageRouteBuilder(
+                pageBuilder: (_, __, ___) => const LoginScreen(),
+                transitionsBuilder: (_, animation, __, child) {
+                  var begin = const Offset(0.0, -1.0);
+                  var end = Offset.zero;
+                  var tween = Tween(begin: begin, end: end);
+                  var offsetAnimation = animation.drive(tween);
 
-  @override
-  void initState() {
-    super.initState();
-    _controller = YoutubePlayerController(
-      initialVideoId: widget.videoId,
-      flags: const YoutubePlayerFlags(
-        autoPlay: true,
-        mute: false,
-      ),
+                  return SlideTransition(
+                    position: offsetAnimation,
+                    child: child,
+                  );
+                },
+              );
+            }
+            else if (settings.name == '/eleve') {
+              return MaterialPageRoute(builder: (_) => const EleveScreen());
+            }
+            else if (settings.name == '/prof') {
+              return MaterialPageRoute(builder: (_) => const ProfScreen());
+            }
+            else if (settings.name == '/super_user') {
+              return MaterialPageRoute(builder: (_) => const SuperUserScreen());
+            }
+            return null;
+          },
+        );
+      },
     );
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
   }
+}
+
+
+class MyHomePage extends StatefulWidget {
+  const MyHomePage({super.key, required this.title});
+  final String title;
 
   @override
-  void dispose() {
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: SystemUiOverlay.values);
-    super.dispose();
-    _controller.dispose();
-  }
+  State<MyHomePage> createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  final facebookService = FacebookService();
+  final youtubeService = YoutubeService();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: YoutubePlayerBuilder(
-        player: YoutubePlayer(
-          controller: _controller,
-          showVideoProgressIndicator: true,
-          progressIndicatorColor: Colors.deepOrange, // Couleur de la barre de lecture
-          progressColors: const ProgressBarColors(
-            playedColor: Colors.deepOrange, // Couleur de la barre de progression jouée
-            handleColor: Colors.deepOrange, // Couleur de la poignée de la barre de progression
-          ),
-        ),
-        builder: (context, player) {
-          return MediaQuery(
-            data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
-            child: Container(
-              width: double.infinity,
-              height: double.infinity,
-              color: Colors.grey[900],
-              child: Center(
-                child: AspectRatio(
-                  aspectRatio: 16 / 9,
-                  child: player,
-                ),
-              ),
-            ),
-          );
-        },
-      ),
+      appBar: CustomAppBar(title: widget.title, color: orangePerso, context: context),
+      body: CustomBody(),
     );
   }
 }
