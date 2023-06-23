@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../utilities/constantes.dart';
 import 'app_bar.dart';
-import 'bodies/body_super_user.dart';
+import 'body.dart';
 
 class FancyFab extends StatefulWidget {
   final VoidCallback onPressed;
@@ -193,7 +193,7 @@ class SuperUserScreen extends StatelessWidget {
       appBar: CustomAppBar(title: 'Super utilisateur', color: orangePerso, context: context),
       body: Stack(
         children: <Widget>[
-          CustomBodySuperUser(),
+          CustomBody(userType: "super_user"),
           Positioned(
             right: 16.0,
             bottom: 16.0,

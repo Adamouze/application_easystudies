@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../utilities/constantes.dart';
 import 'app_bar.dart';
-import 'bodies/body_eleve.dart';
+import 'body.dart';
 
 import 'action_buttons_eleve/attendance_history_screen.dart';
 import 'action_buttons_eleve/bilan_screen.dart';
@@ -208,7 +208,7 @@ class EleveScreenState extends State<EleveScreen> {
       appBar: CustomAppBar(title: 'Eleve', color: orangePerso, context: context),
       body: Stack(
         children: <Widget>[
-          CustomBodyEleve(),
+          CustomBody(userType: "eleve"),
           ValueListenableBuilder<bool>(
             valueListenable: _isFancyFabOpen,
             builder: (BuildContext context, bool isOpened, Widget? child) {

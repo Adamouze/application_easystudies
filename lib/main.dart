@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 
 import 'screens/splash_screen.dart';
 import 'screens/app_bar.dart';
-import 'screens/bodies/body_home.dart';
+import 'screens/body.dart';
 import 'screens/login_screen.dart';
 import 'screens/eleve_screen.dart';
 import 'screens/prof_screen.dart';
@@ -45,16 +45,28 @@ class MyApp extends StatelessWidget {
         return MaterialApp(
           title: 'EasyStudies',
           theme: ThemeData(
-            scaffoldBackgroundColor: Colors.white, //couleur de fond pour le mode clair
             colorScheme: ColorScheme.fromSeed(seedColor: Colors.orangeAccent).copyWith(
               background: Colors.white,  //couleur de fond pour le mode clair
+              shadow: Colors.grey.withOpacity(0.5),
+            ),
+            primaryColor: Colors.white,
+            textTheme: const TextTheme(
+              bodyLarge: TextStyle(
+                color: Colors.black,
+              ),
             ),
             useMaterial3: true,
           ),
           darkTheme: ThemeData(
-            scaffoldBackgroundColor: Colors.grey[850],  //couleur de fond pour le mode sombre
             colorScheme: ColorScheme.fromSeed(seedColor: Colors.orangeAccent).copyWith(
               background: Colors.grey[850],  //couleur de fond pour le mode sombre
+              shadow: Colors.grey[850],
+            ),
+            primaryColor: Colors.black,
+            textTheme: const TextTheme(
+              bodyLarge: TextStyle(
+                color: Colors.white,
+              ),
             ),
             useMaterial3: true,
           ),
@@ -106,16 +118,6 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
-
-
-
-
-
-
-
-
-
 
 
 class MyHomePage extends StatefulWidget {
