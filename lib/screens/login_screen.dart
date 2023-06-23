@@ -179,6 +179,8 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context); // Accéder au ThemeData actuel
+
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Padding(
@@ -194,7 +196,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
               decoration: BoxDecoration(
                 color: Colors.orangeAccent,
                 borderRadius: BorderRadius.circular(20.0),
-                border: Border.all(color: Colors.white, width: 8),
+                border: Border.all(color: theme.colorScheme.background, width: 8),
               ),
               child: Padding(
                 padding: const EdgeInsets.all(8),
@@ -205,24 +207,24 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: <Widget>[
-                        const Text(
+                        Text(
                           'Connectez-vous !',
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontFamily: 'NotoSans',
-                            color: Colors.white,
+                            color: theme.primaryColor,
                             fontSize: 24,
                           ),
                         ),
                         const SizedBox(height: 16.0),
                         Container(
                           decoration: BoxDecoration(
-                            color: Colors.white,
+                            color: theme.colorScheme.background,
                             borderRadius: BorderRadius.circular(10.0),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.grey.withOpacity(0.5),
-                                spreadRadius: 5,
+                                color: theme.colorScheme.shadow,
+                                spreadRadius: 1,
                                 blurRadius: 7,
                                 offset: const Offset(0, 3),
                               ),
@@ -262,12 +264,12 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                         const SizedBox(height: 16.0),
                         Container(
                           decoration: BoxDecoration(
-                            color: Colors.white,
+                            color: theme.colorScheme.background,
                             borderRadius: BorderRadius.circular(10.0),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.grey.withOpacity(0.5),
-                                spreadRadius: 5,
+                                color: theme.colorScheme.shadow,
+                                spreadRadius: 1,
                                 blurRadius: 7,
                                 offset: const Offset(0, 3),
                               ),
@@ -311,7 +313,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                           child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
                               foregroundColor: Colors.orangeAccent,
-                              backgroundColor: Colors.white,
+                              backgroundColor: theme.colorScheme.background,
                               textStyle: const TextStyle(
                                 fontFamily: 'NotoSans',
                                 fontSize: 18.0,

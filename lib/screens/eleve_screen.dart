@@ -2,21 +2,28 @@ import 'package:flutter/material.dart';
 
 import '../utilities/constantes.dart';
 import 'app_bar.dart';
-import 'bodies/body_eleve.dart';
+import 'body.dart';
 
+import 'action_buttons_eleve/attendance_history_screen.dart';
+import 'action_buttons_eleve/bilan_screen.dart';
+import 'action_buttons_eleve/comments_screen.dart';
+import 'action_buttons_eleve/notes_screen.dart';
 import 'action_buttons_eleve/qrcode_screen.dart';
+
 
 class FancyFab extends StatefulWidget {
   final VoidCallback onPressed;
   final String tooltip;
   final IconData icon;
   final Color iconColor;
+  final ValueNotifier<bool> isOpened;
 
   const FancyFab({
     required this.onPressed,
     required this.tooltip,
     required this.icon,
     required this.iconColor,
+    required this.isOpened,
     Key? key,
   }) : super(key: key);
 
@@ -59,18 +66,23 @@ class FancyFabState extends State<FancyFab> with SingleTickerProviderStateMixin 
   }
 
   void animate() {
-    if (!isOpened) {
+    if (!widget.isOpened.value) {
       _animationController.forward();
     } else {
       _animationController.reverse();
     }
-    isOpened = !isOpened;
+    widget.isOpened.value = isOpened = !isOpened;
   }
+
 
   Widget notes() {
     return FloatingActionButton(
       backgroundColor: Colors.blue,
       onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const NoteScreen()),
+        );
       },
       heroTag: 1,
       tooltip: 'Notes',
@@ -86,6 +98,10 @@ class FancyFabState extends State<FancyFab> with SingleTickerProviderStateMixin 
     return FloatingActionButton(
       backgroundColor: Colors.blue,
       onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const BilanScreen()),
+        );
       },
       heroTag: 2,
       tooltip: 'Bilan',
@@ -101,6 +117,10 @@ class FancyFabState extends State<FancyFab> with SingleTickerProviderStateMixin 
     return FloatingActionButton(
       backgroundColor: Colors.blue,
       onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const CommentScreen()),
+        );
       },
       heroTag: 3,
       tooltip: 'Commentaires',
@@ -109,33 +129,15 @@ class FancyFabState extends State<FancyFab> with SingleTickerProviderStateMixin 
         Icons.comment,
         color: widget.iconColor,
       ),
-
     );
   }
-
-/*
-  Widget qrcode() {
-    return FloatingActionButton(
-      backgroundColor: Colors.blue,
-      onPressed: () {
-      },
-      heroTag: 4,
-      tooltip: 'QR Code',
-      shape: const CircleBorder(),
-      child: Icon(
-        Icons.qr_code_sharp,
-        color: widget.iconColor,
-      ),
-    );
-  }
-*/
 
   Widget toggle() {
     return FloatingActionButton(
       backgroundColor: _buttonColor.value,
       onPressed: animate,
       heroTag: 0,
-      tooltip: 'Toggle',
+      tooltip: 'Menu',
       shape: const CircleBorder(),
       child: AnimatedIcon(
         icon: AnimatedIcons.menu_close,
@@ -190,8 +192,15 @@ class FancyFabState extends State<FancyFab> with SingleTickerProviderStateMixin 
 
 
 
-class EleveScreen extends StatelessWidget {
+class EleveScreen extends StatefulWidget {
   const EleveScreen({Key? key}) : super(key: key);
+
+  @override
+  EleveScreenState createState() => EleveScreenState();
+}
+
+class EleveScreenState extends State<EleveScreen> {
+  final ValueNotifier<bool> _isFancyFabOpen = ValueNotifier<bool>(false);
 
   @override
   Widget build(BuildContext context) {
@@ -199,15 +208,30 @@ class EleveScreen extends StatelessWidget {
       appBar: CustomAppBar(title: 'Eleve', color: orangePerso, context: context),
       body: Stack(
         children: <Widget>[
-          CustomBodyEleve(),
+          CustomBody(userType: "eleve"),
+          ValueListenableBuilder<bool>(
+            valueListenable: _isFancyFabOpen,
+            builder: (BuildContext context, bool isOpened, Widget? child) {
+              if (isOpened) {
+                return const ModalBarrier(dismissible: false, color: Colors.transparent);
+              } else {
+                return const SizedBox.shrink();
+              }
+            },
+          ),
           Positioned(
             right: 16.0,
             bottom: 16.0,
             child: FancyFab(
-              onPressed: () {},
-              tooltip: 'FancyFab',
+              onPressed: () {
+                setState(() {
+                  _isFancyFabOpen.value = !_isFancyFabOpen.value;
+                });
+              },
+              tooltip: 'Menu',
               icon: Icons.menu,
               iconColor: couleurIcone,
+              isOpened: _isFancyFabOpen,
             ),
           ),
           Positioned(
@@ -215,7 +239,12 @@ class EleveScreen extends StatelessWidget {
             bottom: 16.0,
             child: FloatingActionButton(
               backgroundColor: orangePerso,
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const HistoryScreen()),
+                );
+              },
               tooltip: 'Historique',
               elevation: 6.0,
               shape: const CircleBorder(),
@@ -244,7 +273,6 @@ class EleveScreen extends StatelessWidget {
                   size: 32.0,
                 ),
               ),
-
             ),
           ),
         ],
@@ -252,6 +280,7 @@ class EleveScreen extends StatelessWidget {
     );
   }
 }
+
 
 
 

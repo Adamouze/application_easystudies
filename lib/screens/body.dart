@@ -1,12 +1,14 @@
 // ignore_for_file: deprecated_member_use, constant_identifier_names, non_constant_identifier_names, duplicate_ignore
 
 import 'package:flutter/material.dart';
-import '../../utilities/video_youtube.dart';
-import '../../utilities/facebook_news.dart';
+import '../utilities/video_youtube.dart';
+import '../utilities/facebook_news.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class CustomBody extends StatelessWidget {
-  CustomBody({Key? key}) : super(key: key);
+  CustomBody({this.userType = "default", Key? key,}) : super(key: key);
+
+  final String userType;
   final facebookService = FacebookService();
   final youtubeService = YoutubeService();
 
@@ -28,17 +30,36 @@ class CustomBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context); // Accéder au ThemeData actuel
+
     return Align(
       alignment: Alignment.topCenter,
       child: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            const SizedBox(height: 20),
+
+            // Ici, nous utilisons la propriété userType pour afficher conditionnellement différents widgets.
+            if (userType == "eleve") ...[
+              Text(
+                "Vous êtes un élève !",
+                style: TextStyle(
+                  color: Theme.of(context).textTheme.bodyText1?.color,
+                )
+              ),
+            ] else if (userType == "prof") ...[
+              const Text("Vous êtes un professeur!"),
+            ] else if (userType == "super_user") ...[
+              const Text("Vous êtes un super utilisateur!"),
+            ],
 
             const SizedBox(height: 20),
 
             FractionallySizedBox(
               widthFactor: 0.95,
+
+
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
@@ -153,7 +174,7 @@ class CustomBody extends StatelessWidget {
                                 height: 300,
                                 child: PageView.builder(
                                   controller: pageController,
-                                  itemCount: videoDetails.length * 100000,
+                                  itemCount: videoDetails.length * 10,
                                   itemBuilder: (context, index) {
                                     final videoDetail = videoDetails[index % videoDetails.length];
                                     return GestureDetector(
@@ -260,8 +281,6 @@ class CustomBody extends StatelessWidget {
               ),
             ),
 
-
-
             const SizedBox(height: 16),
 
             FractionallySizedBox(
@@ -285,12 +304,12 @@ class CustomBody extends StatelessWidget {
                         ),
                       ],
                     ),
-                    child: const Padding(
-                      padding: EdgeInsets.all(8.0),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
                       child: Text(
                         'Contact',
                         style: TextStyle(
-                          color: Colors.white,
+                          color: theme.primaryColor,
                           fontWeight: FontWeight.bold,
                           fontFamily: 'NotoSans',
                         ),

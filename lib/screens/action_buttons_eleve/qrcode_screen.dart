@@ -26,13 +26,12 @@ class QRCodeScreen extends StatelessWidget {
                 child: QrImageView(
                   data: 'https://www.youtube.com/watch?v=ZZ5LpwO-An4&list=PLDLnJA_LGxsJjv9-9ZmQtuOr5YuqK1ah6',
                   version: QrVersions.auto,
-                  size: diameter * 0.7,
+                  size: diameter * 0.8,
                 ),
               ),
             );
           },
         ),
-
       ),
     );
   }

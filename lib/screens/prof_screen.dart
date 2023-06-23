@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../utilities/constantes.dart';
 import 'app_bar.dart';
-import 'bodies/body_prof.dart';
+import 'body.dart';
 
 class FancyFab extends StatefulWidget {
   final VoidCallback onPressed;
@@ -168,7 +168,6 @@ class FancyFabState extends State<FancyFab> with SingleTickerProviderStateMixin 
 }
 
 
-
 class ProfScreen extends StatelessWidget {
   const ProfScreen({Key? key}) : super(key: key);
 
@@ -178,7 +177,7 @@ class ProfScreen extends StatelessWidget {
       appBar: CustomAppBar(title: 'Prof', color: orangePerso, context: context),
       body: Stack(
         children: <Widget>[
-          CustomBodyProf(),
+          CustomBody(userType: "prof"),
           Positioned(
             right: 16.0,
             bottom: 16.0,
