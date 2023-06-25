@@ -54,6 +54,11 @@ class YoutubeService {
         }
       }
 
+      if(videoDetails.isNotEmpty) {
+        videoDetails.insert(0, videoDetails.last); // Duplicate last video at start
+        videoDetails.add(videoDetails[1]); // Duplicate first video at end
+      }
+
       _cachedVideos = videoDetails;
       return videoDetails;
     } else {

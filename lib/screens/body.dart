@@ -151,20 +151,6 @@ class _CustomBodyState extends State<CustomBody> {
     child: Column(
     mainAxisAlignment: MainAxisAlignment.center,
     children: <Widget>[
-    const SizedBox(height: 20),
-
-    if (widget.userType == "eleve") ...[
-    Text(
-    "Vous êtes un élève !",
-    style: TextStyle(
-    color: Theme.of(context).textTheme.bodyText1?.color,
-    ),
-    ),
-    ] else if (widget.userType == "prof") ...[
-    const Text("Vous êtes un professeur!"),
-    ] else if (widget.userType == "super_user") ...[
-    const Text("Vous êtes un super utilisateur!"),
-    ],
 
     const SizedBox(height: 20),
 
@@ -277,7 +263,7 @@ class _CustomBodyState extends State<CustomBody> {
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
                           final videoDetails = snapshot.data!;
-                          final pageController = PageController(initialPage: videoDetails.length * 1000);
+                          final pageController = PageController(initialPage: 1);
 
                           return Stack(
                             alignment: Alignment.center,
@@ -351,10 +337,16 @@ class _CustomBodyState extends State<CustomBody> {
                                       color: Colors.white,
                                     ),
                                     onPressed: () {
-                                      pageController.previousPage(
-                                        duration: const Duration(milliseconds: 400),
-                                        curve: Curves.easeInOut,
-                                      );
+                                      int currentPage = pageController.page?.toInt() ?? 0;
+                                      if (currentPage == 0) {
+                                        // If we're at the first page (duplicate last video), jump without animation to the last "real" page
+                                        pageController.jumpToPage(videoDetails.length - 2);
+                                      } else {
+                                        pageController.previousPage(
+                                          duration: const Duration(milliseconds: 400),
+                                          curve: Curves.easeInOut,
+                                        );
+                                      }
                                     },
                                   ),
                                 ),
@@ -371,14 +363,21 @@ class _CustomBodyState extends State<CustomBody> {
                                       color: Colors.white,
                                     ),
                                     onPressed: () {
-                                      pageController.nextPage(
-                                        duration: const Duration(milliseconds: 400),
-                                        curve: Curves.easeInOut,
-                                      );
+                                      int currentPage = pageController.page?.toInt() ?? 0;
+                                      if (currentPage == videoDetails.length - 1) {
+                                        // If we're at the last page (duplicate first video), jump without animation to the first "real" page
+                                        pageController.jumpToPage(1);
+                                      } else {
+                                        pageController.nextPage(
+                                          duration: const Duration(milliseconds: 400),
+                                          curve: Curves.easeInOut,
+                                        );
+                                      }
                                     },
                                   ),
                                 ),
                               ),
+
                             ],
                           );
                         } else if (snapshot.hasError) {
