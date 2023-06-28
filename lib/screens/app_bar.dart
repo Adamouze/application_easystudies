@@ -242,7 +242,7 @@ class CustomAppBar extends PreferredSize {
                 style: const TextStyle(
                   color: Colors.white,
                   fontFamily: 'Noto Sans',
-                  fontSize: 24,
+                  fontSize: 22,
                   fontWeight: FontWeight.bold,
                 ),
               ),

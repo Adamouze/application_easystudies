@@ -61,5 +61,7 @@
 	    <key>NSAllowArbitraryLoads</key>
 	    <true/>
 	</dict>
+	<key>NSCameraUsageDescription</key>
+    	<string>Permission d'accès à la Caméra.</string>
 </dict>
 </plist>

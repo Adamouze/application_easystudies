@@ -1,20 +1,33 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:barcode_widget/barcode_widget.dart';
 
 import '../../utilities/constantes.dart';
 
-class QRCodeScreen extends StatelessWidget {
+class QRCodeScreen extends StatefulWidget {
   const QRCodeScreen({Key? key}) : super(key: key);
 
   @override
+  _QRCodeScreenState createState() => _QRCodeScreenState();
+}
+
+class _QRCodeScreenState extends State<QRCodeScreen> {
+  bool showQR = true;
+
+  @override
   Widget build(BuildContext context) {
+    double diameter = MediaQuery.of(context).size.width * 0.9;
+    String data = 'https://www.youtube.com/watch?v=ZZ5LpwO-An4&list=PLDLnJA_LGxsJjv9-9ZmQtuOr5YuqK1ah6';
+
     return Scaffold(
       backgroundColor: orangePerso,
       body: Center(
-        child: LayoutBuilder(
-          builder: (BuildContext context, BoxConstraints constraints) {
-            double diameter = MediaQuery.of(context).size.width * 0.9;
-            return Container(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
               width: diameter,
               height: diameter,
               decoration: const BoxDecoration(
@@ -23,14 +36,42 @@ class QRCodeScreen extends StatelessWidget {
               ),
               child: Padding(
                 padding: EdgeInsets.all(diameter * 0.15),
-                child: QrImageView(
-                  data: 'https://www.youtube.com/watch?v=ZZ5LpwO-An4&list=PLDLnJA_LGxsJjv9-9ZmQtuOr5YuqK1ah6',
+                child: showQR
+                    ? QrImageView(
+                  data: data,
                   version: QrVersions.auto,
-                  size: diameter * 0.8,
+                  size: diameter * 0.7,
+                )
+                    : Center(
+                  child: BarcodeWidget(
+                    barcode: Barcode.code128(),  // Use appropriate barcode encoding
+                    data: data,
+                    width: diameter * 0.7,
+                    height: diameter * 0.3,
+                  ),
                 ),
               ),
-            );
-          },
+            ),
+            const SizedBox(height: 20), // Space between QR Code and button
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                foregroundColor: Colors.orangeAccent, backgroundColor: Colors.white, // this sets the color of the button's text and icon
+                textStyle: const TextStyle(fontSize: 20, fontFamily: 'NotoSans',fontWeight: FontWeight.bold), // adjust font size here
+              ),
+              onPressed: () {
+                setState(() {
+                  showQR = !showQR;
+                });
+              },
+              child: Container(
+                height: 60,
+                width: 200,
+                alignment: Alignment.center,
+                child: Text(showQR ? 'Afficher code-barres' : 'Afficher QR Code'),
+              )
+
+            ),
+          ],
         ),
       ),
     );

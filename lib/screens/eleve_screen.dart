@@ -11,6 +11,7 @@ import 'action_buttons_eleve/notes_screen.dart';
 import 'action_buttons_eleve/qrcode_screen.dart';
 
 
+
 class FancyFab extends StatefulWidget {
   final VoidCallback onPressed;
   final String tooltip;
@@ -215,7 +216,7 @@ class EleveScreenState extends State<EleveScreen> {
         appBar: CustomAppBar(title: 'Eleve', color: orangePerso, context: context),
         body: Stack(
           children: <Widget>[
-            CustomBody(userType: "eleve"),
+            const CustomBody(userType: "eleve"),
             ValueListenableBuilder<bool>(
               valueListenable: _isFancyFabOpen,
               builder: (BuildContext context, bool isOpened, Widget? child) {
@@ -255,7 +256,7 @@ class EleveScreenState extends State<EleveScreen> {
                 tooltip: 'Historique',
                 elevation: 6.0,
                 shape: const CircleBorder(),
-                child: const Icon(Icons.history, color: couleurIcone),
+                child: const Icon(Icons.history, color: couleurIcone,),
               ),
             ),
             Positioned(

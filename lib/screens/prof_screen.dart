@@ -1,6 +1,8 @@
-// ignore_for_file: library_private_types_in_public_api
+// ignore_for_file: library_private_types_in_public_api, use_build_context_synchronously
 
+import 'package:EasyStudies/screens/action_buttons_prof/scanner.dart';
 import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
 import '../utilities/constantes.dart';
 import 'app_bar.dart';
 import 'body.dart';
@@ -194,7 +196,7 @@ class _ProfScreenState extends State<ProfScreen> {
         appBar: CustomAppBar(title: 'Prof', color: orangePerso, context: context),
         body: Stack(
           children: <Widget>[
-            CustomBody(userType: "prof"),
+            const CustomBody(userType: "prof"),
             Positioned(
               right: 16.0,
               bottom: 16.0,
@@ -224,12 +226,40 @@ class _ProfScreenState extends State<ProfScreen> {
                 scale: 1.4,
                 child: FloatingActionButton(
                   backgroundColor: Colors.blue,
-                  onPressed: () {},
-                  tooltip: 'QR Code',
+                  onPressed: () async {
+                    var status = await Permission.camera.status;
+                    if (status.isDenied) {
+                      // We didn't ask for permission yet or the permission has been denied before but not permanently.
+                      status = await Permission.camera.request();
+                    }
+                    if (status.isGranted) {
+                      String? scanResult = await Scanner(context: context).scanBarcode();
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(10),
+                            topRight: Radius.circular(10),
+                          ),
+                        ),
+                        backgroundColor: Colors.yellow,
+                        content: Text('Permission d\'accès à la caméra de votre appareil nécessaire',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontFamily: 'NotoSans',
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        duration: Duration(seconds: 2),
+                      ),);
+                    }
+                  },
+                  tooltip: 'Scanner',
                   elevation: 6.0,
                   shape: const CircleBorder(),
                   child: const Icon(
-                    Icons.add_circle_sharp,
+                    Icons.photo_camera,
                     color: couleurIcone,
                     size: 32.0,
                   ),
