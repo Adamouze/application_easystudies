@@ -77,61 +77,177 @@ class FancyFabState extends State<FancyFab> with SingleTickerProviderStateMixin 
 
 
   Widget notes() {
-    return FloatingActionButton(
-      backgroundColor: Colors.blue,
-      onPressed: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const NoteScreen()),
-        );
-      },
-      heroTag: 1,
-      tooltip: 'Notes',
-      shape: const CircleBorder(),
-      child: Icon(
-        Icons.check_circle,
-        color: widget.iconColor,
-      ),
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        FloatingActionButton(
+          backgroundColor: Colors.blue,
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const NoteScreen()),
+            );
+          },
+          heroTag: 1,
+          tooltip: 'Notes',
+          shape: const CircleBorder(),
+          child: Icon(
+            Icons.check_circle,
+            color: widget.iconColor,
+          ),
+        ),
+        Transform.translate(
+          offset: const Offset(-60, 12), // Ajuster en fonction de l'espacement désiré
+          child: GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const NoteScreen()),
+              );
+            },
+            child: Opacity(
+              opacity: _animationController.value,
+              child: Container(
+                padding: const EdgeInsets.all(5), // ajuster l'espacement à l'intérieur du container
+                decoration: BoxDecoration(
+                  color: Colors.blue,
+                  borderRadius: BorderRadius.circular(10), // arrondir les coins ici
+                ),
+                child: const Center(
+                  child: Text(
+                    'Notes',
+                    style: TextStyle(
+                      fontSize: 16, // augmenter la taille de la police ici
+                      color: Colors.white, // changer la couleur du texte ici
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'NotoSans',
+                      // changer la couleur de fond ici
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
+
+
+
+
+
+
+
 
   Widget bilan() {
-    return FloatingActionButton(
-      backgroundColor: Colors.blue,
-      onPressed: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const BilanScreen()),
-        );
-      },
-      heroTag: 2,
-      tooltip: 'Bilan',
-      shape: const CircleBorder(),
-      child: Icon(
-        Icons.fact_check,
-        color: widget.iconColor,
-      ),
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        Transform.translate(
+          offset: const Offset(-55, 12), // Ajuster en fonction de l'espacement désiré
+          child: Opacity(
+            opacity: _animationController.value,
+            child: Container(
+              padding: const EdgeInsets.all(5), // ajuster l'espacement à l'intérieur du container
+              decoration: BoxDecoration(
+                color: Colors.blue,
+                borderRadius: BorderRadius.circular(10), // arrondir les coins ici
+              ),
+              child: const Center(
+                child: Text(
+                  'Bilan',
+                  style: TextStyle(
+                    fontSize: 16, // augmenter la taille de la police ici
+                    color: Colors.white, // changer la couleur du texte ici
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'NotoSans',
+                    // changer la couleur de fond ici
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+        FloatingActionButton(
+          backgroundColor: Colors.blue,
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const BilanScreen()),
+            );
+          },
+          heroTag: 2,
+          tooltip: 'Bilan',
+          shape: const CircleBorder(),
+          child: Icon(
+            Icons.fact_check,
+            color: widget.iconColor,
+          ),
+        ),
+      ],
     );
   }
 
+
   Widget commentaire() {
-    return FloatingActionButton(
-      backgroundColor: Colors.blue,
-      onPressed: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const CommentScreen()),
-        );
-      },
-      heroTag: 3,
-      tooltip: 'Commentaires',
-      shape: const CircleBorder(),
-      child: Icon(
-        Icons.comment,
-        color: widget.iconColor,
-      ),
+    return Stack(
+      alignment: Alignment.centerRight, // aligne le texte et le bouton au centre à droite
+      clipBehavior: Clip.none,
+      children: [
+        Positioned(
+          right: 63, // ajuster en fonction de l'espacement désiré
+          child: Opacity(
+            opacity: _animationController.value,
+            child: Container(
+              padding: const EdgeInsets.all(5), // ajuster l'espacement à l'intérieur du container
+              decoration: BoxDecoration(
+                color: Colors.blue,
+                borderRadius: BorderRadius.circular(10), // arrondir les coins ici
+              ),
+              child: const SizedBox(
+                width: 110, // ajuster la largeur en fonction de la longueur maximale du texte
+                child: Text(
+                  'Commentaires',
+                  textAlign: TextAlign.center,
+                  softWrap: true,
+                  style: TextStyle(
+                    fontSize: 16, // augmenter la taille de la police ici
+                    color: Colors.white, // changer la couleur du texte ici
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'NotoSans',
+                    // changer la couleur de fond ici
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+        FloatingActionButton(
+          backgroundColor: Colors.blue,
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const CommentScreen()),
+            );
+          },
+          heroTag: 3,
+          tooltip: 'Commentaires',
+          shape: const CircleBorder(),
+          child: Icon(
+            Icons.comment,
+            color: widget.iconColor,
+          ),
+        ),
+      ],
     );
   }
+
+
+
+
+
+
 
   Widget toggle() {
     return FloatingActionButton(
