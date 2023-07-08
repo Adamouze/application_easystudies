@@ -207,10 +207,10 @@ class _SuperUserScreenState extends State<SuperUserScreen> {
     return WillPopScope(
       onWillPop: _onWillPop,
       child: Scaffold(
-        appBar: CustomAppBar(title: 'Super utilisateur', color: orangePerso, context: context),
+        appBar: CustomAppBar(color: orangePerso, context: context),
         body: Stack(
           children: <Widget>[
-            CustomBody(userType: "super_user"),
+            const CustomBody(userType: "super_user"),
             Positioned(
               right: 16.0,
               bottom: 16.0,

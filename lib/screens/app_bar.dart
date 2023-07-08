@@ -180,11 +180,10 @@ class LogoutDialogState extends State<LogoutDialog> with SingleTickerProviderSta
 
 
 class CustomAppBar extends PreferredSize {
-  final String title;
   final MaterialAccentColor color;
   final BuildContext context;
 
-  CustomAppBar({Key? key, required this.title, required this.color, required this.context}) : super(
+  CustomAppBar({Key? key, required this.color, required this.context}) : super(
     key: key,
     preferredSize: const Size.fromHeight(80.0),
     child: AppBar(
@@ -194,15 +193,15 @@ class CustomAppBar extends PreferredSize {
       title: Row(
         children: [
           SizedBox(
-            width: 65,
-            height: 65,
+            width: 67,
+            height: 67,
             child: Stack(
               children: [
                 Positioned(
-                  bottom: 3, // adjust this to move logo vertically
+                  bottom: 2, // adjust this to move logo vertically
                   child: Container(
-                    width: 60,
-                    height: 60,
+                    width: 65,
+                    height: 65,
                     decoration: const BoxDecoration(
                       shape: BoxShape.circle,
                       color: Colors.white,
@@ -210,10 +209,10 @@ class CustomAppBar extends PreferredSize {
                   ),
                 ),
                 Positioned(
-                  bottom: 3, // match this with Container's top
+                  bottom: 2, // match this with Container's top
                   child: Container(
-                    width: 60,
-                    height: 60,
+                    width: 65,
+                    height: 65,
                     decoration: const BoxDecoration(
                       shape: BoxShape.circle,
                       color: Colors.transparent,
@@ -233,16 +232,16 @@ class CustomAppBar extends PreferredSize {
 
           const Spacer(),
 
-          Expanded(
+          const Expanded(
             flex: 5,
             child: Align(
               alignment: Alignment.center,
               child: Text(
-                title,
-                style: const TextStyle(
+                'EasyStudies',
+                style: TextStyle(
                   color: Colors.white,
                   fontFamily: 'Noto Sans',
-                  fontSize: 22,
+                  fontSize: 20,
                   fontWeight: FontWeight.bold,
                 ),
               ),

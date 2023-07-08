@@ -1,7 +1,11 @@
-// ignore_for_file: deprecated_member_use, constant_identifier_names, non_constant_identifier_names, duplicate_ignore, library_private_types_in_public_api
+// ignore_for_file: deprecated_member_use, constant_identifier_names, non_constant_identifier_names, duplicate_ignore, library_private_types_in_public_api, use_build_context_synchronously
 
+import 'package:EasyStudies/screens/action_buttons_eleve/qrcode_screen.dart';
+import 'package:EasyStudies/screens/action_buttons_prof/scanner.dart';
+import 'package:EasyStudies/utilities/constantes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:permission_handler/permission_handler.dart';
 import '../utilities/video_youtube.dart';
 import '../utilities/facebook_news.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -473,7 +477,82 @@ class _CustomBodyState extends State<CustomBody> {
 
                 ],
               ),
-            )
+            ),
+
+      const SizedBox(height: 16),
+
+      if (widget.userType == "eleve")
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Transform.scale(
+            scale: 1.4,
+            child: FloatingActionButton(
+              backgroundColor: Colors.blue,
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const QRCodeScreen()),
+                );
+              },
+              tooltip: 'QR Code',
+              elevation: 6.0,
+              shape: const CircleBorder(),
+              child: const Icon(
+                Icons.qr_code_2_sharp,
+                color: couleurIcone,
+                size: 32.0,
+              ),
+            ),
+          ),
+        ),
+
+      if (widget.userType == "prof")
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Transform.scale(
+            scale: 1.4,
+            child: FloatingActionButton(
+              backgroundColor: Colors.blue,
+              onPressed: () async {
+                var status = await Permission.camera.status;
+                if (status.isDenied) {
+                  // We didn't ask for permission yet or the permission has been denied before but not permanently.
+                  status = await Permission.camera.request();
+                }
+                if (status.isGranted) {
+                  String? scanResult = await Scanner(context: context).scanBarcode();
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(10),
+                        topRight: Radius.circular(10),
+                      ),
+                    ),
+                    backgroundColor: Colors.yellow,
+                    content: Text('Permission d\'accès à la caméra de votre appareil nécessaire',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontFamily: 'NotoSans',
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    duration: Duration(seconds: 2),
+                  ),);
+                }
+              },
+              tooltip: 'Scanner',
+              elevation: 6.0,
+              shape: const CircleBorder(),
+              child: const Icon(
+                Icons.photo_camera,
+                color: couleurIcone,
+                size: 32.0,
+              ),
+            ),
+          ),
+        ),
           ],
         ),
       ),

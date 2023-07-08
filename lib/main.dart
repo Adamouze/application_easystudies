@@ -124,8 +124,8 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(title: widget.title, color: orangePerso, context: context),
-      body: CustomBody(),
+      appBar: CustomAppBar(color: orangePerso, context: context),
+      body: const CustomBody(),
     );
   }
 }
