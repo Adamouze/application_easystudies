@@ -30,13 +30,17 @@ class ProfScreen extends StatefulWidget {
 
 class ProfScreenState extends State<ProfScreen> {
   int _selectedIndex = 0;
-  static const List<Widget> _widgetOptions = <Widget>[
-    HomeContent(),
-    NoteScreen(),
-    BilanScreen(),
-    CommentScreen(),
-    HistoryScreen(),
-  ];
+  int? _eleveId; // Ajoutez cette ligne
+
+  List<Widget> get _widgetOptions {
+    return <Widget>[
+      const HomeContent(),
+      const NoteScreen(),
+      _eleveId != null ? BilanContent(eleveId: _eleveId!) : Container(),  // Affiche BilanContent seulement si _eleveId est défini
+      const CommentScreen(),
+      const HistoryScreen(),
+    ];
+  }
 
   Future<bool> _onWillPop() async {
     return (await showDialog(
@@ -45,8 +49,54 @@ class ProfScreenState extends State<ProfScreen> {
     )) ?? false;
   }
 
+  void _showDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: SizedBox(
+            width: double.maxFinite,
+            child: ListView(
+              children: <Widget>[
+                ListTile(
+                  leading: const Icon(Icons.child_care),
+                  title: const Text('Élève 1'),
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    setState(() {
+                      _eleveId = 1; // Mettez à jour _eleveId lorsque l'utilisateur sélectionne un élève
+                    });
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.child_care),
+                  title: const Text('Élève 2'),
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    setState(() {
+                      _eleveId = 2; // Mettez à jour _eleveId lorsque l'utilisateur sélectionne un élève
+                    });
+                  },
+                ),
+                // Ajouter autant de ListTile que d'élèves
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+
+
+
+
+
+
   @override
   Widget build(BuildContext context) {
+    // final theme = Theme.of(context);
+
     return WillPopScope(
       onWillPop: _onWillPop,
       child: Scaffold(
@@ -89,10 +139,15 @@ class ProfScreenState extends State<ProfScreen> {
             ],
             currentIndex: _selectedIndex,
             onTap: (index) {
+              if (index == 2) {
+                _showDialog(context);
+              }
               setState(() {
                 _selectedIndex = index;
               });
             },
+
+
           ),
         ),
 
