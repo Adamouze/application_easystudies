@@ -41,7 +41,7 @@ class ProfScreenState extends State<ProfScreen> {
   Future<bool> _onWillPop() async {
     return (await showDialog(
       context: context,
-      builder: (context) => const LogoutDialog(),
+      builder: (context) => const QuitDialog(),
     )) ?? false;
   }
 

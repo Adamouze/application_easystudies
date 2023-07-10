@@ -23,56 +23,79 @@ class _QRCodeScreenState extends State<QRCodeScreen> {
 
     return Scaffold(
       backgroundColor: orangePerso,
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              width: diameter,
-              height: diameter,
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                shape: BoxShape.circle,
-              ),
-              child: Padding(
-                padding: EdgeInsets.all(diameter * 0.15),
-                child: showQR
-                    ? QrImageView(
-                  data: data,
-                  version: QrVersions.auto,
-                  size: diameter * 0.7,
-                )
-                    : Center(
-                  child: BarcodeWidget(
-                    barcode: Barcode.code128(),  // Use appropriate barcode encoding
-                    data: data,
-                    width: diameter * 0.7,
-                    height: diameter * 0.3,
+      body: Stack(
+        alignment: Alignment.bottomCenter,
+        children: [
+          Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  width: diameter,
+                  height: diameter,
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    shape: BoxShape.circle,
                   ),
+                  child: Padding(
+                    padding: EdgeInsets.all(diameter * 0.15),
+                    child: showQR
+                        ? QrImageView(
+                      data: data,
+                      version: QrVersions.auto,
+                      size: diameter * 0.7,
+                    )
+                        : Center(
+                      child: BarcodeWidget(
+                        barcode: Barcode.code128(),  // Use appropriate barcode encoding
+                        data: data,
+                        width: diameter * 0.7,
+                        height: diameter * 0.3,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20), // Space between QR Code and button
+                ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      foregroundColor: Colors.orangeAccent, backgroundColor: Colors.white, // this sets the color of the button's text and icon
+                      textStyle: const TextStyle(fontSize: 20, fontFamily: 'NotoSans',fontWeight: FontWeight.bold), // adjust font size here
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        showQR = !showQR;
+                      });
+                    },
+                    child: Container(
+                      height: 60,
+                      width: 200,
+                      alignment: Alignment.center,
+                      child: Text(showQR ? 'Afficher code-barres' : 'Afficher QR Code'),
+                    )
+                ),
+              ],
+            ),
+          ),
+          Positioned(
+            bottom: 50,  // Adjust the position of the button here
+            child: SizedBox(
+              height: 70.0, // Set container height
+              width: 70.0,  // Set container width
+              child: FloatingActionButton(
+                onPressed: () {
+                  Navigator.pop(context); // Navigate back to the previous screen
+                },
+                backgroundColor: Colors.blueAccent,
+                shape: const CircleBorder(), // Circular shape
+                child: const Icon(
+                  Icons.close,
+                  color: Colors.white,
+                  size: 40.0,  // Increase icon size
                 ),
               ),
             ),
-            const SizedBox(height: 20), // Space between QR Code and button
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                foregroundColor: Colors.orangeAccent, backgroundColor: Colors.white, // this sets the color of the button's text and icon
-                textStyle: const TextStyle(fontSize: 20, fontFamily: 'NotoSans',fontWeight: FontWeight.bold), // adjust font size here
-              ),
-              onPressed: () {
-                setState(() {
-                  showQR = !showQR;
-                });
-              },
-              child: Container(
-                height: 60,
-                width: 200,
-                alignment: Alignment.center,
-                child: Text(showQR ? 'Afficher code-barres' : 'Afficher QR Code'),
-              )
-
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

@@ -38,7 +38,7 @@ class EleveScreenState extends State<EleveScreen> {
   Future<bool> _onWillPop() async {
     return (await showDialog(
       context: context,
-      builder: (context) => const LogoutDialog(),
+      builder: (context) => const QuitDialog(),
     )) ?? false;
   }
 
