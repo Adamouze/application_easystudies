@@ -15,7 +15,13 @@ class BilanContent extends StatelessWidget {
         cells: <DataCell>[
           const DataCell(Center(child: Text('1'))), // centrage du contenu
           const DataCell(Center(child: Text('12/07/2023'))),
-          const DataCell(Center(child: Text('7'))),
+          const DataCell(Center(
+            child: Image(
+              image: AssetImage('assets/smiley/1.png'),
+              height: 20,
+              alignment: Alignment.center,
+            ),
+          )),
           const DataCell(Center(child: Text('8'))),
           const DataCell(Center(child: Text('9'))),
           const DataCell(Center(child: Text('10'))),
