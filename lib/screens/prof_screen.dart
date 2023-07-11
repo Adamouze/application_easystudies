@@ -53,14 +53,21 @@ class ProfScreenState extends State<ProfScreen> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
+        final theme = Theme.of(context);
         return AlertDialog(
           content: SizedBox(
             width: double.maxFinite,
             child: ListView(
               children: <Widget>[
                 ListTile(
-                  leading: const Icon(Icons.child_care),
-                  title: const Text('Élève 1'),
+                  leading: Icon(
+                      Icons.child_care,
+                      color: theme.iconTheme.color,
+                  ),
+                  title: Text(
+                      'Élève 1',
+                      style: theme.textTheme.bodyLarge
+                  ),
                   onTap: () {
                     Navigator.of(context).pop();
                     setState(() {
@@ -69,8 +76,14 @@ class ProfScreenState extends State<ProfScreen> {
                   },
                 ),
                 ListTile(
-                  leading: const Icon(Icons.child_care),
-                  title: const Text('Élève 2'),
+                  leading: Icon(
+                      Icons.child_care,
+                      color: theme.iconTheme.color,
+                  ),
+                  title: Text(
+                      'Élève 2',
+                      style: theme.textTheme.bodyLarge
+                  ),
                   onTap: () {
                     Navigator.of(context).pop();
                     setState(() {
@@ -146,13 +159,9 @@ class ProfScreenState extends State<ProfScreen> {
                 _selectedIndex = index;
               });
             },
-
-
           ),
         ),
-
       ),
     );
   }
-
 }

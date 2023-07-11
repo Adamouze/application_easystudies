@@ -46,27 +46,33 @@ class MyApp extends StatelessWidget {
           title: 'EasyStudies',
           theme: ThemeData(
             colorScheme: ColorScheme.fromSeed(seedColor: Colors.orangeAccent).copyWith(
-              background: Colors.white,  //couleur de fond pour le mode clair
+              background: Colors.white,  // Couleur de fond pour le thème clair
               shadow: Colors.grey.withOpacity(0.5),
             ),
-            primaryColor: Colors.white,
+            primaryColor: Colors.white,  // Couleur secondaire du thème clair
             textTheme: const TextTheme(
               bodyLarge: TextStyle(
-                color: Colors.black,
+                color: Colors.black,  // Couleur du texte pour le thème clair
               ),
+            ),
+            iconTheme: const IconThemeData(
+              color: Colors.black, // Couleur des icones pour le thème clair
             ),
             useMaterial3: true,
           ),
           darkTheme: ThemeData(
             colorScheme: ColorScheme.fromSeed(seedColor: Colors.orangeAccent).copyWith(
-              background: Colors.grey[850],  //couleur de fond pour le mode sombre
+              background: Colors.grey[850],  // Couleur de fond pour le thème sombre
               shadow: Colors.grey[850],
             ),
-            primaryColor: Colors.black,
+            primaryColor: Colors.black,  // Couleur primaire du thème sombre
             textTheme: const TextTheme(
               bodyLarge: TextStyle(
-                color: Colors.white,
+                color: Colors.white,  // Couleur du texte pour le thème sombre
               ),
+            ),
+            iconTheme: const IconThemeData(
+              color: Colors.white, // Couleur des icones pour le thème sombre
             ),
             useMaterial3: true,
           ),

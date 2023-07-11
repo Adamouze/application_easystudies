@@ -83,80 +83,87 @@ class BilanContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: FractionallySizedBox(
-        widthFactor: 0.95,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            const SizedBox(height: 20),
-            Container(
-              decoration: BoxDecoration(
-                color: Colors.orangeAccent,
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(10),
-                  topRight: Radius.circular(10),
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.2),
-                    spreadRadius: 1,
-                    blurRadius: 2,
-                    offset: const Offset(0, 2), // changes position of shadow
+    return SingleChildScrollView(
+      child: Center(
+        child: FractionallySizedBox(
+          widthFactor: 0.95,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+
+              const SizedBox(height: 20),
+
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.orangeAccent,
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(10),
+                    topRight: Radius.circular(10),
                   ),
-                ],
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  'Bilans',
-                  style: TextStyle(
-                    color: Theme.of(context).primaryColor,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: 'NotoSans',
-                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.2),
+                      spreadRadius: 1,
+                      blurRadius: 2,
+                      offset: const Offset(0, 2), // changes position of shadow
+                    ),
+                  ],
                 ),
-              ),
-            ),
-            Container(
-              decoration: BoxDecoration(
-                color: Colors.grey[200],
-                borderRadius: const BorderRadius.only(
-                  bottomLeft: Radius.circular(10),
-                  bottomRight: Radius.circular(10),
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.2),
-                    spreadRadius: 1,
-                    blurRadius: 2,
-                    offset: const Offset(0, 2), // changes position of shadow
-                  ),
-                ],
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(8),
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: DataTable(
-                    dataRowMinHeight: 50,
-                    dataRowMaxHeight: 50, // ajouter la hauteur de ligne
-                    columnSpacing: 15, // ajuster l'espace entre les colonnes si nécessaire
-                    columns: const <DataColumn>[
-                      DataColumn(label: Text('Numero')),
-                      DataColumn(label: Text('Date')),
-                      DataColumn(label: Text('Global')),
-                      DataColumn(label: Text('Comportement')),
-                      DataColumn(label: Text('Assiduité')),
-                      DataColumn(label: Text('DM')),
-                      DataColumn(label: Text('Détails')),
-                    ],
-                    rows: bilansEleves[eleveId] ?? [], // Si l'élève n'a pas de bilans, affichez une liste vide
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    'Bilans',
+                    style: TextStyle(
+                      color: Theme.of(context).primaryColor,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'NotoSans',
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.grey[200],
+                  borderRadius: const BorderRadius.only(
+                    bottomLeft: Radius.circular(10),
+                    bottomRight: Radius.circular(10),
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.2),
+                      spreadRadius: 1,
+                      blurRadius: 2,
+                      offset: const Offset(0, 2), // changes position of shadow
+                    ),
+                  ],
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: DataTable(
+                      dataRowMinHeight: 50,
+                      dataRowMaxHeight: 50, // ajouter la hauteur de ligne
+                      columnSpacing: 15, // ajuster l'espace entre les colonnes si nécessaire
+                      columns: const <DataColumn>[
+                        DataColumn(label: Text('Numero')),
+                        DataColumn(label: Text('Date')),
+                        DataColumn(label: Text('Global')),
+                        DataColumn(label: Text('Comportement')),
+                        DataColumn(label: Text('Assiduité')),
+                        DataColumn(label: Text('DM')),
+                        DataColumn(label: Text('Détails')),
+                      ],
+                      rows: bilansEleves[eleveId] ?? [], // Si l'élève n'a pas de bilans, affichez une liste vide
+                    ),
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 20),
+
+            ],
+          ),
         ),
       ),
     );
@@ -174,7 +181,9 @@ class BilanScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(color: orangePerso, context: context),
-      body: BilanContent(eleveId: eleveId),
+      body: SingleChildScrollView(
+        child: BilanContent(eleveId: eleveId),
+      ),
     );
   }
 }
