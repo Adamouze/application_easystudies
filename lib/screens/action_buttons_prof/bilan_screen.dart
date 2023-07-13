@@ -1,13 +1,12 @@
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import '../../utilities/constantes.dart';
 import '../app_bar.dart';
 
 
 class EleveInfoBlock extends StatelessWidget {
-  // TODO: Ajouter les champs d'information nécessaires en tant que variables finales ici
-
   const EleveInfoBlock({Key? key}) : super(key: key);
 
   @override
@@ -270,29 +269,211 @@ class _BaseDeNotationBlockState extends State<BaseDeNotationBlock> {
 }
 
 
-class BilanBlock extends StatelessWidget {
-  // TODO: Ajouter les champs d'information nécessaires en tant que variables finales ici
 
+
+
+class BilanBlock extends StatefulWidget {
   const BilanBlock({Key? key}) : super(key: key);
 
   @override
+  _BilanBlockState createState() => _BilanBlockState();
+}
+
+class _BilanBlockState extends State<BilanBlock> {
+  DateTime _date = DateTime.now();
+  Map<String, bool> matieres = {
+    'Mathématiques': false,
+    'Français / Philosophie': false,
+    'Anglais': false,
+    'Physique / Chimie': false,
+    'SVT': false,
+    'Histoire / Géo': false,
+    'Comptabilité / Gestion': false,
+    'Autres': false,
+  };
+  String axes = '';
+  String pointsForts = '';
+  String commentaires = '';
+
+  @override
   Widget build(BuildContext context) {
-    return Container(
-      // TODO: Ajoutez ici le code pour construire votre bloc d'information
+    return FractionallySizedBox(
+      widthFactor: 0.95,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.orangeAccent,
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(10),
+                topRight: Radius.circular(10),
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.2),
+                  spreadRadius: 1,
+                  blurRadius: 2,
+                  offset: const Offset(0, 2), // changes position of shadow
+                ),
+              ],
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                'Bilan',
+                style: TextStyle(
+                  color: Theme.of(context).primaryColor,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'NotoSans',
+                ),
+              ),
+            ),
+          ),
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.grey[200],
+              borderRadius: const BorderRadius.only(
+                bottomLeft: Radius.circular(10),
+                bottomRight: Radius.circular(10),
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.2),
+                  spreadRadius: 1,
+                  blurRadius: 2,
+                  offset: const Offset(0, 2), // changes position of shadow
+                ),
+              ],
+            ),
+            child: Column(
+              children: <Widget>[
+                TextButton(
+                  onPressed: () async {
+                    final DateTime? picked = await showDatePicker(
+                      context: context,
+                      initialDate: _date,
+                      firstDate: DateTime(2023),
+                      lastDate: DateTime.now(),
+                    );
+                    if (picked != null && picked != _date)
+                      setState(() {
+                        _date = picked;
+                      });
+                  },
+                  child: TextField(
+                    enabled: false,
+                    decoration: InputDecoration(
+                      labelText: DateFormat('dd/MM/yyyy').format(_date),
+                      labelStyle: const TextStyle(color: Colors.black),
+                      suffixIcon: const Icon(
+                        Icons.calendar_month,
+                        color: orangePerso,
+                      ),
+                      border: const OutlineInputBorder(),
+                    ),
+                  ),
+                ),
+                Column(
+                  children: matieres.keys.map((String key) {
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 0.0), // adjust this value to control the space between the items
+                      child: Row(
+                        children: <Widget>[
+                          Checkbox(
+                            value: matieres[key],
+                            onChanged: (bool? value) {
+                              setState(() {
+                                matieres[key] = value ?? false;
+                              });
+                            },
+                          ),
+                          Text(
+                            key,
+                            style: const TextStyle(color: Colors.black),
+                          ),
+                        ],
+                      ),
+                    );
+                  }).toList(),
+                ),
+                TextField(
+                  decoration: const InputDecoration(
+                    labelText: 'Axes d\'amélioration',
+                    contentPadding: EdgeInsets.only(left: 10.0),
+                  ),
+                  style: const TextStyle(
+                    color: Colors.black, // change this color to your preference
+                  ),
+                  onChanged: (value) => setState(() => axes = value),
+                ),
+                TextField(
+                  decoration: const InputDecoration(
+                    labelText: 'Points forts',
+                    contentPadding: EdgeInsets.only(left: 10.0),
+                  ),
+                  style: const TextStyle(
+                    color: Colors.black, // change this color to your preference
+                  ),
+                  onChanged: (value) => setState(() => pointsForts = value),
+                ),
+                TextField(
+                  decoration: const InputDecoration(
+                    labelText: 'Commentaires',
+                    contentPadding: EdgeInsets.only(left: 10.0),
+                  ),
+                  style: const TextStyle(
+                    color: Colors.black, // change this color to your preference
+                  ),
+                  onChanged: (value) => setState(() => commentaires = value),
+                ),
+                const SizedBox(height: 10),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
 
 
-class SoumettreButton extends StatelessWidget {
-  // TODO: Ajouter les champs d'information nécessaires en tant que variables finales ici
 
+
+
+
+
+class SoumettreButton extends StatelessWidget {
   const SoumettreButton({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      // TODO: Ajoutez ici le code pour construire votre bloc d'information
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween, // This centers the two buttons
+      children: <Widget>[
+        const SizedBox(),
+        ElevatedButton.icon(
+          onPressed: () => Navigator.pop(context),
+          icon: const Icon(Icons.arrow_back),
+          label: const Text('Retour'),
+          style: ButtonStyle(
+            backgroundColor: MaterialStateProperty.all<Color>(Colors.orangeAccent),
+            foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+          ),
+        ),
+        ElevatedButton.icon(
+          onPressed: () {
+            // TODO : Ajouter le nouveau bilan dans la liste des bilans
+          },
+          icon: const Icon(Icons.check),
+          label: const Text('Ajouter'),
+          style: ButtonStyle(
+            backgroundColor: MaterialStateProperty.all<Color>(Colors.blue),
+            foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+          ),
+        ),
+        const SizedBox(),
+      ],
     );
   }
 }
@@ -309,27 +490,26 @@ class NewBilan extends StatefulWidget {
 }
 
 class _NewBilanState extends State<NewBilan> {
-  // TODO: Ajouter ici vos contrôleurs de champ de formulaire, vos variables d'état, etc.
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(color: orangePerso, context: context),
       body: const SingleChildScrollView(
-        child: Column(
-          children: [
-            SizedBox(height: 20),
-            EleveInfoBlock(),
-            SizedBox(height: 20),
-            BaseDeNotationBlock(),
-            SizedBox(height: 20),
-            BilanBlock(),
-            SizedBox(height: 20),
-            SoumettreButton(),
-            SizedBox(height: 20),
-            // TODO: Ajoutez ici vos autres blocs
-          ],
-        ),
+        child: Center(
+          child: Column(
+            children: [
+              SizedBox(height: 20),
+              EleveInfoBlock(),
+              SizedBox(height: 20),
+              BaseDeNotationBlock(),
+              SizedBox(height: 20),
+              BilanBlock(),
+              SizedBox(height: 20),
+              SoumettreButton(),
+              SizedBox(height: 20),
+            ],
+          ),
+        )
       ),
     );
   }
@@ -347,7 +527,7 @@ class _NewBilanState extends State<NewBilan> {
 class BilanContent extends StatelessWidget {
   final int eleveId;
 
-  final Map<int, List<DataRow>> bilansEleves = {
+  final Map<int, List<DataRow>> bilansEleves = { // FACTICE
     1: [
       DataRow(
         cells: <DataCell>[
@@ -514,7 +694,7 @@ class BilanContent extends StatelessWidget {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => NewBilan()),
+                        MaterialPageRoute(builder: (context) => const NewBilan()),
                       );
                     },
                     tooltip: "Ajout d'un bilan",
