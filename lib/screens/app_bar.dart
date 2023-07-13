@@ -1,4 +1,5 @@
 import 'package:EasyStudies/screens/login_screen.dart';
+import 'package:EasyStudies/utilities/constantes.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -99,7 +100,7 @@ class LogoutDialogState extends State<LogoutDialog> with SingleTickerProviderSta
           borderRadius: BorderRadius.circular(20.0),
           side: const BorderSide(color: Colors.white, width: 8),
         ),
-        backgroundColor: Colors.orangeAccent,
+        backgroundColor: orangePerso,
         title: const Text('Confirmation',
           style: TextStyle(
             color: Colors.white,
@@ -124,7 +125,7 @@ class LogoutDialogState extends State<LogoutDialog> with SingleTickerProviderSta
               onPressed: () => Navigator.pop(context, 'Non'),
               child: const Text('Non',
                 style: TextStyle(
-                  color: Colors.orangeAccent,
+                  color: orangePerso,
                   fontWeight: FontWeight.bold,
                   fontFamily: 'NotoSans',
                 ),
@@ -165,7 +166,7 @@ class LogoutDialogState extends State<LogoutDialog> with SingleTickerProviderSta
               },
               child: const Text('Oui',
                 style: TextStyle(
-                  color: Colors.orangeAccent,
+                  color: orangePerso,
                   fontWeight: FontWeight.bold,
                   fontFamily: 'NotoSans',
                 ),
@@ -254,7 +255,7 @@ class CustomAppBar extends PreferredSize {
             builder: (context, authState, _) {
               if (authState.isAuthenticated) {
                 return PopupMenuButton<int>(
-                  color: Colors.orangeAccent,
+                  color: orangePerso,
                   itemBuilder: (context) => [
                     PopupMenuItem(
                       value: 1,
@@ -339,13 +340,13 @@ class CustomAppBar extends PreferredSize {
                         children: [
                           Icon(
                             Icons.settings,
-                            color: Colors.orangeAccent,
+                            color: orangePerso,
                             size: 40,
                           ),
                           Text(
                             'Paramètres',
                             style: TextStyle(
-                              color: Colors.orangeAccent,
+                              color: orangePerso,
                               fontWeight: FontWeight.bold,
                               fontSize: 12,
                             ),
@@ -388,14 +389,14 @@ class CustomAppBar extends PreferredSize {
                           child: Icon(
                             Icons.account_circle_rounded,
                             size: 50,
-                            color: Colors.orangeAccent,
+                            color: orangePerso,
                           ),
                         ),
                         SizedBox(width: 0),  // Espacement entre l'icône et le texte
                         Text(  // Ajoutez un widget Text pour 'Se connecter'
                           'Connexion',
                           style: TextStyle(
-                            color: Colors.orangeAccent,  // Mettez la couleur que vous voulez
+                            color: orangePerso,  // Mettez la couleur que vous voulez
                             fontSize: 12,
                             fontFamily: 'NotoSans',
                             fontWeight: FontWeight.bold,// Ajustez la taille du texte

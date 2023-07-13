@@ -119,9 +119,6 @@ class EleveInfoBlock extends StatelessWidget {
 }
 
 
-
-
-
 class RatingCell extends StatefulWidget {
   final int value;
   final ValueChanged<int?> onChanged;
@@ -157,7 +154,6 @@ class BaseDeNotationBlock extends StatefulWidget {
   @override
   _BaseDeNotationBlockState createState() => _BaseDeNotationBlockState();
 }
-
 
 class _BaseDeNotationBlockState extends State<BaseDeNotationBlock> {
 
@@ -267,9 +263,6 @@ class _BaseDeNotationBlockState extends State<BaseDeNotationBlock> {
     );
   }
 }
-
-
-
 
 
 class BilanBlock extends StatefulWidget {
@@ -438,11 +431,6 @@ class _BilanBlockState extends State<BilanBlock> {
 }
 
 
-
-
-
-
-
 class SoumettreButton extends StatelessWidget {
   const SoumettreButton({Key? key}) : super(key: key);
 
@@ -477,9 +465,6 @@ class SoumettreButton extends StatelessWidget {
     );
   }
 }
-
-
-
 
 
 class NewBilan extends StatefulWidget {
@@ -517,95 +502,127 @@ class _NewBilanState extends State<NewBilan> {
 
 
 
-
-
-
-
-
-
-
-class BilanContent extends StatelessWidget {
+class DetailsContent extends StatelessWidget {
   final int eleveId;
 
-  final Map<int, List<DataRow>> bilansEleves = { // FACTICE
-    1: [
-      DataRow(
-        cells: <DataCell>[
-          const DataCell(Center(child: Text('1'))), // centrage du contenu
-          const DataCell(Center(child: Text('12/07/2023'))),
-          const DataCell(Center(child: smiley1)),
-          const DataCell(Center(child: smiley2)),
-          const DataCell(Center(child: smiley3)),
-          const DataCell(Center(child: smiley5)),
-          DataCell(
-            Center(
-              child: TextButton(
-                onPressed: () {
-                  // Navigation vers une autre page ou action
-                },
-                child: const Text('Détails'),
-              ),
-            ),
-          ),
-        ],
+  const DetailsContent({required this.eleveId, Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: orangePerso,
+        title: const Text('Détails'),
       ),
-      DataRow(
-        cells: <DataCell>[
-          const DataCell(Center(child: Text('2'))),
-          const DataCell(Center(child: Text('13/07/2023'))),
-          const DataCell(Center(child: smiley4)),
-          const DataCell(Center(child: smiley4)),
-          const DataCell(Center(child: smiley4)),
-          const DataCell(Center(child: smiley1)),
-          DataCell(
-            Center(
-              child: TextButton(
-                onPressed: () {
-                  // Navigation vers une autre page ou action
-                },
-                child: const Text('Détails'),
-              ),
-            ),
-          ),
-        ],
+      body: const Center(
+        child: Text("Salut bg"),
       ),
-    ],
-
-    2: [
-      DataRow(
-        cells: <DataCell>[
-          const DataCell(Center(child: Text('1'))), // centrage du contenu
-          const DataCell(Center(child: Text('12/07/2023'))),
-          const DataCell(Center(child: smiley5)),
-          const DataCell(Center(child: smiley4)),
-          const DataCell(Center(child: smiley4)),
-          const DataCell(Center(child: smiley2)),
-          DataCell(
-            Center(
-              child: TextButton(
-                onPressed: () {
-                  // Navigation vers une autre page ou action
-                },
-                child: const Text('Détails'),
-              ),
-            ),
-          ),
-        ],
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.pop(context);
+        },
+        tooltip: 'Retour',
+        child: const Icon(Icons.arrow_back),
       ),
-    ],
-    // Ajoutez plus d'élèves si nécessaire
-  };
+    );
+  }
+}
 
 
 
 
-
-
+class BilanContent extends StatefulWidget {
+  final int eleveId;
 
   BilanContent({required this.eleveId, Key? key}) : super(key: key);
 
   @override
+  _BilanContentState createState() => _BilanContentState();
+}
+
+class _BilanContentState extends State<BilanContent> {
+
+  @override
   Widget build(BuildContext context) {
+
+    final Map<int, List<DataRow>> bilansEleves = { // FACTICE
+      1: [
+        DataRow(
+          cells: <DataCell>[
+            const DataCell(Center(child: Text('1'))), // centrage du contenu
+            const DataCell(Center(child: Text('12/07/2023'))),
+            const DataCell(Center(child: smiley1)),
+            const DataCell(Center(child: smiley2)),
+            const DataCell(Center(child: smiley3)),
+            const DataCell(Center(child: smiley5)),
+            DataCell(
+              Center(
+                child: TextButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => DetailsContent(eleveId: widget.eleveId)),
+                    );
+                  },
+                  child: const Text('Détails'),
+                ),
+              ),
+            ),
+          ],
+        ),
+        DataRow(
+          cells: <DataCell>[
+            const DataCell(Center(child: Text('2'))),
+            const DataCell(Center(child: Text('13/07/2023'))),
+            const DataCell(Center(child: smiley4)),
+            const DataCell(Center(child: smiley4)),
+            const DataCell(Center(child: smiley4)),
+            const DataCell(Center(child: smiley1)),
+            DataCell(
+              Center(
+                child: TextButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => DetailsContent(eleveId: widget.eleveId)),
+                    );
+                  },
+                  child: const Text('Détails'),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ],
+
+      2: [
+        DataRow(
+          cells: <DataCell>[
+            const DataCell(Center(child: Text('1'))), // centrage du contenu
+            const DataCell(Center(child: Text('12/07/2023'))),
+            const DataCell(Center(child: smiley5)),
+            const DataCell(Center(child: smiley4)),
+            const DataCell(Center(child: smiley4)),
+            const DataCell(Center(child: smiley2)),
+            DataCell(
+              Center(
+                child: TextButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => DetailsContent(eleveId: widget.eleveId)),
+                    );
+                  },
+                  child: const Text('Détails'),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ],
+      // Ajoutez plus d'élèves si nécessaire
+    };
+
     return SingleChildScrollView(
       child: Center(
         child: FractionallySizedBox(
@@ -677,7 +694,7 @@ class BilanContent extends StatelessWidget {
                         DataColumn(label: Text('DM')),
                         DataColumn(label: Text('Détails')),
                       ],
-                      rows: bilansEleves[eleveId] ?? [], // Si l'élève n'a pas de bilans, affichez une liste vide
+                      rows: bilansEleves[widget.eleveId] ?? [], // Si l'élève n'a pas de bilans, affichez une liste vide
                     ),
                   ),
                 ),
@@ -714,4 +731,6 @@ class BilanContent extends StatelessWidget {
     );
   }
 }
+
+
 
