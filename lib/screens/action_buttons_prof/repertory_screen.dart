@@ -2,8 +2,8 @@
 import 'package:flutter/material.dart';
 import '../../utilities/constantes.dart';
 
-class HistoryScreen extends StatelessWidget {
-  const HistoryScreen({Key? key}) : super(key: key);
+class RepertoryScreen extends StatelessWidget {
+  const RepertoryScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

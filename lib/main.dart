@@ -45,6 +45,11 @@ class MyApp extends StatelessWidget {
         return MaterialApp(
           title: 'EasyStudies',
           theme: ThemeData(
+            textSelectionTheme: const TextSelectionThemeData(
+              cursorColor: Colors.orangeAccent,
+              selectionColor: Colors.orangeAccent,
+              selectionHandleColor: Colors.orangeAccent,
+            ),
             colorScheme: ColorScheme.fromSeed(seedColor: Colors.orangeAccent).copyWith(
               background: Colors.white,  //couleur de fond pour le mode clair
               shadow: Colors.grey.withOpacity(0.5),

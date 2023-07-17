@@ -19,7 +19,7 @@ class _QRCodeScreenState extends State<QRCodeScreen> {
   @override
   Widget build(BuildContext context) {
     double diameter = MediaQuery.of(context).size.width * 0.9;
-    String data = 'https://www.youtube.com/watch?v=ZZ5LpwO-An4&list=PLDLnJA_LGxsJjv9-9ZmQtuOr5YuqK1ah6';
+    String data = 'EASYSTUDIES';
 
     return Scaffold(
       backgroundColor: orangePerso,
@@ -47,7 +47,7 @@ class _QRCodeScreenState extends State<QRCodeScreen> {
                     )
                         : Center(
                       child: BarcodeWidget(
-                        barcode: Barcode.code128(),  // Use appropriate barcode encoding
+                        barcode: Barcode.code39(),  // Use appropriate barcode encoding
                         data: data,
                         width: diameter * 0.7,
                         height: diameter * 0.3,

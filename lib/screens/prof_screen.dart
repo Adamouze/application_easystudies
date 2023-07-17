@@ -7,10 +7,8 @@ import '../utilities/constantes.dart';
 import 'app_bar.dart';
 import 'body.dart';
 
-import 'action_buttons_prof/attendance_history_screen.dart';
-import 'action_buttons_prof/bilan_screen.dart';
-import 'action_buttons_prof/comments_screen.dart';
-import 'action_buttons_prof/notes_screen.dart';
+import 'action_buttons_prof/repertory_screen.dart';
+import 'action_buttons_prof/cours_screen.dart';
 
 class HomeContent extends StatelessWidget {
   const HomeContent({Key? key}) : super(key: key);
@@ -30,12 +28,10 @@ class ProfScreen extends StatefulWidget {
 
 class ProfScreenState extends State<ProfScreen> {
   int _selectedIndex = 0;
-  static const List<Widget> _widgetOptions = <Widget>[
-    HomeContent(),
-    NoteScreen(),
-    BilanScreen(),
-    CommentScreen(),
-    HistoryScreen(),
+  static final List<Widget> _widgetOptions = <Widget>[
+    const HomeContent(),
+    const RepertoryScreen(),
+    const CoursScreen(),
   ];
 
   Future<bool> _onWillPop() async {
@@ -71,20 +67,12 @@ class ProfScreenState extends State<ProfScreen> {
                 label: 'Accueil',
               ),
               BottomNavigationBarItem(
-                icon: Icon(Icons.check_circle),
-                label: 'Notes',
+                icon: Icon(Icons.perm_contact_cal_sharp),
+                label: 'Annuaire',
               ),
               BottomNavigationBarItem(
-                icon: Icon(Icons.fact_check),
-                label: 'Bilan',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.comment),
-                label: 'Commentaires',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.history),
-                label: 'Historique',
+                icon: Icon(Icons.class_),
+                label: 'Cours',
               ),
             ],
             currentIndex: _selectedIndex,

@@ -11,7 +11,7 @@ class Scanner {
   Future<String?> scanBarcode() async {
     String? scanBarcode;
     try {
-      String scanBarcode = await FlutterBarcodeScanner.scanBarcode(
+      scanBarcode = await FlutterBarcodeScanner.scanBarcode(
         "#ff9100",
         "Cancel",
         true,
