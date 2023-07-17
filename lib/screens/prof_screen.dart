@@ -110,6 +110,7 @@ class ProfScreenState extends State<ProfScreen> {
             backgroundColor: Colors.orangeAccent,
             unselectedItemColor: Colors.white,
             selectedItemColor: Colors.blueAccent,
+            currentIndex: _selectedIndex, // Ajoutez cette ligne
             items: const <BottomNavigationBarItem>[
               BottomNavigationBarItem(
                 icon: Icon(Icons.home),
@@ -143,6 +144,7 @@ class ProfScreenState extends State<ProfScreen> {
             },
           ),
         ),
+
       ),
     );
   }

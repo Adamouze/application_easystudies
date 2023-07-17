@@ -11,31 +11,21 @@ Eleve createEleve() {
 Bilan createBilan() {
   Bilan bilan_exemple = Bilan(
     "17/07/2023",  // Date
+    "1",
+    "3",  // Behavior
+    "2",  // Assiduity
+    "4", // Homeworks
     "Biology, Chemistry, Physics",  // Subjects
     "Focus more on practical examples",  // To improve
     "Good understanding of theory",  // Good
     "Keep up the good work",  // Comment
-    "1",  // Global
-    "3",  // Competencies
-    "3",  // Assiduity
-    "4"  // Homeworks
   );
   return bilan_exemple;
 }
 
 List<Eleve> createEleves() {
   // Création du bilan
-  Bilan bilan_exemple = Bilan(
-      "17/07/2023",  // Date
-      "Biology, Chemistry, Physics",  // Subjects
-      "Focus more on practical examples",  // To improve
-      "Good understanding of theory",  // Good
-      "Keep up the good work",  // Comment
-      "1",  // Global
-      "3",  // Competencies
-      "3",  // Assiduity
-      "4"  // Homeworks
-  );
+  Bilan bilan_exemple = createBilan();
 
   // Création du premier élève
   Eleve eleve1 = Eleve.basic("H9GZH3", "GAJENDRAN", "Ajanthan", "Term G", "M");

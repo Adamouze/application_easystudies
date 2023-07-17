@@ -141,35 +141,27 @@ class Note {
 
 class Bilan {
   String _date = "";
-  String _subjects = "";
-  String _toImprove = "";
-  String _good = "";
-  String _comment = "";
   String _global = "";
   String _comp = "";
   String _assidu = "";
   String _dm = "";
+  String _subjects = "";
+  String _toImprove = "";
+  String _good = "";
+  String _comment = "";
 
   Bilan(this._date, this._global, this._comp, this._assidu, this._dm,
-      this._subjects, this._comment, this._good, this._toImprove);
-
-  String get dm => _dm;
-
-  String get assidu => _assidu;
-
-  String get comp => _comp;
-
-  String get global => _global;
-
-  String get comment => _comment;
-
-  String get good => _good;
-
-  String get toImprove => _toImprove;
-
-  String get subjects => _subjects;
+      this._subjects, this._toImprove, this._good, this._comment);
 
   String get date => _date;
+  String get global => _global;
+  String get comp => _comp;
+  String get assidu => _assidu;
+  String get dm => _dm;
+  String get subjects => _subjects;
+  String get toImprove => _toImprove;
+  String get good => _good;
+  String get comment => _comment;
 }
 
 class Commentaire {
@@ -262,15 +254,15 @@ Future<List<Commentaire>> get_comments(Eleve eleve, List<Commentaire> _commentai
 
 Widget getSmiley(String rating) {
   switch (rating) {
-    case '1':
+    case "1":
       return smiley1;
-    case '2':
+    case "2":
       return smiley2;
-    case '3':
+    case "3":
       return smiley3;
-    case '4':
+    case "4":
       return smiley4;
-    case '5':
+    case "5":
       return smiley5;
     default:
       return Container();
