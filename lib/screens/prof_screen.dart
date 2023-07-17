@@ -3,6 +3,8 @@
 import 'package:flutter/material.dart';
 
 import '../utilities/constantes.dart';
+import '../utils.dart';
+import '../exemples.dart';
 
 import 'app_bar.dart';
 import 'body.dart';
@@ -30,13 +32,15 @@ class ProfScreen extends StatefulWidget {
 
 class ProfScreenState extends State<ProfScreen> {
   int _selectedIndex = 0;
-  int? _eleveId; // Ajoutez cette ligne
+  Eleve? _eleve;
+  final List<Eleve> _eleves = createEleves(); // Liste de tous les élèves
+  Key key = UniqueKey(); // Ajoutez cette ligne
 
-  List<Widget> get _widgetOptions {
+  List<Widget> _widgetOptions() {
     return <Widget>[
       const HomeContent(),
       const NoteScreen(),
-      _eleveId != null ? BilanContent(eleveId: _eleveId!) : Container(),  // Affiche BilanContent seulement si _eleveId est défini
+      _eleve == null ? Container() : BilanContent(key: key, eleve: _eleve!),
       const CommentScreen(),
       const HistoryScreen(),
     ];
@@ -58,52 +62,30 @@ class ProfScreenState extends State<ProfScreen> {
           content: SizedBox(
             width: double.maxFinite,
             child: ListView(
-              children: <Widget>[
-                ListTile(
-                  leading: Icon(
-                      Icons.child_care,
-                      color: theme.iconTheme.color,
-                  ),
-                  title: Text(
-                      'Élève 1',
-                      style: theme.textTheme.bodyLarge
-                  ),
-                  onTap: () {
-                    Navigator.of(context).pop();
-                    setState(() {
-                      _eleveId = 1; // Mettez à jour _eleveId lorsque l'utilisateur sélectionne un élève
-                    });
-                  },
+              children: _eleves.map((eleve) => ListTile(
+                leading: Icon(
+                  Icons.child_care,
+                  color: theme.iconTheme.color,
                 ),
-                ListTile(
-                  leading: Icon(
-                      Icons.child_care,
-                      color: theme.iconTheme.color,
-                  ),
-                  title: Text(
-                      'Élève 2',
-                      style: theme.textTheme.bodyLarge
-                  ),
-                  onTap: () {
-                    Navigator.of(context).pop();
-                    setState(() {
-                      _eleveId = 2; // Mettez à jour _eleveId lorsque l'utilisateur sélectionne un élève
-                    });
-                  },
+                title: Text(
+                    eleve.nom,
+                    style: theme.textTheme.bodyLarge
                 ),
-                // Ajouter autant de ListTile que d'élèves
-              ],
+                onTap: () {
+                  Navigator.of(context).pop();
+                  setState(() {
+                    _eleve = eleve; // Mettez à jour _eleve avec l'élève sélectionné
+                    key = UniqueKey(); // Générez une nouvelle clé unique à chaque fois que vous changez d'élève
+                    _selectedIndex = 2; // Mettez à jour _selectedIndex avec le nouvel index
+                  });
+                },
+              )).toList(),
             ),
           ),
         );
       },
     );
   }
-
-
-
-
-
 
 
   @override
@@ -116,7 +98,7 @@ class ProfScreenState extends State<ProfScreen> {
         appBar: CustomAppBar(color: orangePerso, context: context),
         body: Stack(
           children: <Widget>[
-            _widgetOptions.elementAt(_selectedIndex),
+            _widgetOptions().elementAt(_selectedIndex),
           ],
         ),
         bottomNavigationBar: Theme(
@@ -150,14 +132,14 @@ class ProfScreenState extends State<ProfScreen> {
                 label: 'Historique',
               ),
             ],
-            currentIndex: _selectedIndex,
             onTap: (index) {
               if (index == 2) {
                 _showDialog(context);
+              } else {
+                setState(() {
+                  _selectedIndex = index;
+                });
               }
-              setState(() {
-                _selectedIndex = index;
-              });
             },
           ),
         ),

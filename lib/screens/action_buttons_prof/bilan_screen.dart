@@ -1,122 +1,12 @@
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../../utilities/constantes.dart';
+import 'details_bilan.dart';
 import '../app_bar.dart';
 
+import '../../utils.dart';
 
-class EleveInfoBlock extends StatelessWidget {
-  const EleveInfoBlock({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return FractionallySizedBox(
-      widthFactor: 0.95,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          Container(
-            decoration: BoxDecoration(
-              color: Colors.orangeAccent,
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(10),
-                topRight: Radius.circular(10),
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.2),
-                  spreadRadius: 1,
-                  blurRadius: 2,
-                  offset: const Offset(0, 2), // changes position of shadow
-                ),
-              ],
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                'Élève',
-                style: TextStyle(
-                  color: Theme.of(context).primaryColor,
-                  fontWeight: FontWeight.bold,
-                  fontFamily: 'NotoSans',
-                ),
-              ),
-            ),
-          ),
-          Container(
-            decoration: BoxDecoration(
-              color: Colors.grey[200],
-              borderRadius: const BorderRadius.only(
-                bottomLeft: Radius.circular(10),
-                bottomRight: Radius.circular(10),
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.2),
-                  spreadRadius: 1,
-                  blurRadius: 2,
-                  offset: const Offset(0, 2), // changes position of shadow
-                ),
-              ],
-            ),
-            child: const Padding(
-              padding: EdgeInsets.all(8),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Expanded(
-                    flex: 1,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Text("Identifiant : "),
-                        Text("Nom : "),
-                        Text("Prénom : "),
-                        Text("Civilité : "),
-                        Text("Date de n. : "),
-                        Text("Classe : "),
-                        Text("Int / Ext : "),
-                        Text("Etat : "),
-                      ],
-                    ),
-                  ),
-                  Expanded(
-                    flex: 1,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Text("H9GZH3"),
-                        Text("GAJENDRAN"),
-                        Text("Ajanthan"),
-                        Text("M"),
-                        Text("03/03/2005"),
-                        Text("Term G"),
-                        Text("CTEF Admin"),
-                        Text(
-                          "Active",
-                          style: TextStyle(
-                              color: Colors.green
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Expanded(
-                    flex: 1,
-                    child: Image(
-                      image: AssetImage('assets/smiley/1.png'),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
 
 
 class RatingCell extends StatefulWidget {
@@ -132,10 +22,10 @@ class RatingCell extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _RatingCellState createState() => _RatingCellState();
+  RatingCellState createState() => RatingCellState();
 }
 
-class _RatingCellState extends State<RatingCell> {
+class RatingCellState extends State<RatingCell> {
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -152,10 +42,10 @@ class BaseDeNotationBlock extends StatefulWidget {
   const BaseDeNotationBlock({Key? key}) : super(key: key);
 
   @override
-  _BaseDeNotationBlockState createState() => _BaseDeNotationBlockState();
+  BaseDeNotationBlockState createState() => BaseDeNotationBlockState();
 }
 
-class _BaseDeNotationBlockState extends State<BaseDeNotationBlock> {
+class BaseDeNotationBlockState extends State<BaseDeNotationBlock> {
 
   int _groupValue1 = 0;
   int _groupValue2 = 0;
@@ -269,10 +159,10 @@ class BilanBlock extends StatefulWidget {
   const BilanBlock({Key? key}) : super(key: key);
 
   @override
-  _BilanBlockState createState() => _BilanBlockState();
+  BilanBlockState createState() => BilanBlockState();
 }
 
-class _BilanBlockState extends State<BilanBlock> {
+class BilanBlockState extends State<BilanBlock> {
   DateTime _date = DateTime.now();
   Map<String, bool> matieres = {
     'Mathématiques': false,
@@ -468,30 +358,32 @@ class SoumettreButton extends StatelessWidget {
 
 
 class NewBilan extends StatefulWidget {
-  const NewBilan({Key? key}) : super(key: key);
+  final Eleve eleve;
+
+  const NewBilan({required this.eleve, Key? key}) : super(key: key);
 
   @override
-  _NewBilanState createState() => _NewBilanState();
+  NewBilanState createState() => NewBilanState();
 }
 
-class _NewBilanState extends State<NewBilan> {
+class NewBilanState extends State<NewBilan> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(color: orangePerso, context: context),
-      body: const SingleChildScrollView(
+      body: SingleChildScrollView(
         child: Center(
           child: Column(
             children: [
-              SizedBox(height: 20),
-              EleveInfoBlock(),
-              SizedBox(height: 20),
-              BaseDeNotationBlock(),
-              SizedBox(height: 20),
-              BilanBlock(),
-              SizedBox(height: 20),
-              SoumettreButton(),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
+              EleveInfoBlock(eleve: widget.eleve),
+              const SizedBox(height: 20),
+              const BaseDeNotationBlock(),
+              const SizedBox(height: 20),
+              const BilanBlock(),
+              const SizedBox(height: 20),
+              const SoumettreButton(),
+              const SizedBox(height: 20),
             ],
           ),
         )
@@ -502,127 +394,60 @@ class _NewBilanState extends State<NewBilan> {
 
 
 
-class DetailsContent extends StatelessWidget {
-  final int eleveId;
-
-  const DetailsContent({required this.eleveId, Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: orangePerso,
-        title: const Text('Détails'),
-      ),
-      body: const Center(
-        child: Text("Salut bg"),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.pop(context);
-        },
-        tooltip: 'Retour',
-        child: const Icon(Icons.arrow_back),
-      ),
-    );
-  }
-}
-
-
-
-
 class BilanContent extends StatefulWidget {
-  final int eleveId;
+  final Eleve eleve;
 
-  BilanContent({required this.eleveId, Key? key}) : super(key: key);
+  const BilanContent({required this.eleve, Key? key}) : super(key: key);
 
   @override
-  _BilanContentState createState() => _BilanContentState();
+  BilanContentState createState() => BilanContentState();
 }
 
-class _BilanContentState extends State<BilanContent> {
+class BilanContentState extends State<BilanContent> {
+
+  Map<String, List<DataRow>> bilanRows = {};
+
+  @override
+  void initState() {
+    super.initState();
+    bilanRows = createBilanRows(widget.eleve);
+  }
+
+  Map<String, List<DataRow>> createBilanRows(Eleve eleve) {
+    Map<String, List<DataRow>> bilanRows = {};
+
+    for (int i = 0; i < eleve.bilans.length; i++) {
+      Bilan bilan = eleve.bilans[i];
+      DataRow row = DataRow(
+        cells: <DataCell>[
+          DataCell(Center(child: Text((i+1).toString()))), // centrage du contenu
+          DataCell(Center(child: Text(bilan.date))),
+          DataCell(Center(child: getSmiley(bilan.global))),
+          DataCell(Center(child: getSmiley(bilan.comp))),
+          DataCell(Center(child: getSmiley(bilan.assidu))),
+          DataCell(Center(child: getSmiley(bilan.dm))),
+          DataCell(
+            Center(
+              child: TextButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => DetailsContent(eleve: eleve, bilan: bilan)),
+                  );
+                },
+                child: const Text('Détails'),
+              ),
+            ),
+          ),
+        ],
+      );
+      bilanRows[eleve.identifiant] = [...?bilanRows[eleve.identifiant], row];
+    }
+    return bilanRows;
+  }
 
   @override
   Widget build(BuildContext context) {
-
-    final Map<int, List<DataRow>> bilansEleves = { // FACTICE
-      1: [
-        DataRow(
-          cells: <DataCell>[
-            const DataCell(Center(child: Text('1'))), // centrage du contenu
-            const DataCell(Center(child: Text('12/07/2023'))),
-            const DataCell(Center(child: smiley1)),
-            const DataCell(Center(child: smiley2)),
-            const DataCell(Center(child: smiley3)),
-            const DataCell(Center(child: smiley5)),
-            DataCell(
-              Center(
-                child: TextButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => DetailsContent(eleveId: widget.eleveId)),
-                    );
-                  },
-                  child: const Text('Détails'),
-                ),
-              ),
-            ),
-          ],
-        ),
-        DataRow(
-          cells: <DataCell>[
-            const DataCell(Center(child: Text('2'))),
-            const DataCell(Center(child: Text('13/07/2023'))),
-            const DataCell(Center(child: smiley4)),
-            const DataCell(Center(child: smiley4)),
-            const DataCell(Center(child: smiley4)),
-            const DataCell(Center(child: smiley1)),
-            DataCell(
-              Center(
-                child: TextButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => DetailsContent(eleveId: widget.eleveId)),
-                    );
-                  },
-                  child: const Text('Détails'),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ],
-
-      2: [
-        DataRow(
-          cells: <DataCell>[
-            const DataCell(Center(child: Text('1'))), // centrage du contenu
-            const DataCell(Center(child: Text('12/07/2023'))),
-            const DataCell(Center(child: smiley5)),
-            const DataCell(Center(child: smiley4)),
-            const DataCell(Center(child: smiley4)),
-            const DataCell(Center(child: smiley2)),
-            DataCell(
-              Center(
-                child: TextButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => DetailsContent(eleveId: widget.eleveId)),
-                    );
-                  },
-                  child: const Text('Détails'),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ],
-      // Ajoutez plus d'élèves si nécessaire
-    };
-
     return SingleChildScrollView(
       child: Center(
         child: FractionallySizedBox(
@@ -694,7 +519,7 @@ class _BilanContentState extends State<BilanContent> {
                         DataColumn(label: Text('DM')),
                         DataColumn(label: Text('Détails')),
                       ],
-                      rows: bilansEleves[widget.eleveId] ?? [], // Si l'élève n'a pas de bilans, affichez une liste vide
+                      rows: bilanRows[widget.eleve.identifiant] ?? [], // Si l'élève n'a pas de bilans, affichez une liste vide
                     ),
                   ),
                 ),
@@ -711,7 +536,7 @@ class _BilanContentState extends State<BilanContent> {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => const NewBilan()),
+                        MaterialPageRoute(builder: (context) => NewBilan(eleve: widget.eleve)),
                       );
                     },
                     tooltip: "Ajout d'un bilan",
