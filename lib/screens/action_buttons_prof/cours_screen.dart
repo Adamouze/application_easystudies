@@ -12,99 +12,198 @@ class CourseDialog extends StatefulWidget {
   _CourseDialogState createState() => _CourseDialogState();
 }
 
-class _CourseDialogState extends State<CourseDialog> {
+class _CourseDialogState extends State<CourseDialog> with SingleTickerProviderStateMixin {
   final _formKey = GlobalKey<FormState>();
   String _selectedLocation = "Paris";
   DateTime _selectedDate = DateTime.now();
   final TextEditingController _dateController = TextEditingController();
 
+  late final AnimationController _controller;
+  late final Animation<Offset> _offsetAnimation;
+
+
   @override
   void initState() {
     super.initState();
     _dateController.text = DateFormat('dd/MM/yyyy').format(_selectedDate);
+    _controller = AnimationController(
+      duration: const Duration(seconds: 1),
+      vsync: this,
+    )
+      ..forward();
+
+    _offsetAnimation = Tween<Offset>(
+      begin: const Offset(0.0, -1.0),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeInOut,
+    ));
+
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _controller.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Dialog(
-      child: Container(
-        padding: const EdgeInsets.all(20.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              const Text(
-                'Ajout d\'un cours',
-                style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 20.0),
-              DropdownButtonFormField<String>(
-                decoration: const InputDecoration(
-                  labelText: 'Lieu',
+    return SlideTransition(
+      position: _offsetAnimation,
+      child: Dialog(
+        insetPadding: const EdgeInsets.all(20),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20.0),
+          side: const BorderSide(color: Colors.white, width: 8),
+        ),
+        child: Container(
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            color: Colors.orangeAccent,
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                const Text(
+                  'Ajout d\'un cours',
+                  style: TextStyle(
+                    fontFamily: 'NotoSans',
+                    color: Colors.white,
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-                items: ['Paris', 'Villeneuve Saint-Georges'].map((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value),
-                  );
-                }).toList(),
-                onChanged: (String? newValue) {
-                  setState(() {
-                    _selectedLocation = newValue!;
-                  });
-                },
-                validator: (value) {
-                  if (value == null) {
-                    return 'Veuillez sélectionner un lieu';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 20.0),
-              TextFormField(
-                controller: _dateController,
-                decoration: const InputDecoration(
-                  labelText: 'Date',
-                ),
-                readOnly: true,
-                onTap: () async {
-                  final date = await showDatePicker(
-                    context: context,
-                    initialDate: DateTime.now(),
-                    firstDate: DateTime(2000),
-                    lastDate: DateTime(2100),
-                  );
-                  if (date != null) {
+                const SizedBox(height: 15),
+                DropdownButtonFormField<String>(
+                  decoration: const InputDecoration(
+                    fillColor: Colors.white,
+                    filled: true,
+                    labelText: 'Lieu',
+                    labelStyle: TextStyle(
+                      color: Colors.orangeAccent,
+                      fontFamily: 'NotoSans',
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
+                    prefixIcon: Icon(Icons.location_on, color: Colors.orangeAccent),
+                  ),
+                  items: ['Paris', 'Villeneuve Saint-Georges'].map((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value, style: const TextStyle(fontWeight: FontWeight.normal),),
+                    );
+                  }).toList(),
+                  onChanged: (String? newValue) {
                     setState(() {
-                      _selectedDate = date;
-                      _dateController.text = DateFormat('dd/MM/yyyy').format(date);
+                      _selectedLocation = newValue!;
                     });
-                  }
-                },
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Veuillez entrer une date';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 20.0),
-              ElevatedButton(
-                child: const Text('Ajouter'),
-                onPressed: () {
-                  if (_formKey.currentState!.validate()) {
-                    widget.addCourse(_selectedLocation, _selectedDate);
-                    Navigator.of(context).pop();
-                  }
-                },
-              ),
-            ],
+                  },
+                  validator: (value) {
+                    if (value == null) {
+                      return 'Veuillez sélectionner un lieu';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 15),
+                TextFormField(
+                  controller: _dateController,
+                  decoration: const InputDecoration(
+                    fillColor: Colors.white,
+                    filled: true,
+                    labelText: 'Date',
+                    labelStyle: TextStyle(
+                      color: Colors.orangeAccent,
+                      fontFamily: 'NotoSans',
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
+                    prefixIcon: Icon(Icons.calendar_today, color: Colors.orangeAccent),
+                  ),
+                  readOnly: true,
+                  onTap: () async {
+                    final date = await showDatePicker(
+                      context: context,
+                      initialDate: DateTime.now(),
+                      firstDate: DateTime(2000),
+                      lastDate: DateTime(2100),
+                    );
+                    if (date != null) {
+                      setState(() {
+                        _selectedDate = date;
+                        _dateController.text = DateFormat('dd/MM/yyyy').format(date);
+                      });
+                    }
+                  },
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Veuillez entrer une date';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 20.0),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    TextButton(
+                      style: TextButton.styleFrom(
+                        backgroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                      ),
+                      child: const Text('Annuler',
+                        style: TextStyle(
+                          fontFamily: 'NotoSans',
+                          color: Colors.orangeAccent,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                    const SizedBox(width: 10),
+                    TextButton(
+                      style: TextButton.styleFrom(
+                        backgroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                      ),
+                      child: const Text('Ajouter',
+                        style: TextStyle(
+                          fontFamily: 'NotoSans',
+                          color: Colors.orangeAccent,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      onPressed: () {
+                        if (_formKey.currentState!.validate()) {
+                          widget.addCourse(_selectedLocation, _selectedDate);
+                          Navigator.of(context).pop();
+                        }
+                      },
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
     );
   }
+
+
+
 }
 
 class CoursScreen extends StatefulWidget {
@@ -206,17 +305,7 @@ class _CoursScreenState extends State<CoursScreen> {
                 return Card(
                   color: Colors.orangeAccent,
                   child: ListTile(
-                    leading: Container(
-                      width: 70, // adjust width of the image
-                      height: 50, // adjust height of the image
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10), // circular border
-                        image: const DecorationImage(
-                          image: AssetImage('assets/images/logo.png'),
-                          fit: BoxFit.cover, // to cover the entire container with the image
-                        ),
-                      ),
-                    ),
+                    leading: const Icon(Icons.book, color: Colors.white),
                     title: Text(reversedList[index],
                       style: const TextStyle(
                         color: Colors.white,

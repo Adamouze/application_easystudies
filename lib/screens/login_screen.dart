@@ -1,79 +1,13 @@
-// ignore_for_file: library_private_types_in_public_api
+// ignore_for_file: library_private_types_in_public_api, use_build_context_synchronously
+
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../logs/liste_identifiant_test.dart';
+
 import '../logs/auth_stat.dart';
-
-
-/*
-
-class LoginScreen extends StatefulWidget {
-  @override
-  _LoginScreenState createState() => _LoginScreenState();
-}
-
-class _LoginScreenState extends State<LoginScreen> {
-  TextEditingController _identifier = new TextEditingController();
-  TextEditingController _password = new TextEditingController();
-
-  Future<void> _login() async {
-    try {
-      final response = await http.post(
-        Uri.parse("<TODO par Stéphane>"),
-        body: {
-          "_identifier": _identifier.text,
-          "_password": _password.text,
-        },
-      );
-
-      if (response.statusCode == 200) {
-        var jsonData = json.decode(response.body);
-
-        if (jsonData["_result"] == "Data Matched") {
-          addIdentifierToSF(jsonData["_identifier"]);
-
-          if (jsonData["_userType"] == "prof") {
-            print("Connexion PROF");
-            Navigator.push(
-              context,
-              new MaterialPageRoute(
-                builder: (context) => StudentsList(title: "EasyStudies"),
-              ),
-            );
-          } else if (jsonData["_userType"] == "eleve") {
-            print("Connexion ELEVE");
-            Navigator.push(
-              context,
-              new MaterialPageRoute(
-                builder: (context) => FicheEleve(Eleve.id(jsonData["_identifier"])),
-              ),
-            );
-          } else if (jsonData["_userType"] == "super_user") {
-            print("Connexion SUPER USER");
-            // Naviguer vers la page de l'utilisateur super
-            // Replacez SuperUserScreen par la page de l'utilisateur super
-            Navigator.push(
-              context,
-              new MaterialPageRoute(
-                builder: (context) => SuperUserScreen(),
-              ),
-            );
-          }
-        }
-      } else {
-        print('Erreur du serveur : ${response.statusCode}');
-      }
-    } catch (e) {
-      print('Une erreur s\'est produite pendant la requête HTTP : $e');
-    }
-  }
-}
-
-*/
-
-
+import 'package:http/http.dart' as http;
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -87,75 +21,74 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
   String _username = '';
   String _password = '';
 
-  String? getUserType(String username, String password) {
-    if (listeIdentifiantsEleves.any((identifiant) =>
-    identifiant['username'] == username &&
-        identifiant['password'] == password)) {
-      return 'eleve';
-    }
-    if (listeIdentifiantsProfs.any((identifiant) =>
-    identifiant['username'] == username &&
-        identifiant['password'] == password)) {
-      return 'prof';
-    }
-    if (listeIdentifiantsSuperUsers.any((identifiant) =>
-    identifiant['username'] == username &&
-        identifiant['password'] == password)) {
-      return 'super_user';
-    }
-    return null;
-  }
+  void tryLogin() async {
 
-  void tryLogin() {
     String username = _username;
     String password = _password;
-    String? userType = getUserType(username, password);
-    print('getUserType returned: $userType');
-    if (userType != null) {
-      // ici, naviguez vers la page d'accueil et affichez un message de bienvenue
-      Navigator.of(context).pushNamed('/$userType');
-      // Mis à jour pour définir l'état d'authentification
-      Provider.of<AuthState>(context, listen: false).setAuthenticationStatus(true,userType);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(10),
-              topRight: Radius.circular(10),
+
+    final response = await http.get(Uri.parse('https://app.easystudies.fr/api/login.php?_token=&_login=$username&_pwd=$password'));
+
+    if(response.statusCode == 200) {
+      Map<String, dynamic> jsonResponse = jsonDecode(response.body);
+      if (jsonResponse['_valid']) {
+        String userType;
+        switch (jsonResponse['_access']) {
+          case 1:
+            userType = 'eleve';
+            break;
+          case 2:
+            userType = 'prof';
+            break;
+          default:
+            userType = 'home';
+        }
+        Navigator.of(context).pushNamed('/$userType');
+        Provider.of<AuthState>(context, listen: false).setAuthenticationStatus(true, userType, jsonResponse['_identifier'], jsonResponse['_token']);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(10),
+                topRight: Radius.circular(10),
+              ),
+            ),
+            backgroundColor: Colors.green,
+            content: Text('Connecté en tant que ${jsonResponse['_prenom']}',
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 16,
+                fontFamily: 'NotoSans',
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            duration: const Duration(seconds: 2),
+          ),
+        );
+      }
+      else {
+        // ici, montrez une erreur indiquant que le couple identifiant/mot de passe est invalide
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20.0),
+            ),
+            backgroundColor: Colors.red,
+            content: const Text(
+              'Le couple identifiant/mot de passe n\'est pas valide',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 16,
+                fontFamily: 'NotoSans',
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
-          backgroundColor: Colors.green,
-          content: Text('Connecté en tant que $username',
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 16,
-              fontFamily: 'NotoSans',
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          duration: const Duration(seconds: 2),
-        ),
-      );
-    } else {
-      // ici, montrez une erreur indiquant que le couple identifiant/mot de passe est invalide
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20.0),
-          ),
-          backgroundColor: Colors.red,
-          content: const Text(
-            'Le couple identifiant/mot de passe n\'est pas valide',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 16,
-              fontFamily: 'NotoSans',
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
-      );
+        );
+      }
+    }
+    else {
+      throw Exception('Failed to load data from API');
     }
   }
 
@@ -326,7 +259,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                                 ),
                               ),
                             ),
-                            onPressed: () {
+                            onPressed : () {
                               if (_formKey.currentState!.validate()) {
                                 _formKey.currentState!.save();
                                 tryLogin();
@@ -353,4 +286,6 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
     _controller.dispose();
   }
 }
+
+
 

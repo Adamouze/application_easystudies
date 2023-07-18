@@ -63,6 +63,11 @@ class MyApp extends StatelessWidget {
             useMaterial3: true,
           ),
           darkTheme: ThemeData(
+            textSelectionTheme: const TextSelectionThemeData(
+              cursorColor: Colors.orangeAccent,
+              selectionColor: Colors.orangeAccent,
+              selectionHandleColor: Colors.orangeAccent,
+            ),
             colorScheme: ColorScheme.fromSeed(seedColor: Colors.orangeAccent).copyWith(
               background: Colors.grey[850],  //couleur de fond pour le mode sombre
               shadow: Colors.grey[850],

@@ -1,10 +1,14 @@
 // ignore_for_file: library_private_types_in_public_api
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:barcode_widget/barcode_widget.dart';
 
 import '../../utilities/constantes.dart';
+import '../../logs/auth_stat.dart';
+
+
 
 class QRCodeScreen extends StatefulWidget {
   const QRCodeScreen({Key? key}) : super(key: key);
@@ -19,7 +23,12 @@ class _QRCodeScreenState extends State<QRCodeScreen> {
   @override
   Widget build(BuildContext context) {
     double diameter = MediaQuery.of(context).size.width * 0.9;
-    String data = 'EASYSTUDIES';
+
+    // Fetch identifier from AuthState
+    String? identifier = Provider.of<AuthState>(context, listen: false).identifier;
+    String? data = identifier ?? 'EASYSTUDIES'; // Use identifier as data
+
+    // ... Rest of your code
 
     return Scaffold(
       backgroundColor: orangePerso,
