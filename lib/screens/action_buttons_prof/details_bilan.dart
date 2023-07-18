@@ -5,121 +5,6 @@ import '../../utilities/constantes.dart';
 import '../../../utils.dart';
 
 
-class EleveInfoBlock extends StatelessWidget {
-  final Eleve eleve;
-
-  const EleveInfoBlock({required this.eleve, Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return FractionallySizedBox(
-      widthFactor: 0.95,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          Container(
-            decoration: BoxDecoration(
-              color: Colors.orangeAccent,
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(10),
-                topRight: Radius.circular(10),
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.2),
-                  spreadRadius: 1,
-                  blurRadius: 2,
-                  offset: const Offset(0, 2), // changes position of shadow
-                ),
-              ],
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                'Élève',
-                style: TextStyle(
-                  color: Theme.of(context).primaryColor,
-                  fontWeight: FontWeight.bold,
-                  fontFamily: 'NotoSans',
-                ),
-              ),
-            ),
-          ),
-          Container(
-            decoration: BoxDecoration(
-              color: Colors.grey[200],
-              borderRadius: const BorderRadius.only(
-                bottomLeft: Radius.circular(10),
-                bottomRight: Radius.circular(10),
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.2),
-                  spreadRadius: 1,
-                  blurRadius: 2,
-                  offset: const Offset(0, 2), // changes position of shadow
-                ),
-              ],
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(8),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  const Expanded(
-                    flex: 2,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Text("Identifiant : "),
-                        Text("Nom : "),
-                        Text("Prénom : "),
-                        Text("Civilité : "),
-                        Text("Date de n. : "),
-                        Text("Classe : "),
-                        Text("Int / Ext : "),
-                        Text("Etat : "),
-                      ],
-                    ),
-                  ),
-                  Expanded(
-                    flex: 2,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Text(eleve.identifiant),
-                        Text(eleve.nom),
-                        Text(eleve.prenom),
-                        Text(eleve.genre),
-                        Text(eleve.ddn),
-                        Text(eleve.classe),
-                        Text(eleve.int_ent),
-                        Text(
-                          eleve.etat,
-                          style: const TextStyle(
-                              color: Colors.green
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const Spacer(flex: 1),
-                  Expanded(
-                    flex: 3,
-                    child: Image.network(
-                      'https://covers-ng3.hosting-media.net/art/r288/641835.jpg',
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
 /*
 class BaseDeNotationBlock extends StatelessWidget {
   const BaseDeNotationBlock({required this.bilan, Key? key}) : super(key: key);
@@ -393,8 +278,6 @@ class DetailsContent extends StatelessWidget {
         child: Center(
           child: Column(
             children: [
-              const SizedBox(height: 20),
-              EleveInfoBlock(eleve: eleve),
               const SizedBox(height: 20),
               //BaseDeNotationBlock(),
               const SizedBox(height: 20),

@@ -1,10 +1,12 @@
 import 'utils.dart';
+import 'utilities/constantes.dart';
 
 Eleve createEleve() {
   Eleve eleve_exemple = Eleve.basic("H9GZH3", "GAJENDRAN", "Ajanthan", "Term G", "M");
   eleve_exemple.ddn = "03/03/2005";
   eleve_exemple.etat = "Active";
   eleve_exemple.int_ent = "CTEF Admin";
+  eleve_exemple.photo = "https://covers-ng3.hosting-media.net/art/r288/641835.jpg";
   return eleve_exemple;
 }
 
@@ -28,25 +30,31 @@ List<Eleve> createEleves() {
   Bilan bilan_exemple = createBilan();
 
   // Création du premier élève
-  Eleve eleve1 = Eleve.basic("H9GZH3", "GAJENDRAN", "Ajanthan", "Term G", "M");
+  Eleve eleve1 = Eleve.basic("H9GZH3", "MISTER V", "Yvick", "Term G", "M");
   eleve1.ddn = "03/03/2005";
-  eleve1.etat = "Active";
+  eleve1.etat = "Actif";
   eleve1.int_ent = "CTEF Admin";
   eleve1.bilans = [bilan_exemple, bilan_exemple];
+  eleve1.photo = photoMisterV;
+
 
   // Création du deuxième élève
-  Eleve eleve2 = Eleve.basic("U5HWT6", "SMITH", "John", "Term G", "M");
+  Eleve eleve2 = Eleve.basic("U5HWT6", "FANTOMUS", "Adamouze", "CM2", "M");
   eleve2.ddn = "14/04/2005";
-  eleve2.etat = "Active";
+  eleve2.etat = "Inactif";
   eleve2.int_ent = "CTEF Admin";
   eleve2.bilans = [bilan_exemple];
+  eleve2.photo = photoAdamouze;
+
 
   // Création du troisième élève
-  Eleve eleve3 = Eleve.basic("D4E4ZF", "JOHNSON", "Emma", "Term G", "F");
-  eleve3.ddn = "09/02/2005";
-  eleve3.etat = "Active";
+  Eleve eleve3 = Eleve.basic("D4E4ZF", "LE POISSON", "Alaska", "CP", "M");
+  eleve3.ddn = "18/03/2002";
+  eleve3.etat = "Actif";
   eleve3.int_ent = "CTEF Admin";
   eleve3.bilans = [bilan_exemple, bilan_exemple, bilan_exemple];
+  eleve3.photo = photoAlaska;
+
 
   return [eleve1, eleve2, eleve3];
 }

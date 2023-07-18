@@ -24,7 +24,8 @@ class Eleve {
   String _solde = "";
   String _prev = "";
   String _nbHeures = "";
-  List<Bilan> _bilans = []; // Ajoutez cette ligne
+  String _photo = "";
+  List<Bilan> _bilans = [];
 
   Eleve.id(this._identifiant);
 
@@ -54,6 +55,8 @@ class Eleve {
   String get prenom => _prenom;
 
   String get nom => _nom;
+
+  String get photo => _photo;
 
   List<Bilan> get bilans => _bilans; // Ajoutez ce getter pour _bilans
 
@@ -99,6 +102,10 @@ class Eleve {
 
   set nom(String value) {
     _nom = value;
+  }
+
+  set photo(String value) {
+    _photo = value;
   }
 
   set bilans(List<Bilan> value) {

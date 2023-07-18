@@ -16,4 +16,8 @@ const Image add_bilan = Image(
   alignment: Alignment.center,
 );
 
+const String photoMisterV = "https://covers-ng3.hosting-media.net/art/r288/641835.jpg";
+const String photoAdamouze = "https://www.reussiralecole.fr/wp-content/uploads/2022/09/fantome-dessin-11.jpg";
+const String photoAlaska = "https://img-31.ccm2.net/9cktEUL6z0jOnDlgru1FSwe7bkA=/595x/smart/fa9ca80f1f954f3899fc84cb881295b7/ccmcms-hugo/10600435.png";
+
 

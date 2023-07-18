@@ -1,14 +1,18 @@
 // ignore_for_file: deprecated_member_use, constant_identifier_names, non_constant_identifier_names, duplicate_ignore, library_private_types_in_public_api, use_build_context_synchronously
 
-import 'package:EasyStudies/screens/action_buttons_eleve/qrcode_screen.dart';
-import 'package:EasyStudies/screens/action_buttons_prof/scanner.dart';
-import 'package:EasyStudies/utilities/constantes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+
+import '../screens/action_buttons_eleve/qrcode_screen.dart';
+import '../screens/action_buttons_prof/scanner.dart';
+
+import '../utilities/constantes.dart';
 import '../utilities/video_youtube.dart';
 import '../utilities/facebook_news.dart';
-import 'package:url_launcher/url_launcher.dart';
+
 
 
 class QuitDialog extends StatefulWidget {
@@ -170,12 +174,12 @@ class _CustomBodyState extends State<CustomBody> {
                           topRight: Radius.circular(10),
                         ),
                       ),
-                      child: const Padding(
-                        padding: EdgeInsets.all(8.0),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
                         child: Text(
                           'Dernière News - செய்திகள்',
                           style: TextStyle(
-                              color: Colors.white,
+                              color: theme.primaryColor,
                               fontFamily: 'Noto Sans',
                               fontWeight: FontWeight.bold),
                         ),
@@ -183,7 +187,7 @@ class _CustomBodyState extends State<CustomBody> {
                     ),
                     Container(
                       decoration: BoxDecoration(
-                        color: Colors.grey[200],
+                        color: theme.cardColor,
                         borderRadius: const BorderRadius.only(
                           bottomLeft: Radius.circular(10),
                           bottomRight: Radius.circular(10),
@@ -205,7 +209,10 @@ class _CustomBodyState extends State<CustomBody> {
                             final latestNewsData = snapshot.data!;
                             return Text(latestNewsData);
                           } else if (snapshot.hasError) {
-                            return const Text('Failed to fetch news data');
+                            return Text(
+                                'Failed to fetch news data',
+                              style: TextStyle(color: theme.textTheme.bodyLarge?.color),
+                            );
                           } else {
                             return const CircularProgressIndicator();
                           }
@@ -239,12 +246,12 @@ class _CustomBodyState extends State<CustomBody> {
                           ),
                         ],
                       ),
-                      child: const Padding(
-                        padding: EdgeInsets.all(8.0),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
                         child: Text(
                           'Vidéos',
                           style: TextStyle(
-                            color: Colors.white,
+                            color: theme.primaryColor,
                             fontWeight: FontWeight.bold,
                             fontFamily: 'NotoSans',
                           ),
@@ -253,7 +260,7 @@ class _CustomBodyState extends State<CustomBody> {
                     ),
                     Container(
                       decoration: BoxDecoration(
-                        color: Colors.grey[200],
+                        color: theme.cardColor,
                         borderRadius: const BorderRadius.only(
                           bottomLeft: Radius.circular(10),
                           bottomRight: Radius.circular(10),
@@ -286,6 +293,7 @@ class _CustomBodyState extends State<CustomBody> {
                                           );
                                         },
                                         child: Card(
+                                          color: theme.cardColor,
                                           elevation: 3,
                                           clipBehavior: Clip.antiAlias,
                                           child: Column(
@@ -301,14 +309,14 @@ class _CustomBodyState extends State<CustomBody> {
                                                 ),
                                               ),
                                               Container(
-                                                color: Colors.grey[200],
                                                 padding: const EdgeInsets.all(8),
                                                 child: Column(
                                                   crossAxisAlignment: CrossAxisAlignment.start,
                                                   children: [
                                                     Text(
                                                       videoDetail.title,
-                                                      style: const TextStyle(
+                                                      style: TextStyle(
+                                                        color:theme.textTheme.bodyLarge?.color,
                                                         fontSize: 18,
                                                         fontWeight: FontWeight.bold,
                                                         fontFamily: 'NotoSans',
@@ -334,8 +342,8 @@ class _CustomBodyState extends State<CustomBody> {
                                       color: Colors.orangeAccent,
                                     ),
                                     child: IconButton(
-                                      icon: const Icon(Icons.arrow_back,
-                                        color: Colors.white,
+                                      icon: Icon(Icons.arrow_back,
+                                        color: theme.iconTheme.color,
                                       ),
                                       onPressed: () {
                                         int currentPage = pageController.page?.toInt() ?? 0;
@@ -360,8 +368,8 @@ class _CustomBodyState extends State<CustomBody> {
                                       color: Colors.orangeAccent,
                                     ),
                                     child: IconButton(
-                                      icon: const Icon(Icons.arrow_forward,
-                                        color: Colors.white,
+                                      icon: Icon(Icons.arrow_forward,
+                                        color: theme.iconTheme.color,
                                       ),
                                       onPressed: () {
                                         int currentPage = pageController.page?.toInt() ?? 0;
@@ -378,7 +386,6 @@ class _CustomBodyState extends State<CustomBody> {
                                     ),
                                   ),
                                 ),
-
                               ],
                             );
                           } else if (snapshot.hasError) {
@@ -430,7 +437,7 @@ class _CustomBodyState extends State<CustomBody> {
                     ),
                     Container(
                       decoration: BoxDecoration(
-                        color: Colors.grey[200],
+                        color: theme.cardColor,
                         borderRadius: const BorderRadius.only(
                           bottomLeft: Radius.circular(10),
                           bottomRight: Radius.circular(10),

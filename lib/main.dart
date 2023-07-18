@@ -50,13 +50,17 @@ class MyApp extends StatelessWidget {
               shadow: Colors.grey.withOpacity(0.5),
             ),
             primaryColor: Colors.white,  // Couleur secondaire du thème clair
-            textTheme: const TextTheme(
-              bodyLarge: TextStyle(
+            cardColor: Colors.grey[100],  // Couleur des card du thèmse clair
+            textTheme: TextTheme(
+              bodyLarge: const TextStyle(
                 color: Colors.black,  // Couleur du texte pour le thème clair
+              ),
+              bodySmall: TextStyle(
+                color: Colors.grey[700],  // Couleur de texte grisé pour le thème clair
               ),
             ),
             iconTheme: const IconThemeData(
-              color: Colors.black, // Couleur des icones pour le thème clair
+              color: Colors.white, // Couleur des icones pour le thème clair
             ),
             useMaterial3: true,
           ),
@@ -66,13 +70,17 @@ class MyApp extends StatelessWidget {
               shadow: Colors.grey[850],
             ),
             primaryColor: Colors.black,  // Couleur primaire du thème sombre
-            textTheme: const TextTheme(
-              bodyLarge: TextStyle(
+            cardColor: Colors.grey[800],  // Couleur des card du thèmse sombre
+            textTheme: TextTheme(
+              bodyLarge: const TextStyle(
                 color: Colors.white,  // Couleur du texte pour le thème sombre
+              ),
+              bodySmall: TextStyle(
+                color: Colors.grey[400],  // Couleur de texte grisé pour le thème sombre
               ),
             ),
             iconTheme: const IconThemeData(
-              color: Colors.white, // Couleur des icones pour le thème sombre
+              color: Colors.black, // Couleur des icones pour le thème sombre
             ),
             useMaterial3: true,
           ),
