@@ -43,13 +43,15 @@ class ProfScreenState extends State<ProfScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // final theme = Theme.of(context);
+
     return WillPopScope(
       onWillPop: _onWillPop,
       child: Scaffold(
         appBar: CustomAppBar(color: orangePerso, context: context),
         body: Stack(
           children: <Widget>[
-            _widgetOptions.elementAt(_selectedIndex),
+            _widgetOptions().elementAt(_selectedIndex),
           ],
         ),
         bottomNavigationBar: Theme(
@@ -67,10 +69,12 @@ class ProfScreenState extends State<ProfScreen> {
                 label: 'Accueil',
               ),
               BottomNavigationBarItem(
-                icon: Icon(Icons.perm_contact_cal_sharp),
-                label: 'Annuaire',
+                icon: Icon(Icons.check_circle),
+                label: 'Notes',
               ),
               BottomNavigationBarItem(
+                icon: Icon(Icons.class_),
+                label: 'Cours',
                 icon: Icon(Icons.class_),
                 label: 'Cours',
               ),
@@ -83,9 +87,7 @@ class ProfScreenState extends State<ProfScreen> {
             },
           ),
         ),
-
       ),
     );
   }
-
 }

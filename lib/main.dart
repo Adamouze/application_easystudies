@@ -51,14 +51,21 @@ class MyApp extends StatelessWidget {
               selectionHandleColor: Colors.orangeAccent,
             ),
             colorScheme: ColorScheme.fromSeed(seedColor: Colors.orangeAccent).copyWith(
-              background: Colors.white,  //couleur de fond pour le mode clair
+              background: Colors.white,  // Couleur de fond pour le thème clair
               shadow: Colors.grey.withOpacity(0.5),
             ),
-            primaryColor: Colors.white,
-            textTheme: const TextTheme(
-              bodyLarge: TextStyle(
-                color: Colors.black,
+            primaryColor: Colors.white,  // Couleur secondaire du thème clair
+            cardColor: Colors.grey[100],  // Couleur des card du thèmse clair
+            textTheme: TextTheme(
+              bodyLarge: const TextStyle(
+                color: Colors.black,  // Couleur du texte pour le thème clair
               ),
+              bodySmall: TextStyle(
+                color: Colors.grey[700],  // Couleur de texte grisé pour le thème clair
+              ),
+            ),
+            iconTheme: const IconThemeData(
+              color: Colors.white, // Couleur des icones pour le thème clair
             ),
             useMaterial3: true,
           ),
@@ -69,14 +76,21 @@ class MyApp extends StatelessWidget {
               selectionHandleColor: Colors.orangeAccent,
             ),
             colorScheme: ColorScheme.fromSeed(seedColor: Colors.orangeAccent).copyWith(
-              background: Colors.grey[850],  //couleur de fond pour le mode sombre
+              background: Colors.grey[850],  // Couleur de fond pour le thème sombre
               shadow: Colors.grey[850],
             ),
-            primaryColor: Colors.black,
-            textTheme: const TextTheme(
-              bodyLarge: TextStyle(
-                color: Colors.white,
+            primaryColor: Colors.black,  // Couleur primaire du thème sombre
+            cardColor: Colors.grey[800],  // Couleur des card du thèmse sombre
+            textTheme: TextTheme(
+              bodyLarge: const TextStyle(
+                color: Colors.white,  // Couleur du texte pour le thème sombre
               ),
+              bodySmall: TextStyle(
+                color: Colors.grey[400],  // Couleur de texte grisé pour le thème sombre
+              ),
+            ),
+            iconTheme: const IconThemeData(
+              color: Colors.black, // Couleur des icones pour le thème sombre
             ),
             useMaterial3: true,
           ),

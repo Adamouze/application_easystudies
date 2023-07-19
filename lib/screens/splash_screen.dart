@@ -35,7 +35,6 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
         .then((_) async {
       await Future.delayed(const Duration(seconds: 3));  // ajout d'un délai de 3 secondes
       String userType = Provider.of<AuthState>(context, listen: false).userType ?? 'home';
-      print('/$userType');
       Navigator.pushReplacementNamed(context, '/$userType');
     });
   }

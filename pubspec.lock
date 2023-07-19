@@ -348,18 +348,18 @@ packages:
     dependency: "direct main"
     description:
       name: permission_handler
-      sha256: "5749ebeb7ec0c3865ea17e3eb337174b87747be816dab582c551e1aff6f6bbf3"
+      sha256: "63e5216aae014a72fe9579ccd027323395ce7a98271d9defa9d57320d001af81"
       url: "https://pub.dev"
     source: hosted
-    version: "9.2.0"
+    version: "10.4.3"
   permission_handler_android:
     dependency: transitive
     description:
       name: permission_handler_android
-      sha256: a512e0fa8abcb0659d938ec2df93a70eb1df1fdea5fdc6d79a866bfd858a28fc
+      sha256: "37cedf9e5d530582bc813f63ed278e4a9dc42bb0948b68316e253cb0cd56a4b1"
       url: "https://pub.dev"
     source: hosted
-    version: "9.0.2+1"
+    version: "10.3.1"
   permission_handler_apple:
     dependency: transitive
     description:
