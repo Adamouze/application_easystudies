@@ -26,7 +26,9 @@ class AuthState with ChangeNotifier {
     _identifier = prefs.getString('identifier');
     _token = prefs.getString('token');
     if (_isAuthenticated && _token != null) {  // Only check the token validity if the user is authenticated
-      checkTokenValidity(_token!);
+      print('on va check le token');
+      print('$_token, $_identifier');
+      checkTokenValidity();
     }
     print('Loaded userType: $_userType');
     notifyListeners();
@@ -46,9 +48,9 @@ class AuthState with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> checkTokenValidity(String token) async {
+  Future<void> checkTokenValidity() async {
     // Make the API request to check the token validity
-    final response = await http.get(Uri.parse('https://app.easystudies.fr/api/students_list.php?_token=$token'));
+    final response = await http.get(Uri.parse('https://app.easystudies.fr/api/login.php?_token=$_token&_login=$_identifier&_pwd='));
 
     if (response.statusCode == 200) {
       Map<String, dynamic> jsonResponse = jsonDecode(response.body);
