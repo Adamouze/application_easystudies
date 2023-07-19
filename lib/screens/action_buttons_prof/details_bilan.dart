@@ -274,17 +274,17 @@ class DetailsContent extends StatelessWidget {
           ),
         ),
       ),
-      body: SingleChildScrollView(
+      body: const SingleChildScrollView(
         child: Center(
           child: Column(
             children: [
-              const SizedBox(height: 20),
+              SizedBox(height: 20),
               //BaseDeNotationBlock(),
-              const SizedBox(height: 20),
+              SizedBox(height: 20),
               // BilanBlock(),
-              const SizedBox(height: 20),
+              SizedBox(height: 20),
               // SoumettreButton(),
-              const SizedBox(height: 20),
+              SizedBox(height: 20),
             ],
           ),
         )
