@@ -5,14 +5,14 @@ import '../../exemples.dart';
 import '../../utils.dart';
 
 
-class AnnuaireContent extends StatefulWidget {
-  const AnnuaireContent({Key? key}) : super(key: key);
+class RepertoryScreen extends StatefulWidget {
+  const RepertoryScreen({Key? key}) : super(key: key);
 
   @override
-  AnnuaireContentState createState() => AnnuaireContentState();
+  RepertoryScreenState createState() => RepertoryScreenState();
 }
 
-class AnnuaireContentState extends State<AnnuaireContent> {
+class RepertoryScreenState extends State<RepertoryScreen> {
   List<Eleve> eleves = createEleves(); // Appel de la fonction createEleves pour obtenir la liste des élèves
 
   @override

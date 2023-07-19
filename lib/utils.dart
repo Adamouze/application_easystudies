@@ -10,107 +10,88 @@ import 'utilities/constantes.dart';
 
 ///Fichier contenant toutes les classes utilisées dans les autres layout pour essayer de rendre le tout plus ergonomique et facile d'utilisation
 ///Il faudra essayer de mettre la plupart des classes ici pour laisser les fichiers de layout épurés
-///J'ai peut être oublier de déplacer certaine méthode/class se trouvant dans les autres fichiers
+///J'ai peut-être oublié de déplacer certaine méthode/class se trouvant dans les autres fichiers
 
 class Eleve {
-  String _identifiant = "";
+  String _identifier = "";
+
   String _nom = "";
   String _prenom = "";
   String _classe = "";
   String _genre = "";
-  String _ddn = "";
+  String _dob = "";
+
+  String _adresse = "";
+  String _numFix = "";
+  String _numMobile = "";
+  String _emailEleve = "";
+  String _emailParents = "";
+
   String _etat = "";
   String _int_ent = "";
   String _solde = "";
   String _prev = "";
   String _nbHeures = "";
+
   String _photo = "";
+  String _idFamille = "";
+
   List<Bilan> _bilans = [];
 
-  Eleve.id(this._identifiant);
+  Eleve.basic(this._identifier, this._nom, this._prenom, this._classe, this._genre, this._dob);
+  Eleve.contact(this._adresse, this._numFix, this._numMobile, this._emailEleve, this._emailParents);
+  Eleve.compta(this._etat, this._int_ent, this._solde, this._prev, this._nbHeures);
 
-  Eleve.basic(this._identifiant, this._nom, this._prenom, this._classe, this._genre);
+  String get identifier => _identifier;
+  String get nom => _nom;
+  String get prenom => _prenom;
+  String get classe => _classe;
+  String get genre => _genre;
+  String get dob => _dob;
 
-  Eleve.extra(this._ddn, this._etat, this._int_ent, this._solde, this._prev,
-      this._nbHeures);
-
-  String get nbHeures => _nbHeures;
-
-  String get prev => _prev;
-
-  String get solde => _solde;
-
-  String get int_ent => _int_ent;
+  String get adresse => _adresse;
+  String get numFix => _numFix;
+  String get numMobile => _numMobile;
+  String get emailEleve => _emailEleve;
+  String get emailParents => _emailParents;
 
   String get etat => _etat;
-
-  String get ddn => _ddn;
-
-  String get genre => _genre;
-
-  String get identifiant => _identifiant;
-
-  String get classe => _classe;
-
-  String get prenom => _prenom;
-
-  String get nom => _nom;
+  String get int_ent => _int_ent;
+  String get solde => _solde;
+  String get prev => _prev;
+  String get nbHeures => _nbHeures;
 
   String get photo => _photo;
+  String get idFamille => _idFamille;
 
   List<Bilan> get bilans => _bilans; // Ajoutez ce getter pour _bilans
 
-  set nbHeures(String value) {
-    _nbHeures = value;
+  set identifier(String value) {
+    _identifier = value;
   }
 
-  set prev(String value) {
-    _prev = value;
-  }
+  set nom(String value) {_nom = value;}
+  set prenom(String value) {_prenom = value;}
+  set classe(String value) {_classe = value;}
+  set genre(String value) {_genre = value;}
+  set dob(String value) {_dob = value;}
 
-  set solde(String value) {
-    _solde = value;
-  }
+  set adresse(String value) {_adresse = value;}
+  set numFix(String value) {_numFix = value;}
+  set numMobile(String value) {_numMobile = value;}
+  set emailEleve(String value) {_emailEleve = value;}
+  set emailParents(String value) {_emailParents = value;}
 
-  set int_ent(String value) {
-    _int_ent = value;
-  }
+  set etat(String value) {_etat = value;}
+  set int_ent(String value) {_int_ent = value;}
+  set solde(String value) {_solde = value;}
+  set prev(String value) {_prev = value;}
+  set nbHeures(String value) {_nbHeures = value;}
 
-  set etat(String value) {
-    _etat = value;
-  }
+  set photo(String value) {_photo = value;}
+  set idFamille(String value) {_idFamille = value;}
 
-  set ddn(String value) {
-    _ddn = value;
-  }
-
-  set genre(String value) {
-    _genre = value;
-  }
-
-  set identifiant(String value) {
-    _identifiant = value;
-  }
-
-  set classe(String value) {
-    _classe = value;
-  }
-
-  set prenom(String value) {
-    _prenom = value;
-  }
-
-  set nom(String value) {
-    _nom = value;
-  }
-
-  set photo(String value) {
-    _photo = value;
-  }
-
-  set bilans(List<Bilan> value) {
-    _bilans = value;
-  }
+  set bilans(List<Bilan> value) {_bilans = value;}
 }
 
 class Note {
@@ -121,29 +102,15 @@ class Note {
 
   Note(this._date, this._type, this._note, this._commentaire);
 
+  String get date => _date;
+  String get type => _type;
+  String get note => _note;
   String get commentaire => _commentaire;
 
-  set commentaire(String value) {
-    _commentaire = value;
-  }
-
-  String get note => _note;
-
-  set note(String value) {
-    _note = value;
-  }
-
-  String get type => _type;
-
-  set type(String value) {
-    _type = value;
-  }
-
-  String get date => _date;
-
-  set date(String value) {
-    _date = value;
-  }
+  set date(String value) {_date = value;}
+  set type(String value) {_type = value;}
+  set note(String value) {_note = value;}
+  set commentaire(String value) {_commentaire = value;}
 }
 
 class Bilan {
@@ -157,8 +124,7 @@ class Bilan {
   String _good = "";
   String _comment = "";
 
-  Bilan(this._date, this._global, this._comp, this._assidu, this._dm,
-      this._subjects, this._toImprove, this._good, this._comment);
+  Bilan(this._date, this._global, this._comp, this._assidu, this._dm, this._subjects, this._toImprove, this._good, this._comment);
 
   String get date => _date;
   String get global => _global;
@@ -169,6 +135,16 @@ class Bilan {
   String get toImprove => _toImprove;
   String get good => _good;
   String get comment => _comment;
+
+  set date(String value) {_date = value;}
+  set global(String value) {_global = value;}
+  set comp(String value) {_comp = value;}
+  set assidu(String value) {_assidu = value;}
+  set dm(String value) {_dm = value;}
+  set subjects(String value) {_subjects = value;}
+  set toImprove(String value) {_toImprove = value;}
+  set good(String value) {_good = value;}
+  set comment(String value) {_comment = value;}
 }
 
 class Commentaire {
@@ -177,17 +153,11 @@ class Commentaire {
 
   Commentaire(this._date, this._comment);
 
+  String get date => _date;
   String get comment => _comment;
 
-  set comment(String value) {
-    _comment = value;
-  }
-
-  String get date => _date;
-
-  set date(String value) {
-    _date = value;
-  }
+  set date(String value) {_date = value;}
+  set comment(String value) {_comment = value;}
 }
 
 /*
@@ -195,11 +165,11 @@ class Commentaire {
 Future<Eleve> get_User(Eleve eleve) async {
   final response =
   await http.post("http://atchu82.free.fr/FicheEleveJson.php", body: {
-    'id': eleve.identifiant,
+    'id': eleve.identifier,
   });
   var jsonData = json.decode(response.body);
 
-  eleve.ddn = jsonData[0]["_dob"];
+  eleve.dob = jsonData[0]["_dob"];
   if (jsonData[0]["_active"] == "1") {
     eleve.etat = "Actif";
   } else {
@@ -215,7 +185,7 @@ Future<Eleve> get_User(Eleve eleve) async {
 Future<List<Bilan>> get_Bilans(Eleve eleve, List<Bilan> _bilans) async {
   final response =
   await http.post("http://atchu82.free.fr/RecupBilanJson.php", body: {
-    'id': eleve.identifiant,
+    'id': eleve.identifier,
   });
   var jsonData = json.decode(response.body);
 
@@ -231,7 +201,7 @@ Future<List<Bilan>> get_Bilans(Eleve eleve, List<Bilan> _bilans) async {
 Future<List<Note>> get_Notes(Eleve eleve, List<Note> _notes) async {
   final response =
   await http.post("http://atchu82.free.fr/RecupNoteJson.php", body: {
-    'id': eleve.identifiant,
+    'id': eleve.identifier,
   });
   var jsonData = json.decode(response.body);
 
@@ -246,7 +216,7 @@ Future<List<Note>> get_Notes(Eleve eleve, List<Note> _notes) async {
 Future<List<Commentaire>> get_comments(Eleve eleve, List<Commentaire> _commentaires) async {
   final response = await http.post(
       "http://atchu82.free.fr/RecupCommentairesJSON.php",
-      body: {'id': eleve.identifiant});
+      body: {'id': eleve.identifier});
   var jsonData = json.decode(response.body);
 
   for (var u in jsonData) {
@@ -257,7 +227,6 @@ Future<List<Commentaire>> get_comments(Eleve eleve, List<Commentaire> _commentai
 }
 
  */
-
 
 Widget getSmiley(String rating) {
   switch (rating) {

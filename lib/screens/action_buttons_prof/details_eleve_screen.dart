@@ -89,11 +89,11 @@ class EleveInfoBlock extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        Text(eleve.identifiant),
+                        Text(eleve.identifier),
                         Text(eleve.nom),
                         Text(eleve.prenom),
                         Text(eleve.genre),
-                        Text(eleve.ddn),
+                        Text(eleve.dob),
                         Text(eleve.classe),
                         Text(eleve.int_ent),
                         Text(
@@ -167,7 +167,7 @@ class BilanBlockState extends State<BilanBlock> {
           ),
         ],
       );
-      bilanRows[eleve.identifiant] = [...?bilanRows[eleve.identifiant], row];
+      bilanRows[eleve.identifier] = [...?bilanRows[eleve.identifier], row];
     }
     return bilanRows;
   }
@@ -240,7 +240,7 @@ class BilanBlockState extends State<BilanBlock> {
                     DataColumn(label: Text('DM')),
                     DataColumn(label: Text('Détails')),
                   ],
-                  rows: bilanRows[widget.eleve.identifiant] ?? [], // Si l'élève n'a pas de bilans, affichez une liste vide
+                  rows: bilanRows[widget.eleve.identifier] ?? [], // Si l'élève n'a pas de bilans, affichez une liste vide
                 ),
               ),
             ),

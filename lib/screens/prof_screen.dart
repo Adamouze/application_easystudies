@@ -7,7 +7,7 @@ import '../utilities/constantes.dart';
 import 'app_bar.dart';
 import 'body.dart';
 
-import 'action_buttons_prof/annuaire.dart';
+import 'action_buttons_prof/repertory_screen.dart';
 
 class HomeContent extends StatelessWidget {
   const HomeContent({Key? key}) : super(key: key);
@@ -30,7 +30,7 @@ class ProfScreenState extends State<ProfScreen> {
   List<Widget> _widgetOptions() {
     return <Widget>[
       const HomeContent(),
-      const AnnuaireContent(),
+      const RepertoryScreen(),
       // const CoursContent(),
     ];
   }
