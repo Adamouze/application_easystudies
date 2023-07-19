@@ -42,6 +42,7 @@ class Eleve {
   Eleve.contact(this._adresse, this._numFix, this._numMobile, this._emailEleve, this._emailParents);
   Eleve.compta(this._etat, this._int_ent, this._solde, this._prev, this._nbHeures);
 
+
   String get identifier => _identifier;
   String get nom => _nom;
   String get prenom => _prenom;

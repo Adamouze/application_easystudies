@@ -273,6 +273,9 @@ class DetailsContent extends StatelessWidget {
             color: theme.primaryColor,
           ),
         ),
+        iconTheme: IconThemeData(
+          color: theme.primaryColor, // Définissez ici la couleur souhaitée pour l'icône
+        ),
       ),
       body: const SingleChildScrollView(
         child: Center(

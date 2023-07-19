@@ -90,8 +90,24 @@ class EleveInfoBlock extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         Text(eleve.identifier),
-                        Text(eleve.nom),
-                        Text(eleve.prenom),
+                        Tooltip(
+                          message: eleve.nom,
+                          child: Flexible(
+                            child: Text(
+                              eleve.nom,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ),
+                        Tooltip(
+                          message: eleve.prenom,
+                          child: Flexible(
+                            child: Text(
+                              eleve.prenom,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ),
                         Text(eleve.genre),
                         Text(eleve.dob),
                         Text(eleve.classe),
@@ -105,10 +121,14 @@ class EleveInfoBlock extends StatelessWidget {
                       ],
                     ),
                   ),
-                  const Spacer(flex: 1),
+
+                  // const Spacer(flex: 1),
+
                   Expanded(
                     flex: 3,
-                    child: Image.network(eleve.photo),
+                    child: eleve.photo == ""
+                        ? Image.asset(getDefaultPhoto(eleve.genre), fit: BoxFit.cover)
+                        : Image.network(eleve.photo, fit: BoxFit.cover),
                   ),
                 ],
               ),
@@ -276,6 +296,9 @@ class DetailsEleveState extends State<DetailsEleve> {
             fontWeight: FontWeight.bold,
             color: theme.primaryColor,
           ),
+        ),
+        iconTheme: IconThemeData(
+          color: theme.primaryColor,
         ),
       ),
       body: SingleChildScrollView(

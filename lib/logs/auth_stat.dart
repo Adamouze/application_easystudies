@@ -26,11 +26,8 @@ class AuthState with ChangeNotifier {
     _identifier = prefs.getString('identifier');
     _token = prefs.getString('token');
     if (_isAuthenticated && _token != null) {  // Only check the token validity if the user is authenticated
-      print('on va check le token');
-      print('$_token, $_identifier');
       checkTokenValidity();
     }
-    print('Loaded userType: $_userType');
     notifyListeners();
   }
 
@@ -62,7 +59,6 @@ class AuthState with ChangeNotifier {
       throw Exception('Failed to load data from API');
     }
   }
-
 
   void logout() async {
     final prefs = await SharedPreferences.getInstance();
