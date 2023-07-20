@@ -1,9 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-
-
 
 import 'details_eleve_screen.dart';
 
@@ -12,8 +8,6 @@ import '../../logs/auth_stat.dart';
 import '../../utilities/constantes.dart';
 import '../../utilities/theme_provider.dart';
 
-
-import '../../exemples.dart';
 import '../../utils.dart';
 
 
@@ -28,37 +22,16 @@ class RepertoryScreenState extends State<RepertoryScreen> {
 
   // List<Eleve> eleves = createEleves(); // Appel de la fonction createEleves pour obtenir la liste des élèves
 
-  Future<List<Eleve>> getEleves(String token, String login) async {
-    final response = await http.get(Uri.parse('https://app.easystudies.fr/api/students_list.php?_token=$token&_login=$login'));
-
-    List<dynamic> jsonResponse;
-
-    if (response.statusCode == 200) {
-      jsonResponse = jsonDecode(response.body);
-    } else {
-      throw Exception('Failed to load students');
-    }
-
-    List<Eleve> eleves = [];
-
-    for (var u in jsonResponse) {
-      Eleve eleve = Eleve.basic(u["_identifier"], u["_nom"], u["_prenom"], u["_class"], u["_civilite"], u["_dob"]);
-      eleves.add(eleve);
-    }
-
-    return eleves;
-  }
 
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
 
     final authState = Provider.of<AuthState>(context, listen: false);
     final token = authState.token;
     final login = authState.identifier;
-
-    final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
 
     if (token == null) {
       return const Text("ERREUR de token dans la requête API");
@@ -68,7 +41,7 @@ class RepertoryScreenState extends State<RepertoryScreen> {
     }
 
     return FutureBuilder<List<Eleve>>(
-      future: getEleves(token, login),
+      future: getListEleves(token, login),
       builder: (BuildContext context, AsyncSnapshot<List<Eleve>> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const CircularProgressIndicator(); // retourne un indicateur de progression pendant le chargement
@@ -113,7 +86,7 @@ class RepertoryScreenState extends State<RepertoryScreen> {
                                               width: 2.0,
                                             ),
                                           ),
-                                          child: Image.asset(getDefaultPhoto(eleves[index].genre), fit: BoxFit.cover),
+                                          child: Image.asset(getDefaultPhoto(eleves[index].civilite), fit: BoxFit.cover),
                                         )
                                       : Image.network(eleves[index].photo, fit: BoxFit.cover),
                                 ),

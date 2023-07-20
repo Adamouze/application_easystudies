@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../utilities/constantes.dart';
+import '../../logs/auth_stat.dart';
+
 import 'details_bilan.dart';
 import 'new_bilan_screen.dart';
 
@@ -38,7 +41,7 @@ class EleveInfoBlock extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text(
-                'Élève',
+                '${'Éleve - '} ${eleve.identifier}',
                 style: TextStyle(
                   color: Theme.of(context).primaryColor,
                   fontWeight: FontWeight.bold,
@@ -73,51 +76,36 @@ class EleveInfoBlock extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        Text("Identifiant : "),
+                        Text("Civilité : "),
                         Text("Nom : "),
                         Text("Prénom : "),
-                        Text("Civilité : "),
                         Text("Date de n. : "),
                         Text("Classe : "),
-                        Text("Int / Ext : "),
-                        Text("Etat : "),
                       ],
                     ),
                   ),
                   Expanded(
-                    flex: 2,
+                    flex: 3,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        Text(eleve.identifier),
+                        Text(eleve.civilite),
                         Tooltip(
                           message: eleve.nom,
-                          child: Flexible(
-                            child: Text(
-                              eleve.nom,
-                              overflow: TextOverflow.ellipsis,
-                            ),
+                          child: Text(
+                            eleve.nom,
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
                         Tooltip(
                           message: eleve.prenom,
-                          child: Flexible(
-                            child: Text(
-                              eleve.prenom,
-                              overflow: TextOverflow.ellipsis,
-                            ),
+                          child: Text(
+                            eleve.prenom,
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
-                        Text(eleve.genre),
                         Text(eleve.dob),
                         Text(eleve.classe),
-                        Text(eleve.int_ent),
-                        Text(
-                          eleve.etat,
-                          style: const TextStyle(
-                              color: Colors.green
-                          ),
-                        ),
                       ],
                     ),
                   ),
@@ -125,15 +113,122 @@ class EleveInfoBlock extends StatelessWidget {
                   // const Spacer(flex: 1),
 
                   Expanded(
-                    flex: 3,
+                    flex: 2,
                     child: eleve.photo == ""
-                        ? Image.asset(getDefaultPhoto(eleve.genre), fit: BoxFit.cover)
+                        ? Image.asset(getDefaultPhoto(eleve.civilite), fit: BoxFit.cover)
                         : Image.network(eleve.photo, fit: BoxFit.cover),
                   ),
                 ],
               ),
             ),
           ),
+        ],
+      ),
+    );
+  }
+}
+
+class EleveContactBlock extends StatelessWidget {
+  final Eleve eleve;
+
+  const EleveContactBlock({required this.eleve, Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return FractionallySizedBox(
+      widthFactor: 0.95,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.orangeAccent,
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(10),
+                topRight: Radius.circular(10),
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.2),
+                  spreadRadius: 1,
+                  blurRadius: 2,
+                  offset: const Offset(0, 2), // changes position of shadow
+                ),
+              ],
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                '${'Contacts - '} ${eleve.prenom}',
+                style: TextStyle(
+                  color: Theme.of(context).primaryColor,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'NotoSans',
+                ),
+              ),
+            ),
+          ),
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.grey[200],
+              borderRadius: const BorderRadius.only(
+                bottomLeft: Radius.circular(10),
+                bottomRight: Radius.circular(10),
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.2),
+                  spreadRadius: 1,
+                  blurRadius: 2,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(8),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Expanded(
+                    flex: 2,
+                    child: ListView(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      children: const <Widget>[
+                        Text("Adresse : "),
+                        Text(""),
+                        Text("Numéro de fixe : "),
+                        Text("Mobile de l'élève: "),
+                        Text("Mobile d'un parent : "),
+                        Text("Email de l'élève : "),
+                        Text("Email d'un parent : "),
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    flex: 3,
+                    child: ListView(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      children: <Widget>[
+                        Text(eleve.adresse),
+                        Text(eleve.ville),
+                        eleve.numFix == ""
+                            ? Text("non renseigné", style: TextStyle(color: theme.textTheme.bodySmall?.color, fontStyle: FontStyle.italic))
+                            : Text(eleve.numFix),
+                        Text(eleve.numMobileEleve),
+                        Text(eleve.numMobileParents),
+                        Text(eleve.emailEleve),
+                        Text(eleve.emailParents),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+
         ],
       ),
     );
@@ -250,7 +345,7 @@ class BilanBlockState extends State<BilanBlock> {
                 child: DataTable(
                   dataRowMinHeight: 50,
                   dataRowMaxHeight: 50, // ajouter la hauteur de ligne
-                  columnSpacing: 15, // ajuster l'espace entre les colonnes si nécessaire
+                  columnSpacing: 15 , // ajuster l'espace entre les colonnes si nécessaire
                   columns: const <DataColumn>[
                     DataColumn(label: Text('Numero')),
                     DataColumn(label: Text('Date')),
@@ -283,59 +378,86 @@ class DetailsEleve extends StatefulWidget {
 }
 
 class DetailsEleveState extends State<DetailsEleve> {
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: orangePerso,
-        title:Text(
-          '${widget.eleve.nom} ${widget.eleve.prenom}',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            color: theme.primaryColor,
-          ),
-        ),
-        iconTheme: IconThemeData(
-          color: theme.primaryColor,
-        ),
-      ),
-      body: SingleChildScrollView(
-        child: Center(
-          child: Column(
-            children: [
-              const SizedBox(height: 20),
-              EleveInfoBlock(eleve: widget.eleve),
-              const SizedBox(height: 20),
-              BilanBlock(eleve: widget.eleve),
-              const SizedBox(height: 20),
 
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Transform.scale(
-                  scale: 1.4,
-                  child: FloatingActionButton(
-                    backgroundColor: Colors.blue,
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => NewBilan(eleve: widget.eleve)),
-                      );
-                    },
-                    tooltip: "Ajout d'un bilan",
-                    elevation: 6.0,
-                    shape: const CircleBorder(),
-                    child: add_bilan,
-                  ),
+    final authState = Provider.of<AuthState>(context, listen: false);
+    final token = authState.token;
+    final login = authState.identifier;
+
+    if (token == null) {
+      return const Text("ERREUR de token dans la requête API");
+    }
+    if (login == null) {
+      return const Text("ERREUR de login dans la requête API");
+    }
+
+    return FutureBuilder<Eleve>(
+      future: getDetailsEleve(token, login, widget.eleve),
+      builder: (BuildContext context, AsyncSnapshot<Eleve> snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const CircularProgressIndicator(); // retourne un indicateur de progression pendant le chargement
+        } else if (snapshot.hasError) {
+          return Text('Error: ${snapshot.error}'); // en cas d'erreur
+        } else {
+          Eleve eleve = snapshot.data ?? widget.eleve; // une fois les données chargées
+
+          return Scaffold(
+            appBar: AppBar(
+              backgroundColor: orangePerso,
+              title:Text(
+                '${eleve.nom} ${eleve.prenom}',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: theme.primaryColor,
                 ),
               ),
+              iconTheme: IconThemeData(
+                color: theme.primaryColor,
+              ),
+            ),
+            body: SingleChildScrollView(
+              child: Center(
+                child: Column(
+                  children: [
+                    const SizedBox(height: 20),
+                    EleveInfoBlock(eleve: eleve),
+                    const SizedBox(height: 20),
+                    EleveContactBlock(eleve: eleve),
+                    const SizedBox(height: 20),
+                    BilanBlock(eleve: eleve),
+                    const SizedBox(height: 20),
 
-              const SizedBox(height: 20)
-            ],
-          ),
-        ),
-      ),
+                    Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Transform.scale(
+                        scale: 1.4,
+                        child: FloatingActionButton(
+                          backgroundColor: Colors.blue,
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => NewBilan(eleve: eleve)),
+                            );
+                          },
+                          tooltip: "Ajout d'un bilan",
+                          elevation: 6.0,
+                          shape: const CircleBorder(),
+                          child: add_bilan,
+                        ),
+                      ),
+                    ),
+
+                    const SizedBox(height: 20)
+                  ],
+                ),
+              ),
+            ),
+          );
+        }
+      },
     );
   }
 }
+
