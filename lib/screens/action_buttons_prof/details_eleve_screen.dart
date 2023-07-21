@@ -41,7 +41,7 @@ class EleveInfoBlock extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text(
-                '${'Éleve - '} ${eleve.identifier}',
+                '${'Éleve -'} ${eleve.identifier}',
                 style: TextStyle(
                   color: Theme.of(context).primaryColor,
                   fontWeight: FontWeight.bold,
@@ -160,7 +160,7 @@ class EleveContactBlock extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text(
-                '${'Contacts - '} ${eleve.prenom}',
+                '${'Contacts -'} ${eleve.prenom}',
                 style: TextStyle(
                   color: Theme.of(context).primaryColor,
                   fontWeight: FontWeight.bold,
@@ -196,13 +196,13 @@ class EleveContactBlock extends StatelessWidget {
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
                       children: const <Widget>[
-                        Text("Adresse : "),
-                        Text(""),
                         Text("Numéro de fixe : "),
                         Text("Mobile de l'élève: "),
                         Text("Mobile d'un parent : "),
                         Text("Email de l'élève : "),
                         Text("Email d'un parent : "),
+                        Text("Adresse : "),
+                        Text(""),
                       ],
                     ),
                   ),
@@ -212,8 +212,6 @@ class EleveContactBlock extends StatelessWidget {
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
                       children: <Widget>[
-                        Text(eleve.adresse),
-                        Text(eleve.ville),
                         eleve.numFix == ""
                             ? Text("non renseigné", style: TextStyle(color: theme.textTheme.bodySmall?.color, fontStyle: FontStyle.italic))
                             : Text(eleve.numFix),
@@ -221,6 +219,8 @@ class EleveContactBlock extends StatelessWidget {
                         Text(eleve.numMobileParents),
                         Text(eleve.emailEleve),
                         Text(eleve.emailParents),
+                        Text(eleve.adresse),
+                        Text(eleve.ville),
                       ],
                     ),
                   ),
@@ -234,7 +234,6 @@ class EleveContactBlock extends StatelessWidget {
     );
   }
 }
-
 
 class BilanBlock extends StatefulWidget {
   final Eleve eleve;
@@ -394,7 +393,7 @@ class DetailsEleveState extends State<DetailsEleve> {
     }
 
     return FutureBuilder<Eleve>(
-      future: getDetailsEleve(token, login, widget.eleve),
+      future: getEleveAll(token, login, widget.eleve),
       builder: (BuildContext context, AsyncSnapshot<Eleve> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const CircularProgressIndicator(); // retourne un indicateur de progression pendant le chargement

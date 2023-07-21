@@ -31,6 +31,8 @@ class Eleve {
 
   String _photo = "";
 
+  List<Commentaire> _commentaires = [];
+  List<Note> _notes = [];
   List<Bilan> _bilans = [];
 
   Eleve.basic(this._identifier, this._nom, this._prenom, this._classe, this._civilite, this._idFamille);
@@ -66,7 +68,9 @@ class Eleve {
 
   String get photo => _photo;
 
-  List<Bilan> get bilans => _bilans; // Ajoutez ce getter pour _bilans
+  List<Commentaire> get commentaires => _commentaires;
+  List<Note> get notes => _notes;
+  List<Bilan> get bilans => _bilans;
 
   set identifier(String value) {_identifier = value;}
   set nom(String value) {_nom = value;}
@@ -89,8 +93,11 @@ class Eleve {
 
   set photo(String value) {_photo = value;}
 
+  set commentaires(List<Commentaire> value) {_commentaires = value;}
+  set notes(List<Note> value) {_notes = value;}
   set bilans(List<Bilan> value) {_bilans = value;}
 }
+
 
 class Note {
   String _date = "";
@@ -111,9 +118,30 @@ class Note {
   set commentaire(String value) {_commentaire = value;}
 }
 
+class Commentaire {
+  String _index;
+  String _date;
+  String _heure;
+  String _prof;
+  String _comment;
+
+  Commentaire(this._index, this._date, this._heure, this._prof, this._comment);
+
+  String get index => _index;
+  String get date => _date;
+  String get heure => _heure;
+  String get prof => _prof;
+  String get comment => _comment;
+
+  set index(String value) {_index = value;}
+  set date(String value) {_date = value;}
+  set heure(String value) {_heure = value;}
+  set prof(String value) {_prof = value;}
+  set comment(String value) {_comment = value;}
+}
+
 class Bilan {
   String _index = "";
-  String _eleveId = "";
   String _date = "";
   String _global = "";
   String _comp = "";
@@ -124,10 +152,9 @@ class Bilan {
   String _good = "";
   String _comment = "";
 
-  Bilan(this._index, this._eleveId, this._date, this._global, this._comp, this._assidu, this._dm, this._subjects, this._toImprove, this._good, this._comment);
+  Bilan(this._index, this._date, this._global, this._comp, this._assidu, this._dm, this._subjects, this._toImprove, this._good, this._comment);
 
   String get index => _index;
-  String get eleveId => _eleveId;
   String get date => _date;
   String get global => _global;
   String get comp => _comp;
@@ -139,7 +166,6 @@ class Bilan {
   String get comment => _comment;
 
   set index(String value) {_index = value;}
-  set eleveId(String value) {_eleveId = value;}
   set date(String value) {_date = value;}
   set global(String value) {_global = value;}
   set comp(String value) {_comp = value;}
@@ -148,19 +174,6 @@ class Bilan {
   set subjects(String value) {_subjects = value;}
   set toImprove(String value) {_toImprove = value;}
   set good(String value) {_good = value;}
-  set comment(String value) {_comment = value;}
-}
-
-class Commentaire {
-  String _date;
-  String _comment;
-
-  Commentaire(this._date, this._comment);
-
-  String get date => _date;
-  String get comment => _comment;
-
-  set date(String value) {_date = value;}
   set comment(String value) {_comment = value;}
 }
 
@@ -180,8 +193,6 @@ Widget getSmiley(String rating) {
       return Container();
   }
 }
-
-
 
 
 Future<List<Eleve>> getListEleves(String token, String login) async {
@@ -234,5 +245,65 @@ Future<Eleve> getDetailsEleve(String token, String login, Eleve eleve) async {
 
   return newEleve;
 }
+
+Future<Eleve> getCommentsEleve(String token, String login, Eleve eleve) async {
+  final response = await http.get(Uri.parse('https://app.easystudies.fr/api/comments_get.php?_token=$token&_login=$login&_studentLogin=${eleve.identifier}'));
+
+  if (response.statusCode != 200) {
+    throw Exception('Failed to load student comments');
+  }
+
+  final jsonResponse = jsonDecode(response.body);
+  List<dynamic> commentsData = jsonResponse["_data"];
+
+  List<Commentaire> commentaires = [];
+  for (var u in commentsData) {
+    Commentaire commentaire = Commentaire(u["_index"], u["_date"], u["_heure"], u["_from"], u["_comment"]);
+    commentaires.add(commentaire);
+  }
+
+  eleve.commentaires = commentaires;
+  return eleve;
+}
+
+
+Future<Eleve> getBilansEleve(String token, String login, Eleve eleve) async {
+  final response = await http.get(Uri.parse('https://app.easystudies.fr/api/students_bilans.php?_token=$token&_login=$login&_studentLogin=${eleve.identifier}'));
+
+  if (response.statusCode != 200) {
+    throw Exception('Failed to load student reports');
+  }
+
+  final jsonResponse = jsonDecode(response.body);
+
+  List<Bilan> bilans = [];
+  for (var u in jsonResponse) {
+    Bilan bilan = Bilan(u["_index"], u["_date"], u["_global"], u["_comp"], u["_assidu"], u["_dm"], u["_subjects"], u["_toImprove"], u["_good"], u["_comment"]);
+    bilans.add(bilan);
+  }
+
+  eleve.bilans = bilans;
+  return eleve;
+}
+
+Future<Eleve> getEleveAll(String token, String login, Eleve eleve) async {
+  final detailsFuture = getDetailsEleve(token, login, eleve);
+  final bilansFuture = getBilansEleve(token, login, eleve);
+  final commentsFuture = getCommentsEleve(token, login, eleve);
+
+  final responses = await Future.wait([detailsFuture, bilansFuture, commentsFuture]);
+
+  Eleve detailedEleve = responses[0];
+  Eleve eleveWithBilans = responses[1];
+  Eleve eleveWithComments = responses[2];
+
+  detailedEleve.bilans = eleveWithBilans.bilans;
+  detailedEleve.commentaires = eleveWithComments.commentaires;
+
+  return detailedEleve;
+}
+
+
+
 
 

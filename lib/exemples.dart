@@ -10,7 +10,6 @@ Eleve createEleve() {
 Bilan createBilan() {
   Bilan bilan_exemple = Bilan(
     "82",
-    "H9GZH3",
     "17/07/2023",  // Date
     "1",
     "3",  // Behavior
