@@ -98,7 +98,6 @@ class Eleve {
   set bilans(List<Bilan> value) {_bilans = value;}
 }
 
-
 class Note {
   String _date = "";
   String _type = "";
@@ -122,21 +121,21 @@ class Commentaire {
   String _index;
   String _date;
   String _heure;
-  String _prof;
+  String _from;
   String _comment;
 
-  Commentaire(this._index, this._date, this._heure, this._prof, this._comment);
+  Commentaire(this._index, this._date, this._heure, this._from, this._comment);
 
   String get index => _index;
   String get date => _date;
   String get heure => _heure;
-  String get prof => _prof;
+  String get from => _from;
   String get comment => _comment;
 
   set index(String value) {_index = value;}
   set date(String value) {_date = value;}
   set heure(String value) {_heure = value;}
-  set prof(String value) {_prof = value;}
+  set from(String value) {_from = value;}
   set comment(String value) {_comment = value;}
 }
 
@@ -258,14 +257,13 @@ Future<Eleve> getCommentsEleve(String token, String login, Eleve eleve) async {
 
   List<Commentaire> commentaires = [];
   for (var u in commentsData) {
-    Commentaire commentaire = Commentaire(u["_index"], u["_date"], u["_heure"], u["_from"], u["_comment"]);
+    Commentaire commentaire = Commentaire(u["_index"], u["_date"].substring(0,10), u["_date"].substring(11,19), u["_from"], u["_comment"]);
     commentaires.add(commentaire);
   }
 
   eleve.commentaires = commentaires;
   return eleve;
 }
-
 
 Future<Eleve> getBilansEleve(String token, String login, Eleve eleve) async {
   final response = await http.get(Uri.parse('https://app.easystudies.fr/api/students_bilans.php?_token=$token&_login=$login&_studentLogin=${eleve.identifier}'));
@@ -286,7 +284,7 @@ Future<Eleve> getBilansEleve(String token, String login, Eleve eleve) async {
   return eleve;
 }
 
-Future<Eleve> getEleveAll(String token, String login, Eleve eleve) async {
+Future<Eleve> getAllEleve(String token, String login, Eleve eleve) async {
   final detailsFuture = getDetailsEleve(token, login, eleve);
   final bilansFuture = getBilansEleve(token, login, eleve);
   final commentsFuture = getCommentsEleve(token, login, eleve);
@@ -302,8 +300,5 @@ Future<Eleve> getEleveAll(String token, String login, Eleve eleve) async {
 
   return detailedEleve;
 }
-
-
-
 
 
