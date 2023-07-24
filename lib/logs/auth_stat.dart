@@ -50,7 +50,8 @@ class AuthState with ChangeNotifier {
 
   Future<void> checkTokenValidity() async {
     // Make the API request to check the token validity
-    final response = await http.get(Uri.parse('https://app.easystudies.fr/api/login.php?_token=$_token&_login=$_identifier&_pwd='));
+    final response = await http.get(Uri.parse(
+        'https://app.easystudies.fr/api/login.php?_token=$_token&_login=$_identifier&_pwd='));
 
     if (response.statusCode == 200) {
       Map<String, dynamic> jsonResponse = jsonDecode(response.body);
@@ -62,7 +63,6 @@ class AuthState with ChangeNotifier {
       throw Exception('Failed to load data from API');
     }
   }
-
 
   void logout() async {
     final prefs = await SharedPreferences.getInstance();

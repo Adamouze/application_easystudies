@@ -5,8 +5,14 @@ import 'dart:async';
 import 'package:http/http.dart' as http;
 */
 
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'utilities/constantes.dart';
+import 'package:EasyStudies/logs/auth_stat.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+
 
 ///Fichier contenant toutes les classes utilisées dans les autres layout pour essayer de rendre le tout plus ergonomique et facile d'utilisation
 ///Il faudra essayer de mettre la plupart des classes ici pour laisser les fichiers de layout épurés
@@ -228,6 +234,8 @@ Future<List<Commentaire>> get_comments(Eleve eleve, List<Commentaire> _commentai
 
  */
 
+
+
 Widget getSmiley(String rating) {
   switch (rating) {
     case "1":
@@ -244,4 +252,139 @@ Widget getSmiley(String rating) {
       return Container();
   }
 }
+
+class Centre {
+  final String index;
+  final String centre;
+  final String nomCentre;
+
+  Centre({required this.index, required this.centre, required this.nomCentre});
+
+  factory Centre.fromJson(Map<String, dynamic> json) {
+    return Centre(
+      index: json['_index'],
+      centre: json['_centre'],
+      nomCentre: json['_nom_centre'],
+    );
+  }
+}
+
+Future<List<Centre>> fetchCenterList(String token, String identifier) async {
+  final response = await http.get(Uri.parse('https://app.easystudies.fr/api/center_list.php?_token=$token&_login=$identifier'));
+
+  if (response.statusCode == 200) {
+    List<dynamic> jsonResponse = jsonDecode(response.body);
+    return jsonResponse.map((item) => Centre.fromJson(item)).toList();
+  } else {
+    throw Exception('Failed to load data from API');
+  }
+}
+
+class Course {
+  final String index;
+  final String date;
+  final String type;
+  final String centre;
+  final String comment;
+
+  Course({
+    required this.index,
+    required this.date,
+    required this.type,
+    required this.centre,
+    required this.comment,
+  });
+
+  factory Course.fromJson(Map<String, dynamic> json) {
+    return Course(
+      index: json['_index'],
+      date: json['_date'],
+      type: json['_type'],
+      centre: json['_center'],
+      comment: json['_comment'],
+    );
+  }
+}
+
+Future<List<Course>> fetchCourseList(String token, String identifier, String centre ) async {
+  final response = await http.get(Uri.parse('https://app.easystudies.fr/api/class_list.php?_token=$token&_login=$identifier&_center=$centre'));
+
+  if (response.statusCode == 200) {
+    Map<String, dynamic> jsonResponse = jsonDecode(response.body);
+    List<dynamic> data = jsonResponse['_data'];
+    return data.map((item) => Course.fromJson(item)).toList();
+  } else {
+    throw Exception('Failed to load courses from API');
+  }
+}
+
+
+class Presence {
+  final String identifier;
+  final String nom;
+  final String prenom;
+  final String classType;
+  final String idClass;
+  final double nbHeures;
+  final double prix;
+
+  Presence({required this.identifier, required this.nom, required this.prenom, required this.classType, required this.idClass, required this.nbHeures, required this.prix});
+
+  factory Presence.fromJson(Map<String, dynamic> json) {
+    return Presence(
+      identifier: json['_identifier'],
+      nom: json['_nom'],
+      prenom: json['_prenom'],
+      classType: json['_class'],
+      idClass: json['_idClass'],
+      nbHeures: double.parse(json['_nbHeures']),
+      prix: double.parse(json['_prix']),
+    );
+  }
+}
+
+
+
+Future<List<Presence>> fetchClassPresences(String classID, String token, String identifier) async {
+  final response = await http.get(Uri.parse('https://app.easystudies.fr/api/class_presences.php?_token=$token&_login=$identifier&_classID=$classID'));
+
+  if (response.statusCode == 200) {
+    Map<String, dynamic> jsonResponse = jsonDecode(response.body);
+    List<dynamic> data = jsonResponse['_data'];
+    List<Presence> presences = data.map((item) => Presence.fromJson(item)).toList();
+    return presences;
+  } else {
+    throw Exception('Failed to load class presences');
+  }
+}
+
+class MyCustomScrollBehavior extends MaterialScrollBehavior {
+  @override
+  Set<PointerDeviceKind> get dragDevices => {
+    PointerDeviceKind.touch,
+    PointerDeviceKind.mouse,
+  };
+
+  @override
+  Scrollbar buildScrollbar(
+      BuildContext context, Widget child, ScrollableDetails details) {
+    return Scrollbar(
+      thickness: 5.0,
+      radius: const Radius.circular(10),
+      thumbVisibility: true,
+      child: child,
+    );
+  }
+
+  @override
+  Color getScrollbarColor(Set<MaterialState> states) {
+    if (states.contains(MaterialState.hovered)) {
+      return Colors.white.withOpacity(0.9);
+    }
+    return Colors.white.withOpacity(0.5);
+  }
+}
+
+
+
 

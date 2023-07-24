@@ -2,12 +2,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 
 import '../screens/action_buttons_eleve/qrcode_screen.dart';
-import '../screens/action_buttons_prof/scanner.dart';
 
 import '../utilities/constantes.dart';
 import '../utilities/video_youtube.dart';
@@ -214,7 +212,7 @@ class _CustomBodyState extends State<CustomBody> {
                               style: TextStyle(color: theme.textTheme.bodyLarge?.color),
                             );
                           } else {
-                            return const CircularProgressIndicator();
+                            return const CircularProgressIndicator(color: Colors.orangeAccent);
                           }
                         },
                       ),
@@ -391,7 +389,7 @@ class _CustomBodyState extends State<CustomBody> {
                           } else if (snapshot.hasError) {
                             return Text('Failed to fetch video details: ${snapshot.error}');
                           } else {
-                            return const CircularProgressIndicator();
+                            return const CircularProgressIndicator(color: Colors.orangeAccent);
                           }
                         },
                       ),
@@ -509,251 +507,7 @@ class _CustomBodyState extends State<CustomBody> {
                     ),
                   ),
                 ),
-
-              if (widget.userType == "prof")
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Transform.scale(
-                    scale: 1.4,
-                    child: FloatingActionButton(
-                      backgroundColor: Colors.blue,
-                      onPressed: () async {
-                        var status = await Permission.camera.status;
-                        if (status.isDenied) {
-                                  status = await Permission.camera.request();
-                        }
-                        if (status.isGranted) {
-                          String? scanResult = await Scanner(context: context).scanBarcode();
-                  if (scanResult != null && scanResult.isNotEmpty && scanResult != '-1') {
-                    showDialog(
-                      context: context,
-                      builder: (context) {
-                        final formKey = GlobalKey<FormState>();
-                        String? selectedLocation;
-                        String? selectedDuration;
-                        TextEditingController identifierController =
-                        TextEditingController(text: scanResult);
-
-                        return Theme(
-                          data: ThemeData(
-                            textSelectionTheme: const TextSelectionThemeData(cursorColor: Colors.orangeAccent),
-                          ),
-                          child: Dialog(
-                            insetPadding: const EdgeInsets.all(20),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20.0),
-                              side: const BorderSide(color: Colors.white, width: 8),
-                            ),
-                            child: Container(
-                              padding: const EdgeInsets.all(20),
-                              decoration: BoxDecoration(
-                                color: Colors.orangeAccent,
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const Text('Déclaration d\'un cours',
-                                    style: TextStyle(
-                                      fontFamily: 'NotoSans',
-                                      color: Colors.white,
-                                      fontSize: 24,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 15),
-                                  Form(
-                                    key: formKey,
-                                    child: Column(
-                                      children: <Widget>[
-                                        TextFormField(
-                                          controller: identifierController,
-                                          decoration: const InputDecoration(
-                                            fillColor: Colors.white,
-                                            filled: true,
-                                            labelText: 'Identifiant',
-                                            labelStyle: TextStyle(
-                                              color: Colors.orangeAccent,
-                                              fontFamily: 'NotoSans',
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 16,
-                                            ),
-                                          ),
-                                          enabled: false,
-                                        ),
-                                        const SizedBox(height: 15),
-                                        DropdownButtonFormField<String>(
-                                          decoration: const InputDecoration(
-                                            fillColor: Colors.white,
-                                            filled: true,
-                                            labelText: 'Lieu',
-                                            labelStyle: TextStyle(
-                                              color: Colors.orangeAccent,
-                                              fontFamily: 'NotoSans',
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 16,
-                                            ),
-                                          ),
-                                          validator: (value) {
-                                            if (value == null || value.isEmpty) {
-                                              return 'Veuillez choisir un lieu';
-                                            }
-                                            return null;
-                                          },
-                                          items: ['Paris', 'Villeneuve-Saint-Georges']
-                                              .map<DropdownMenuItem<String>>((String value) {
-                                            return DropdownMenuItem<String>(
-                                              value: value,
-                                              child: Text(value, overflow: TextOverflow.ellipsis),
-                                            );
-                                          }).toList(),
-                                          onChanged: (String? newValue) {
-                                            selectedLocation = newValue;
-                                          },
-                                        ),
-                                        const SizedBox(height: 15),
-                                        DropdownButtonFormField<String>(
-                                          decoration: const InputDecoration(
-                                            fillColor: Colors.white,
-                                            filled: true,
-                                            labelText: 'Durée',
-                                            labelStyle: TextStyle(
-                                              color: Colors.orangeAccent,
-                                              fontFamily: 'NotoSans',
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 16,
-                                            ),
-                                          ),
-                                          validator: (value) {
-                                            if (value == null || value.isEmpty) {
-                                              return 'Veuillez choisir une durée';
-                                            }
-                                            return null;
-                                          },
-                                          items: List<String>.generate(20, (i) {
-                                            int minutes = (i + 1) * 30;
-                                            if (minutes < 60) {
-                                              return '$minutes minute${minutes > 1 ? "s" : ""}';
-                                            } else {
-                                              int hours = minutes ~/ 60;
-                                              int remainingMinutes = minutes % 60;
-                                              return remainingMinutes > 0 ? '$hours heure${hours > 1 ? "s" : ""} $remainingMinutes minute${remainingMinutes > 1 ? "s" : ""}' : '$hours heure${hours > 1 ? "s" : ""}';
-                                            }
-                                          }).map<DropdownMenuItem<String>>((String value) {
-                                            return DropdownMenuItem<String>(
-                                              value: value,
-                                              child: Text(value),
-                                            );
-                                          }).toList(),
-                                          onChanged: (String? newValue) {
-                                            selectedDuration = newValue;
-                                          },
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  const SizedBox(height: 20),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                      TextButton(
-                                        style: TextButton.styleFrom(
-                                          backgroundColor: Colors.white,
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(20),
-                                          ),
-                                        ),
-                                        onPressed: () {
-                                          Navigator.of(context).pop();
-                                        },
-                                        child: const Text('Annuler',
-                                          style: TextStyle(
-                                            fontFamily: 'NotoSans',
-                                            color: Colors.orangeAccent,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ),
-                                      const SizedBox(width: 10),
-                                      TextButton(
-                                        style: TextButton.styleFrom(
-                                          backgroundColor: Colors.white,
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(20),
-                                          ),
-                                        ),
-                                        onPressed: () {
-                                          if (formKey.currentState!.validate()) {
-                                            int selectedDurationInMinutes = 0;
-                                            RegExp regExp = RegExp(r'(\d+)\s*(heure|minutes)');
-                                            Iterable<RegExpMatch> matches = regExp.allMatches(selectedDuration!);
-                                            for (RegExpMatch match in matches) {
-                                              int value = int.parse(match.group(1)!);
-                                              String unit = match.group(2)!;
-                                              if (unit == 'heure') {
-                                                selectedDurationInMinutes += value * 60;
-                                              } else {
-                                                selectedDurationInMinutes += value;
-                                              }
-                                            }
-                                            print('Identifiant: $scanResult, Lieu: $selectedLocation, Durée: $selectedDurationInMinutes');
-                                          }
-                                        },
-                                        child: const Text('Déclarer',
-                                          style: TextStyle(
-                                            fontFamily: 'NotoSans',
-                                            color: Colors.orangeAccent,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        );
-                      },
-                    );
-
-                  }
-                        } else {
-                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(10),
-                                topRight: Radius.circular(10),
-                              ),
-                            ),
-                            backgroundColor: Colors.yellow,
-                            content: Text('Permission d\'accès à la caméra de votre appareil nécessaire',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 16,
-                                fontFamily: 'NotoSans',
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            duration: Duration(seconds: 2),
-                          ));
-                        }
-                      },
-                      tooltip: 'Scanner',
-                      elevation: 6.0,
-                      shape: const CircleBorder(),
-                      child: const Icon(
-                        Icons.photo_camera,
-                        color: couleurIcone,
-                        size: 32.0,
-                      ),
-                    ),
-                  ),
-                ),
-
               const SizedBox(height: 20),
-
     ],
         ),
       ),

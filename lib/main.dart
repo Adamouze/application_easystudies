@@ -1,3 +1,4 @@
+import 'package:EasyStudies/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -44,7 +45,12 @@ class MyApp extends StatelessWidget {
       builder: (context, themeProvider, child) {
         return MaterialApp(
           title: 'EasyStudies',
+          scrollBehavior: MyCustomScrollBehavior(),
           theme: ThemeData(
+            scrollbarTheme: ScrollbarThemeData(
+              thumbColor: MaterialStateProperty.all(Colors.blueAccent),
+            ),
+            dividerColor: Colors.orangeAccent,
             textSelectionTheme: const TextSelectionThemeData(
               cursorColor: Colors.orangeAccent,
               selectionColor: Colors.orangeAccent,
