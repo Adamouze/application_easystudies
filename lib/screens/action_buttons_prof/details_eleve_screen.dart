@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+
 import '../../utilities/constantes.dart';
 import '../../logs/auth_stat.dart';
 
@@ -261,91 +262,36 @@ class CommentaireBlockState extends State<CommentaireBlock> {
   int tailleFrom = 2;
   int tailleComment = 10;
 
-  Widget buildHeaderRow() {
-    return DecoratedBox(
-      decoration: const BoxDecoration(
-        border: Border(
-          bottom: BorderSide(width: 0.5),
+  Widget buildCommentaireRow(Commentaire commentaire, int index, Color color) {
+    return Container(
+      width: double.infinity,
+      child: Card(
+        color: color,
+        margin: const EdgeInsets.only(left: 8.0, right: 8.0, top: 8.0),
+        child: Padding(
+          padding: const EdgeInsets.all(5.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "N° ${index+1}",
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 2),
+              Text(
+                'Date: ${commentaire.date.substring(8,10)}/${commentaire.date.substring(5,7)}/${commentaire.date.substring(0,4)}',
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 2),
+              Text(
+                'Par: ${commentaire.from}',
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 5),
+              Text(commentaire.comment),
+            ],
+          ),
         ),
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            flex: tailleNumero,
-            child: const Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                "N°",
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-            ),
-          ),
-          Expanded(
-            flex: tailleDate,
-            child: const Align(
-              alignment: Alignment.center,
-              child: Text(
-                "Date",
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-            ),
-          ),
-          Expanded(
-            flex: tailleFrom,
-            child: const Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                "Par",
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-            ),
-          ),
-          const SizedBox(width: 8),
-          Expanded(
-            flex: tailleComment,
-            child: const Align(
-              alignment: Alignment.center,
-              child: Text(
-                "Commentaire",
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget buildCommentaireRow(Commentaire commentaire, int index) {
-    return DecoratedBox(
-      decoration: const BoxDecoration(
-        border: Border(
-          bottom: BorderSide(width: 0.5),
-        ),
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            flex: tailleNumero,
-            child: Text((index+1).toString()),
-          ),
-          Expanded(
-            flex: tailleDate,
-            child: Text('${commentaire.date.substring(8,10)}/${commentaire.date.substring(5,7)}/${commentaire.date.substring(0,4)}'),
-          ),
-          Expanded(
-            flex: tailleFrom,
-            child: Text(commentaire.from),
-          ),
-          const SizedBox(width: 8),
-          Expanded(
-            flex: tailleComment,
-            child: Wrap(
-              textDirection: TextDirection.ltr,
-              children: [Text(commentaire.comment)],
-            ),
-          ),
-        ],
       ),
     );
   }
@@ -362,74 +308,74 @@ class CommentaireBlockState extends State<CommentaireBlock> {
   List<Widget> createCommentaireRows(Eleve eleve) {
     List<Widget> rows = [];
 
-    rows.add(buildHeaderRow());
-
     for (int i = 0; i < eleve.commentaires.length; i++) {
       Commentaire commentaire = eleve.commentaires[i];
-      rows.add(buildCommentaireRow(commentaire, i));
+      Color color = (i % 2 == 0 ? Colors.grey[300] : Colors.grey[400]) ?? Colors.grey;
+      rows.add(buildCommentaireRow(commentaire, i, color));
     }
+
+    // Ajoutez une marge en bas du dernier élément
+    if (rows.isNotEmpty) {
+      rows.add(const SizedBox(height: 8.0));
+    }
+
     return rows;
   }
 
 
   @override
   Widget build(BuildContext context) {
-    return FractionallySizedBox(
-      widthFactor: 0.95,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          Container(
-            decoration: BoxDecoration(
-              color: Colors.orangeAccent,
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(arrondiBox),
-                topRight: Radius.circular(arrondiBox),
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.2),
-                  spreadRadius: 1,
-                  blurRadius: 2,
-                  offset: const Offset(0, 2), // changes position of shadow
-                ),
-              ],
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(arrondiBox),
+      child: FractionallySizedBox(
+        widthFactor: 0.95,
+        child: Container(
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: orangePerso,
+              width: 1.0,
             ),
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                'Commentaires',
-                style: TextStyle(
-                  color: Theme.of(context).primaryColor,
-                  fontWeight: FontWeight.bold,
-                  fontFamily: 'NotoSans',
-                ),
-              ),
-            ),
+            borderRadius: BorderRadius.circular(arrondiBox),
           ),
-          Container(
-            decoration: BoxDecoration(
-              color: Colors.grey[200],
-              borderRadius: const BorderRadius.only(
-                bottomLeft: Radius.circular(arrondiBox),
-                bottomRight: Radius.circular(arrondiBox),
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.2),
-                  spreadRadius: 1,
-                  blurRadius: 2,
-                  offset: const Offset(0, 2), // changes position of shadow
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              Container(
+                decoration: BoxDecoration(
+                  color: orangePerso,
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(arrondiBox),
+                    topRight: Radius.circular(arrondiBox),
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.2),
+                      spreadRadius: 1,
+                      blurRadius: 2,
+                      offset: const Offset(0, 2), // changes position of shadow
+                    ),
+                  ],
                 ),
-              ],
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(8),
-              child: Column(
-                children: commentaireRows, // Utilisez la liste des widgets générés comme enfants de la colonne
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    'Commentaires',
+                    style: TextStyle(
+                      color: Theme.of(context).primaryColor,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'NotoSans',
+                    ),
+                  ),
+                ),
               ),
-            ),
-          ),        ],
+              commentaireRows.isEmpty
+                  ? Container(color: Colors.grey[200], child: const SizedBox(height: 10))
+                  : Column(
+                children: commentaireRows, // Utilisez la liste des widgets générés comme enfants de la Column
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -444,6 +390,14 @@ class BilanBlock extends StatefulWidget {
 }
 
 class BilanBlockState extends State<BilanBlock> {
+  int tailleNumero = 1;
+  int tailleDate = 4;
+  int tailleGlobal = 2;
+  int tailleComportement = 2;
+  int tailleAssidu = 2;
+  int tailleDM = 2;
+  int tailleDetails = 2;
+
 
   Map<String, List<DataRow>> bilanRows = {};
 
@@ -455,6 +409,10 @@ class BilanBlockState extends State<BilanBlock> {
 
   Map<String, List<DataRow>> createBilanRows(Eleve eleve) {
     Map<String, List<DataRow>> bilanRows = {};
+
+    if (eleve.bilans.isEmpty) {
+      return bilanRows;
+    }
 
     for (int i = 0; i < eleve.bilans.length; i++) {
       Bilan bilan = eleve.bilans[i];
@@ -473,14 +431,14 @@ class BilanBlockState extends State<BilanBlock> {
           DataCell(Center(child: getSmiley(bilan.dm))),
           DataCell(
             Center(
-              child: TextButton(
-                onPressed: () {
+              child: InkWell(
+                onTap: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => DetailsContent(eleve: eleve, bilan: bilan)),
                   );
                 },
-                child: const Text('Détails'),
+                child: detailsBilan,
               ),
             ),
           ),
@@ -490,6 +448,59 @@ class BilanBlockState extends State<BilanBlock> {
       bilanRows[eleve.identifier] = [...?bilanRows[eleve.identifier], row];
     }
     return bilanRows;
+  }
+
+  Widget buildHeaderRow() {
+    if (bilanRows[widget.eleve.identifier] == null || bilanRows[widget.eleve.identifier]!.isEmpty) {
+      return Container(child: const SizedBox(height: 10,),);
+    }
+    return Flex(
+      direction: Axis.horizontal,
+      children: <Widget>[
+        Expanded(flex: tailleNumero, child: const Center(child: Text('N°', style: TextStyle(fontWeight: FontWeight.bold)))),
+        Expanded(flex: tailleDate, child: const Center(child: Text('Date', style: TextStyle(fontWeight: FontWeight.bold)))),
+        Expanded(flex: tailleGlobal, child: const Center(child: Text('Global', style: TextStyle(fontWeight: FontWeight.bold)))),
+        Expanded(flex: tailleComportement, child: const Center(child: Text('Comp.', style: TextStyle(fontWeight: FontWeight.bold)))),
+        Expanded(flex: tailleAssidu, child: const Center(child: Text('Assid.', style: TextStyle(fontWeight: FontWeight.bold)))),
+        Expanded(flex: tailleDM, child: const Center(child: Text('DM', style: TextStyle(fontWeight: FontWeight.bold)))),
+        Expanded(flex: tailleDetails, child: const Center(child: Text('Détail', style: TextStyle(fontWeight: FontWeight.bold)))),
+      ],
+    );
+  }
+
+  List<Widget> buildBilanRows() {
+    if (bilanRows[widget.eleve.identifier] == null || bilanRows[widget.eleve.identifier]!.isEmpty) {
+      return [];
+    }
+
+    List<DataRow> bilanRowsList = bilanRows[widget.eleve.identifier]!;
+    List<int> flexValues = [
+      tailleNumero,
+      tailleDate,
+      tailleGlobal,
+      tailleComportement,
+      tailleAssidu,
+      tailleDM,
+      tailleDetails,
+    ];
+    return List<Widget>.generate(bilanRowsList.length, (int index) {
+      DataRow row = bilanRowsList[index];
+      return Container(
+        color: index % 2 == 0 ? Colors.grey[300] : Colors.grey[400], // recréer l'alternance des gris
+        child: Flex(
+          direction: Axis.horizontal,
+          children: List<Widget>.generate(row.cells.length, (int cellIndex) {
+            return Expanded(
+              flex: flexValues[cellIndex],
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: row.cells[cellIndex].child,
+              ),
+            );
+          }),
+        ),
+      );
+    });
   }
 
   @override
@@ -547,62 +558,11 @@ class BilanBlockState extends State<BilanBlock> {
               ),
               child: Padding(
                 padding: const EdgeInsets.only(left: 0.0),
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: DataTable(
-                    dataRowMinHeight: 50,
-                    dataRowMaxHeight: 50, // ajouter la hauteur de ligne
-                    columnSpacing: 10 , // ajuster l'espace entre les colonnes si nécessaire
-                    columns: const <DataColumn>[
-                      DataColumn(label: Tooltip(
-                        message: 'Numéro',
-                        child: Text(
-                          'N°',
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),),
-                      DataColumn(label: Expanded(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [Text('Date', style: TextStyle(fontWeight: FontWeight.bold))],
-                        ),
-                      ),
-                      ),
-                      DataColumn(label: Text('Global', style: TextStyle(fontWeight: FontWeight.bold))),
-                      DataColumn(label: Tooltip(
-                        message: 'Comportement',
-                        child: Text(
-                          'Comp.',
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),),
-                      DataColumn(label: Tooltip(
-                        message: 'Assiduité',
-                        child: Text(
-                          'Assid.',
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),),
-                      DataColumn(label: Expanded(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [Text('DM', style: TextStyle(fontWeight: FontWeight.bold))],
-                        ),
-                      ),
-                      ),
-                      DataColumn(label: Expanded(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [Text('Détails', style: TextStyle(fontWeight: FontWeight.bold))],
-                        ),
-                      ),
-                      ),
-                    ],
-                    rows: bilanRows[widget.eleve.identifier] ?? [], // Si l'élève n'a pas de bilans, affichez une liste vide
-                  ),
+                child: Column(
+                  children: [
+                    buildHeaderRow(),
+                    ...buildBilanRows(),
+                  ],
                 ),
               ),
             ),
@@ -694,7 +654,7 @@ class DetailsEleveState extends State<DetailsEleve> {
                           tooltip: "Ajout d'un bilan",
                           elevation: 6.0,
                           shape: const CircleBorder(),
-                          child: add_bilan,
+                          child: addBilan,
                         ),
                       ),
                     ),

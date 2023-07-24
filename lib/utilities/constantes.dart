@@ -12,9 +12,15 @@ Image smiley3 = Image.asset('assets/smiley/3.png', height: tailleSmiley);
 Image smiley4 = Image.asset('assets/smiley/4.png', height: tailleSmiley);
 Image smiley5 = Image.asset('assets/smiley/5.png', height: tailleSmiley);
 
-const Image add_bilan = Image(
+const Image addBilan = Image(
   image: AssetImage('assets/divers/add_bilan.png'),
   alignment: Alignment.center,
+);
+
+const Image detailsBilan = Image(
+  image: AssetImage('assets/divers/bilan.png'),
+  alignment: Alignment.center,
+  width: 40,
 );
 
 const String photoMisterV = "https://covers-ng3.hosting-media.net/art/r288/641835.jpg";

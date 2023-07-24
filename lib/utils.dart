@@ -6,10 +6,12 @@ import 'package:http/http.dart' as http;
 */
 
 import 'package:flutter/material.dart';
-import 'utilities/constantes.dart';
-import 'package:EasyStudies/logs/auth_stat.dart';
+import 'package:flutter/gestures.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+
+import 'utilities/constantes.dart';
+
 
 
 ///Fichier contenant toutes les classes utilisées dans les autres layout pour essayer de rendre le tout plus ergonomique et facile d'utilisation
@@ -305,37 +307,6 @@ Future<List<Presence>> fetchClassPresences(String classID, String token, String 
   }
 }
 
-class MyCustomScrollBehavior extends MaterialScrollBehavior {
-  @override
-  Set<PointerDeviceKind> get dragDevices => {
-    PointerDeviceKind.touch,
-    PointerDeviceKind.mouse,
-  };
-
-  @override
-  Scrollbar buildScrollbar(
-      BuildContext context, Widget child, ScrollableDetails details) {
-    return Scrollbar(
-      thickness: 5.0,
-      radius: const Radius.circular(10),
-      thumbVisibility: true,
-      child: child,
-    );
-  }
-
-  @override
-  Color getScrollbarColor(Set<MaterialState> states) {
-    if (states.contains(MaterialState.hovered)) {
-      return Colors.white.withOpacity(0.9);
-    }
-    return Colors.white.withOpacity(0.5);
-  }
-}
-
-
-
-
-
 Future<List<Eleve>> getListEleves(String token, String login) async {
   final response = await http.get(Uri.parse('https://app.easystudies.fr/api/students_list.php?_token=$token&_login=$login'));
 
@@ -441,6 +412,44 @@ Future<Eleve> getAllEleve(String token, String login, Eleve eleve) async {
   detailedEleve.commentaires = eleveWithComments.commentaires;
 
   return detailedEleve;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+class MyCustomScrollBehavior extends MaterialScrollBehavior {
+  @override
+  Set<PointerDeviceKind> get dragDevices => {
+    PointerDeviceKind.touch,
+    PointerDeviceKind.mouse,
+  };
+
+  @override
+  Scrollbar buildScrollbar(
+      BuildContext context, Widget child, ScrollableDetails details) {
+    return Scrollbar(
+      thickness: 5.0,
+      radius: const Radius.circular(10),
+      thumbVisibility: true,
+      child: child,
+    );
+  }
+
+  @override
+  Color getScrollbarColor(Set<MaterialState> states) {
+    if (states.contains(MaterialState.hovered)) {
+      return Colors.white.withOpacity(0.9);
+    }
+    return Colors.white.withOpacity(0.5);
+  }
 }
 
 

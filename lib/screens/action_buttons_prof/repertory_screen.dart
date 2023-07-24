@@ -91,8 +91,6 @@ class RepertoryScreenState extends State<RepertoryScreen> {
                                       : Image.network(eleves[index].photo, fit: BoxFit.cover),
                                 ),
                               ),
-
-
                               title: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
