@@ -2,15 +2,14 @@ import 'utils.dart';
 import 'utilities/constantes.dart';
 
 Eleve createEleve() {
-  Eleve eleve_exemple = Eleve.basic("H9GZH3", "GAJENDRAN", "Ajanthan", "Term G", "M", "03/03/2005");
-  eleve_exemple.etat = "Active";
-  eleve_exemple.int_ent = "CTEF Admin";
+  Eleve eleve_exemple = Eleve.basic("H9GZH3", "GAJENDRAN", "Ajanthan", "Term G", "M", "34");
   eleve_exemple.photo = "https://covers-ng3.hosting-media.net/art/r288/641835.jpg";
   return eleve_exemple;
 }
 
 Bilan createBilan() {
   Bilan bilan_exemple = Bilan(
+    "82",
     "17/07/2023",  // Date
     "1",
     "3",  // Behavior
@@ -29,25 +28,19 @@ List<Eleve> createEleves() {
   Bilan bilan_exemple = createBilan();
 
   // Création du premier élève
-  Eleve eleve1 = Eleve.basic("H9GZH3", "MISTER V", "Yvick", "Term G", "M", "03/03/2005");
-  eleve1.etat = "Actif";
-  eleve1.int_ent = "CTEF Admin";
+  Eleve eleve1 = Eleve.basic("H9GZH3", "MISTER V", "Yvick", "Term G", "M", "87");
   eleve1.bilans = [bilan_exemple, bilan_exemple];
   eleve1.photo = photoMisterV;
 
 
   // Création du deuxième élève
-  Eleve eleve2 = Eleve.basic("U5HWT6", "FANTOMUS", "Adamouze", "CM2", "M", "14/04/2005");
-  eleve2.etat = "Inactif";
-  eleve2.int_ent = "CTEF Admin";
+  Eleve eleve2 = Eleve.basic("U5HWT6", "FANTOMUS", "Adamouze", "CM2", "M", "12");
   eleve2.bilans = [bilan_exemple];
   eleve2.photo = photoAdamouze;
 
 
   // Création du troisième élève
-  Eleve eleve3 = Eleve.basic("D4E4ZF", "LE POISSON", "Alaska", "CP", "M", "18/03/2002");
-  eleve3.etat = "Actif";
-  eleve3.int_ent = "CTEF Admin";
+  Eleve eleve3 = Eleve.basic("D4E4ZF", "LE POISSON", "Alaska", "CP", "M", "9");
   eleve3.bilans = [bilan_exemple, bilan_exemple, bilan_exemple];
   eleve3.photo = photoAlaska;
 
