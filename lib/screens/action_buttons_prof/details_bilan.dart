@@ -16,11 +16,11 @@ class BaseDeNotationBlock extends StatelessWidget {
 }
 
 
-class DetailsContent extends StatelessWidget {
+class DetailsBilanContent extends StatelessWidget {
   final Eleve eleve;
   final Bilan bilan;
 
-  const DetailsContent({required this.eleve, required this.bilan, Key? key}) : super(key: key);
+  const DetailsBilanContent({required this.eleve, required this.bilan, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +29,7 @@ class DetailsContent extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: orangePerso,
         title:Text(
-          'Détails',
+          'Détails du bilan',
           style: TextStyle(
             fontWeight: FontWeight.bold,
             color: theme.primaryColor,

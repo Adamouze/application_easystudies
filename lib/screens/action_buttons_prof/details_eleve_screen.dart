@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import '../../utilities/constantes.dart';
 import '../../logs/auth_stat.dart';
 
+import 'details_commentaire.dart';
 import 'details_bilan.dart';
 import 'new_bilan_screen.dart';
 
@@ -257,10 +258,6 @@ class CommentaireBlock extends StatefulWidget {
 }
 
 class CommentaireBlockState extends State<CommentaireBlock> {
-  int tailleNumero = 1;
-  int tailleDate = 4;
-  int tailleFrom = 2;
-  int tailleComment = 10;
 
   Widget buildCommentaireRow(Commentaire commentaire, int index, Color color) {
     return Container(
@@ -274,21 +271,15 @@ class CommentaireBlockState extends State<CommentaireBlock> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                "N° ${index+1}",
-                style: const TextStyle(fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 2),
-              Text(
-                'Date: ${commentaire.date.substring(8,10)}/${commentaire.date.substring(5,7)}/${commentaire.date.substring(0,4)}',
-                style: const TextStyle(fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 2),
-              Text(
-                'Par: ${commentaire.from}',
+                "Date: ${commentaire.date.substring(8,10)}/${commentaire.date.substring(5,7)}/${commentaire.date.substring(0,4)} - Par: ${commentaire.from}",
                 style: const TextStyle(fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 5),
-              Text(commentaire.comment),
+              Text(
+                commentaire.comment,
+                maxLines: 2, // Limite à deux lignes
+                overflow: TextOverflow.ellipsis, // Ajoute des ellipses à la fin si le texte est trop long
+              ),
             ],
           ),
         ),
@@ -308,8 +299,11 @@ class CommentaireBlockState extends State<CommentaireBlock> {
   List<Widget> createCommentaireRows(Eleve eleve) {
     List<Widget> rows = [];
 
-    for (int i = 0; i < eleve.commentaires.length; i++) {
-      Commentaire commentaire = eleve.commentaires[i];
+    // On ne prend que les 2 derniers commentaires
+    var commentaires = eleve.commentaires.reversed.take(2).toList().reversed.toList();
+
+    for (int i = 0; i < commentaires.length; i++) {
+      Commentaire commentaire = commentaires[i];
       Color color = (i % 2 == 0 ? Colors.grey[300] : Colors.grey[400]) ?? Colors.grey;
       rows.add(buildCommentaireRow(commentaire, i, color));
     }
@@ -319,12 +313,39 @@ class CommentaireBlockState extends State<CommentaireBlock> {
       rows.add(const SizedBox(height: 8.0));
     }
 
+    // Ajout du bouton "Voir plus"
+    rows.add(
+      Center(
+        child: ElevatedButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => DetailsCommentaireContent(eleve: eleve)),
+            );
+          },
+          child: const Text('Voir plus'),
+          style: ElevatedButton.styleFrom(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(18.0),
+            ),
+            primary: Colors.blue, // color of the button
+            onPrimary: Colors.white, // color of the button text
+          ),
+        ),
+      ),
+    );
+    // Ajoutez une marge en bas du bouton
+    if (rows.isNotEmpty) {
+      rows.add(const SizedBox(height: 8.0));
+    }
+
     return rows;
   }
 
-
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return ClipRRect(
       borderRadius: BorderRadius.circular(arrondiBox),
       child: FractionallySizedBox(
@@ -349,7 +370,7 @@ class CommentaireBlockState extends State<CommentaireBlock> {
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.2),
+                      color: theme.primaryColor,
                       spreadRadius: 1,
                       blurRadius: 2,
                       offset: const Offset(0, 2), // changes position of shadow
@@ -435,7 +456,7 @@ class BilanBlockState extends State<BilanBlock> {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => DetailsContent(eleve: eleve, bilan: bilan)),
+                    MaterialPageRoute(builder: (context) => DetailsBilanContent(eleve: eleve, bilan: bilan)),
                   );
                 },
                 child: detailsBilan,
@@ -493,7 +514,7 @@ class BilanBlockState extends State<BilanBlock> {
             return Expanded(
               flex: flexValues[cellIndex],
               child: Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.all(4.0), // Marge au sein des cases du tableau
                 child: row.cells[cellIndex].child,
               ),
             );
@@ -572,8 +593,6 @@ class BilanBlockState extends State<BilanBlock> {
     );
   }
 }
-
-
 
 
 class DetailsEleve extends StatefulWidget {
