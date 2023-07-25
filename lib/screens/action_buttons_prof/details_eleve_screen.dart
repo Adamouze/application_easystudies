@@ -250,128 +250,6 @@ class EleveContactBlock extends StatelessWidget {
   }
 }
 
-
-/*
-class EleveContactBlock extends StatelessWidget {
-  final Eleve eleve;
-
-  const EleveContactBlock({required this.eleve, Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return FractionallySizedBox(
-      widthFactor: 0.95,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          Container(
-            decoration: BoxDecoration(
-              color: Colors.orangeAccent,
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(arrondiBox),
-                topRight: Radius.circular(arrondiBox),
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.2),
-                  spreadRadius: 1,
-                  blurRadius: 2,
-                  offset: const Offset(0, 2), // changes position of shadow
-                ),
-              ],
-            ),
-            child: ExpansionTile(
-              title: Text(
-                '${'Contacts -'} ${eleve.prenom}',
-                style: TextStyle(
-                  color: Theme.of(context).primaryColor,
-                  fontWeight: FontWeight.bold,
-                  fontFamily: 'NotoSans',
-                ),
-              ),
-              children: <Widget>[
-                Container(
-                  decoration: BoxDecoration(
-                    color: Colors.grey[200],
-                    borderRadius: const BorderRadius.only(
-                      bottomLeft: Radius.circular(arrondiBox),
-                      bottomRight: Radius.circular(arrondiBox),
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.2),
-                        spreadRadius: 1,
-                        blurRadius: 2,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Expanded(
-                          flex: 2,
-                          child: ListView(
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            children: const <Widget>[
-                              Text("Numéro de fixe : "),
-                              Text("Mobile de l'élève: "),
-                              Text("Mobile d'un parent : "),
-                              Text("Email de l'élève : "),
-                              Text("Email d'un parent : "),
-                              Text("Adresse : "),
-                              Text(""),
-                            ],
-                          ),
-                        ),
-                        Expanded(
-                          flex: 3,
-                          child: ListView(
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            children: <Widget>[
-                              eleve.numFix == ""
-                                  ? Text("non renseigné", style: TextStyle(color: theme.textTheme.bodySmall?.color, fontStyle: FontStyle.italic))
-                                  : Text(eleve.numFix),
-                              Text(eleve.numMobileEleve),
-                              Text(eleve.numMobileParents),
-                              Tooltip(
-                                message: eleve.emailEleve,
-                                child: Text(
-                                  eleve.emailEleve,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                              Tooltip(
-                                message: eleve.emailParents,
-                                child: Text(
-                                  eleve.emailParents,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                              Text(eleve.adresse),
-                              Text(eleve.ville),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-*/
-
 class EleveComptabiliteBlock extends StatelessWidget {
   final Eleve eleve;
 
@@ -587,7 +465,7 @@ class CommentaireBlockState extends State<CommentaireBlock> {
                 ? Container(
                 height: 10,
                 decoration: const BoxDecoration(
-                  color: Colors.transparent, // Couleur transparente
+                  color: Colors.transparent,
                   borderRadius: BorderRadius.only(
                     bottomLeft: Radius.circular(arrondiBox - 3),
                     bottomRight: Radius.circular(arrondiBox - 3),

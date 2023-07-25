@@ -97,11 +97,11 @@ class CommentaireBlock extends StatelessWidget {
               child: commentaireRows.isEmpty
                 ? Container(
                 height: 10,
-                decoration: BoxDecoration(
-                  color: Colors.grey[200],
-                  borderRadius: const BorderRadius.only(
-                    bottomLeft: Radius.circular(arrondiBox-3),
-                    bottomRight: Radius.circular(arrondiBox-3),
+                decoration: const BoxDecoration(
+                  color: Colors.transparent,
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(arrondiBox - 3),
+                    bottomRight: Radius.circular(arrondiBox - 3),
                   ),
                 ),
               )
