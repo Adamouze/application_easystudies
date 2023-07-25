@@ -5,7 +5,8 @@ import 'package:provider/provider.dart';
 import '../../utilities/constantes.dart';
 import '../../logs/auth_stat.dart';
 
-import 'details_commentaire.dart';
+import 'commentaires_screen.dart';
+import 'bilans_screen.dart';
 import 'details_bilan.dart';
 import 'new_bilan_screen.dart';
 
@@ -260,7 +261,7 @@ class CommentaireBlock extends StatefulWidget {
 class CommentaireBlockState extends State<CommentaireBlock> {
 
   Widget buildCommentaireRow(Commentaire commentaire, int index, Color color) {
-    return Container(
+    return SizedBox(
       width: double.infinity,
       child: Card(
         color: color,
@@ -287,14 +288,7 @@ class CommentaireBlockState extends State<CommentaireBlock> {
     );
   }
 
-
   List<Widget> commentaireRows = [];
-
-  @override
-  void initState() {
-    super.initState();
-    commentaireRows = createCommentaireRows(widget.eleve);
-  }
 
   List<Widget> createCommentaireRows(Eleve eleve) {
     List<Widget> rows = [];
@@ -313,89 +307,93 @@ class CommentaireBlockState extends State<CommentaireBlock> {
       rows.add(const SizedBox(height: 8.0));
     }
 
-    // Ajout du bouton "Voir plus"
-    rows.add(
-      Center(
-        child: ElevatedButton(
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => DetailsCommentaireContent(eleve: eleve)),
-            );
-          },
-          child: const Text('Voir plus'),
-          style: ElevatedButton.styleFrom(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(18.0),
-            ),
-            primary: Colors.blue, // color of the button
-            onPrimary: Colors.white, // color of the button text
-          ),
-        ),
-      ),
-    );
-    // Ajoutez une marge en bas du bouton
-    if (rows.isNotEmpty) {
-      rows.add(const SizedBox(height: 8.0));
-    }
-
     return rows;
   }
 
   @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+  void initState() {
+    super.initState();
+    commentaireRows = createCommentaireRows(widget.eleve);
+  }
 
+
+  @override
+  Widget build(BuildContext context) {
     return ClipRRect(
       borderRadius: BorderRadius.circular(arrondiBox),
       child: FractionallySizedBox(
         widthFactor: 0.95,
-        child: Container(
-          decoration: BoxDecoration(
-            border: Border.all(
-              color: orangePerso,
-              width: 1.0,
-            ),
-            borderRadius: BorderRadius.circular(arrondiBox),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              Container(
-                decoration: BoxDecoration(
-                  color: orangePerso,
-                  borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(arrondiBox),
-                    topRight: Radius.circular(arrondiBox),
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: theme.primaryColor,
-                      spreadRadius: 1,
-                      blurRadius: 2,
-                      offset: const Offset(0, 2), // changes position of shadow
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            Container(
+              decoration: const BoxDecoration(
+                color: orangePerso,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(arrondiBox),
+                  topRight: Radius.circular(arrondiBox),
+                ),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.only(left: 8, right: 8, top: epaisseurContourCommentaire),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween, // Aligns the children on the horizontal axis
+                  children: [
+                    Text(
+                      'Commentaires',
+                      style: TextStyle(
+                        color: Theme.of(context).primaryColor,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'NotoSans',
+                      ),
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => CommentaireScreen(eleve: widget.eleve)),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(18.0),
+                        ),
+                        backgroundColor: Colors.blue, // color of the button
+                        foregroundColor: Colors.white, // color of the button text
+                      ),
+                      child: const Text('Voir plus'),
                     ),
                   ],
                 ),
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    'Commentaires',
-                    style: TextStyle(
-                      color: Theme.of(context).primaryColor,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: 'NotoSans',
-                    ),
-                  ),
+              ),
+            ),
+            Container(
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: orangePerso,
+                  width: epaisseurContourCommentaire,
+                ),
+                borderRadius: const BorderRadius.only(
+                  bottomLeft: Radius.circular(arrondiBox),
+                  bottomRight: Radius.circular(arrondiBox),
                 ),
               ),
-              commentaireRows.isEmpty
-                  ? Container(color: Colors.grey[200], child: const SizedBox(height: 10))
-                  : Column(
-                children: commentaireRows, // Utilisez la liste des widgets générés comme enfants de la Column
+              child: commentaireRows.isEmpty
+                ? Container(
+                  height: 10,
+                  decoration: BoxDecoration(
+                    color: Colors.grey[200],
+                    borderRadius: const BorderRadius.only(
+                      bottomLeft: Radius.circular(arrondiBox-3),
+                      bottomRight: Radius.circular(arrondiBox-3),
+                    ),
+                  ),
+                )
+                : Column(
+                  children: commentaireRows,
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -422,25 +420,18 @@ class BilanBlockState extends State<BilanBlock> {
 
   Map<String, List<DataRow>> bilanRows = {};
 
-  @override
-  void initState() {
-    super.initState();
-    bilanRows = createBilanRows(widget.eleve);
-  }
-
   Map<String, List<DataRow>> createBilanRows(Eleve eleve) {
     Map<String, List<DataRow>> bilanRows = {};
 
-    if (eleve.bilans.isEmpty) {
-      return bilanRows;
-    }
+    var bilans = eleve.bilans.reversed.take(2).toList().reversed.toList();
 
-    for (int i = 0; i < eleve.bilans.length; i++) {
-      Bilan bilan = eleve.bilans[i];
+    for (int i = 0; i < bilans.length; i++) {
+      Bilan bilan = bilans[i];
       DataRow row = DataRow(
         color: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
-          if (states.contains(MaterialState.selected))
+          if (states.contains(MaterialState.selected)) {
             return Theme.of(context).colorScheme.primary.withOpacity(0.08);
+          }
           return i % 2 == 0 ? Colors.grey[300] : Colors.grey[400];
         }),
         cells: <DataCell>[
@@ -471,9 +462,15 @@ class BilanBlockState extends State<BilanBlock> {
     return bilanRows;
   }
 
+  @override
+  void initState() {
+    super.initState();
+    bilanRows = createBilanRows(widget.eleve);
+  }
+
   Widget buildHeaderRow() {
     if (bilanRows[widget.eleve.identifier] == null || bilanRows[widget.eleve.identifier]!.isEmpty) {
-      return Container(child: const SizedBox(height: 10,),);
+      return const SizedBox(height: 10);
     }
     return Flex(
       direction: Axis.horizontal,
@@ -484,7 +481,7 @@ class BilanBlockState extends State<BilanBlock> {
         Expanded(flex: tailleComportement, child: const Center(child: Text('Comp.', style: TextStyle(fontWeight: FontWeight.bold)))),
         Expanded(flex: tailleAssidu, child: const Center(child: Text('Assid.', style: TextStyle(fontWeight: FontWeight.bold)))),
         Expanded(flex: tailleDM, child: const Center(child: Text('DM', style: TextStyle(fontWeight: FontWeight.bold)))),
-        Expanded(flex: tailleDetails, child: const Center(child: Text('Détail', style: TextStyle(fontWeight: FontWeight.bold)))),
+        Expanded(flex: tailleDetails, child: const Center(child: Text('Détails', style: TextStyle(fontWeight: FontWeight.bold)))),
       ],
     );
   }
@@ -535,7 +532,7 @@ class BilanBlockState extends State<BilanBlock> {
           children: <Widget>[
             Container(
               decoration: BoxDecoration(
-                color: Colors.orangeAccent,
+                color: orangePerso,
                 borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(arrondiBox),
                   topRight: Radius.circular(arrondiBox),
@@ -550,14 +547,35 @@ class BilanBlockState extends State<BilanBlock> {
                 ],
               ),
               child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  'Bilans',
-                  style: TextStyle(
-                    color: Theme.of(context).primaryColor,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: 'NotoSans',
-                  ),
+                padding: const EdgeInsets.only(left: 8, right: 8),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween, // Aligns the children on the horizontal axis
+                  children: [
+                    Text(
+                      'Bilans',
+                      style: TextStyle(
+                        color: Theme.of(context).primaryColor,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'NotoSans',
+                      ),
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => BilanScreen(eleve: widget.eleve)),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(18.0),
+                        ),
+                        backgroundColor: Colors.blue, // color of the button
+                        foregroundColor: Colors.white, // color of the button text
+                      ),
+                      child: const Text('Voir plus'),
+                    ),
+                  ],
                 ),
               ),
             ),

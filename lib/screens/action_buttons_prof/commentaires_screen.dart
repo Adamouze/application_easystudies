@@ -5,13 +5,13 @@ import '../../utilities/constantes.dart';
 import '../../../utils.dart';
 
 
-class DetailsCommentaireBlock extends StatelessWidget {
+class CommentaireBlock extends StatelessWidget {
   final Eleve eleve;
 
-  DetailsCommentaireBlock({required this.eleve, Key? key}) : super(key: key);
+  const CommentaireBlock({required this.eleve, Key? key}) : super(key: key);
 
   Widget buildCommentaireRow(Commentaire commentaire, int index, Color color) {
-    return Container(
+    return SizedBox(
       width: double.infinity,
       child: Card(
         color: color,
@@ -33,7 +33,6 @@ class DetailsCommentaireBlock extends StatelessWidget {
       ),
     );
   }
-
 
   List<Widget> createCommentaireRows(Eleve eleve) {
     List<Widget> rows = [];
@@ -61,64 +60,65 @@ class DetailsCommentaireBlock extends StatelessWidget {
       borderRadius: BorderRadius.circular(arrondiBox),
       child: FractionallySizedBox(
         widthFactor: 0.95,
-        child: Container(
-          decoration: BoxDecoration(
-            border: Border.all(
-              color: orangePerso,
-              width: 1.0,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            Container(
+              decoration: const BoxDecoration(
+                color: orangePerso,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(arrondiBox),
+                  topRight: Radius.circular(arrondiBox),
+                ),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.only(right: 8, left: 8, top: 8, bottom: 8 - epaisseurContourCommentaire),
+                child: Text(
+                  'Commentaires',
+                  style: TextStyle(
+                    color: Theme.of(context).primaryColor,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'NotoSans',
+                  ),
+                ),
+              ),
             ),
-            borderRadius: BorderRadius.circular(arrondiBox),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              Container(
-                decoration: BoxDecoration(
+            Container(
+              decoration: BoxDecoration(
+                border: Border.all(
                   color: orangePerso,
+                  width: epaisseurContourCommentaire,
+                ),
+                borderRadius: const BorderRadius.only(
+                  bottomLeft: Radius.circular(arrondiBox),
+                  bottomRight: Radius.circular(arrondiBox),
+                ),
+              ),
+              child: commentaireRows.isEmpty
+                ? Container(
+                height: 10,
+                decoration: BoxDecoration(
+                  color: Colors.grey[200],
                   borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(arrondiBox),
-                    topRight: Radius.circular(arrondiBox),
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.2),
-                      spreadRadius: 1,
-                      blurRadius: 2,
-                      offset: const Offset(0, 2), // changes position of shadow
-                    ),
-                  ],
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    'Commentaires',
-                    style: TextStyle(
-                      color: Theme.of(context).primaryColor,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: 'NotoSans',
-                    ),
+                    bottomLeft: Radius.circular(arrondiBox-3),
+                    bottomRight: Radius.circular(arrondiBox-3),
                   ),
                 ),
+              )
+                : Column(
+                children: commentaireRows,
               ),
-              commentaireRows.isEmpty
-                  ? Container(color: Colors.grey[200], child: const SizedBox(height: 10))
-                  : Column(
-                children: commentaireRows, // Utilisez la liste des widgets générés comme enfants de la Column
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
-    );
-  }
+    );  }
 }
 
-
-
-class DetailsCommentaireContent extends StatelessWidget {
+class CommentaireScreen extends StatelessWidget {
   final Eleve eleve;
 
-  const DetailsCommentaireContent({required this.eleve, Key? key}) : super(key: key);
+  const CommentaireScreen({required this.eleve, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -142,7 +142,7 @@ class DetailsCommentaireContent extends StatelessWidget {
             child: Column(
               children: [
                 const SizedBox(height: 20),
-                DetailsCommentaireBlock(eleve: eleve),
+                CommentaireBlock(eleve: eleve),
                 const SizedBox(height: 20),
               ],
             ),

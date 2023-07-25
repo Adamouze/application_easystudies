@@ -20,10 +20,6 @@ class RepertoryScreen extends StatefulWidget {
 
 class RepertoryScreenState extends State<RepertoryScreen> {
 
-  // List<Eleve> eleves = createEleves(); // Appel de la fonction createEleves pour obtenir la liste des élèves
-
-
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
