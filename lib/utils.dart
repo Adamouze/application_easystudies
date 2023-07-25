@@ -356,7 +356,6 @@ Future<Eleve> getAllEleve(String token, String login, Eleve eleve) async {
 }
 
 
-
 Future<List<Centre>> fetchCenterList(String token, String identifier) async {
   final response = await http.get(Uri.parse('https://app.easystudies.fr/api/center_list.php?_token=$token&_login=$identifier'));
 

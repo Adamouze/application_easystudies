@@ -41,7 +41,7 @@ class RepertoryScreenState extends State<RepertoryScreen> {
     final token = authState.token;
     final login = authState.identifier;
 
-    await Future.delayed(const Duration(milliseconds: 500));
+    await Future.delayed(const Duration(milliseconds: 100));
 
     if (token == null || login == null) {
       return [];
@@ -72,7 +72,11 @@ class RepertoryScreenState extends State<RepertoryScreen> {
       future: _elevesFuture,
       builder: (BuildContext context, AsyncSnapshot<List<Eleve>> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const CircularProgressIndicator();
+          return const Center(
+              child: CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.orangeAccent),
+              ),
+          );
         } else if (snapshot.hasError) {
           return Text('Error: ${snapshot.error}');
         } else {

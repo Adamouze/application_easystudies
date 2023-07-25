@@ -122,7 +122,11 @@ class _CourseDialogState extends State<CourseDialog> with SingleTickerProviderSt
                         );
                       }
                     } else {
-                      return const CircularProgressIndicator(color: Colors.white);
+                      return const Center(
+                        child: CircularProgressIndicator(
+                          valueColor: AlwaysStoppedAnimation<Color>(Colors.orangeAccent),
+                        ),
+                      );
                     }
                   },
                 ),
