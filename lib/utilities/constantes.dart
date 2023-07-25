@@ -13,6 +13,23 @@ Image smiley3 = Image.asset('assets/smiley/3.png', height: tailleSmiley);
 Image smiley4 = Image.asset('assets/smiley/4.png', height: tailleSmiley);
 Image smiley5 = Image.asset('assets/smiley/5.png', height: tailleSmiley);
 
+Widget getSmiley(String rating) {
+  switch (rating) {
+    case "1":
+      return smiley1;
+    case "2":
+      return smiley2;
+    case "3":
+      return smiley3;
+    case "4":
+      return smiley4;
+    case "5":
+      return smiley5;
+    default:
+      return Container();
+  }
+}
+
 const Image addBilan = Image(
   image: AssetImage('assets/divers/add_bilan.png'),
   alignment: Alignment.center,

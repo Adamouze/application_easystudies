@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'dart:async';
 
 import 'details_eleve_screen.dart';
 
@@ -19,6 +20,37 @@ class RepertoryScreen extends StatefulWidget {
 }
 
 class RepertoryScreenState extends State<RepertoryScreen> {
+  late Future<List<Eleve>> _elevesFuture;
+  final _searchController = TextEditingController();
+  String searchValue = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _elevesFuture = getFilteredListEleves();
+
+    _searchController.addListener(() {
+      setState(() {
+        searchValue = _searchController.text;
+      });
+    });
+  }
+
+  Future<List<Eleve>> getFilteredListEleves() async {
+    final authState = Provider.of<AuthState>(context, listen: false);
+    final token = authState.token;
+    final login = authState.identifier;
+
+    await Future.delayed(const Duration(milliseconds: 500));
+
+    if (token == null || login == null) {
+      return [];
+    }
+
+    final eleves = await getListEleves(token, login);
+    return eleves;
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -37,17 +69,40 @@ class RepertoryScreenState extends State<RepertoryScreen> {
     }
 
     return FutureBuilder<List<Eleve>>(
-      future: getListEleves(token, login),
+      future: _elevesFuture,
       builder: (BuildContext context, AsyncSnapshot<List<Eleve>> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const CircularProgressIndicator(); // retourne un indicateur de progression pendant le chargement
+          return const CircularProgressIndicator();
         } else if (snapshot.hasError) {
-          return Text('Error: ${snapshot.error}'); // en cas d'erreur
+          return Text('Error: ${snapshot.error}');
         } else {
-          List<Eleve> eleves = snapshot.data ?? []; // une fois les données chargées
+          List<Eleve> eleves = snapshot.data ?? [];
+
+          eleves = eleves
+              .where((eleve) =>
+          eleve.identifier.contains(searchValue) ||
+              eleve.nom.toLowerCase().contains(searchValue.toLowerCase()) ||
+              eleve.prenom.toLowerCase().contains(searchValue.toLowerCase()))
+              .toList();
 
           return Column(
             children: <Widget>[
+              const SizedBox(height: 10),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                child: TextField(
+                  onChanged: (value) {
+                    setState(() {
+                      searchValue = value;
+                    });
+                  },
+                  decoration: InputDecoration(
+                    prefixIcon: Icon(Icons.search, color: theme.primaryIconTheme.color),
+                    hintText: "Rechercher un élève...",
+                    hintStyle: TextStyle(color: theme.textTheme.bodyLarge?.color)
+                  ),
+                ),
+              ),
               const SizedBox(height: 10),
               Expanded(
                 child: ListView.builder(
@@ -115,6 +170,13 @@ class RepertoryScreenState extends State<RepertoryScreen> {
       },
     );
   }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
 }
 
 

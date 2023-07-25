@@ -10,9 +10,6 @@ import 'package:flutter/gestures.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-import 'utilities/constantes.dart';
-
-
 
 ///Fichier contenant toutes les classes utilisées dans les autres layout pour essayer de rendre le tout plus ergonomique et facile d'utilisation
 ///Il faudra essayer de mettre la plupart des classes ici pour laisser les fichiers de layout épurés
@@ -185,23 +182,6 @@ class Bilan {
   set comment(String value) {_comment = value;}
 }
 
-Widget getSmiley(String rating) {
-  switch (rating) {
-    case "1":
-      return smiley1;
-    case "2":
-      return smiley2;
-    case "3":
-      return smiley3;
-    case "4":
-      return smiley4;
-    case "5":
-      return smiley5;
-    default:
-      return Container();
-  }
-}
-
 class Centre {
   final String index;
   final String centre;
@@ -215,17 +195,6 @@ class Centre {
       centre: json['_centre'],
       nomCentre: json['_nom_centre'],
     );
-  }
-}
-
-Future<List<Centre>> fetchCenterList(String token, String identifier) async {
-  final response = await http.get(Uri.parse('https://app.easystudies.fr/api/center_list.php?_token=$token&_login=$identifier'));
-
-  if (response.statusCode == 200) {
-    List<dynamic> jsonResponse = jsonDecode(response.body);
-    return jsonResponse.map((item) => Centre.fromJson(item)).toList();
-  } else {
-    throw Exception('Failed to load data from API');
   }
 }
 
@@ -255,19 +224,6 @@ class Course {
   }
 }
 
-Future<List<Course>> fetchCourseList(String token, String identifier, String centre ) async {
-  final response = await http.get(Uri.parse('https://app.easystudies.fr/api/class_list.php?_token=$token&_login=$identifier&_center=$centre'));
-
-  if (response.statusCode == 200) {
-    Map<String, dynamic> jsonResponse = jsonDecode(response.body);
-    List<dynamic> data = jsonResponse['_data'];
-    return data.map((item) => Course.fromJson(item)).toList();
-  } else {
-    throw Exception('Failed to load courses from API');
-  }
-}
-
-
 class Presence {
   final String identifier;
   final String nom;
@@ -289,21 +245,6 @@ class Presence {
       nbHeures: double.parse(json['_nbHeures']),
       prix: double.parse(json['_prix']),
     );
-  }
-}
-
-
-
-Future<List<Presence>> fetchClassPresences(String classID, String token, String identifier) async {
-  final response = await http.get(Uri.parse('https://app.easystudies.fr/api/class_presences.php?_token=$token&_login=$identifier&_classID=$classID'));
-
-  if (response.statusCode == 200) {
-    Map<String, dynamic> jsonResponse = jsonDecode(response.body);
-    List<dynamic> data = jsonResponse['_data'];
-    List<Presence> presences = data.map((item) => Presence.fromJson(item)).toList();
-    return presences;
-  } else {
-    throw Exception('Failed to load class presences');
   }
 }
 
@@ -416,6 +357,44 @@ Future<Eleve> getAllEleve(String token, String login, Eleve eleve) async {
 
 
 
+Future<List<Centre>> fetchCenterList(String token, String identifier) async {
+  final response = await http.get(Uri.parse('https://app.easystudies.fr/api/center_list.php?_token=$token&_login=$identifier'));
+
+  if (response.statusCode == 200) {
+    List<dynamic> jsonResponse = jsonDecode(response.body);
+    return jsonResponse.map((item) => Centre.fromJson(item)).toList();
+  } else {
+    throw Exception('Failed to load data from API');
+  }
+}
+
+Future<List<Course>> fetchCourseList(String token, String identifier, String centre ) async {
+  final response = await http.get(Uri.parse('https://app.easystudies.fr/api/class_list.php?_token=$token&_login=$identifier&_center=$centre'));
+
+  if (response.statusCode == 200) {
+    Map<String, dynamic> jsonResponse = jsonDecode(response.body);
+    List<dynamic> data = jsonResponse['_data'];
+    return data.map((item) => Course.fromJson(item)).toList();
+  } else {
+    throw Exception('Failed to load courses from API');
+  }
+}
+
+Future<List<Presence>> fetchClassPresences(String classID, String token, String identifier) async {
+  final response = await http.get(Uri.parse('https://app.easystudies.fr/api/class_presences.php?_token=$token&_login=$identifier&_classID=$classID'));
+
+  if (response.statusCode == 200) {
+    Map<String, dynamic> jsonResponse = jsonDecode(response.body);
+    List<dynamic> data = jsonResponse['_data'];
+    List<Presence> presences = data.map((item) => Presence.fromJson(item)).toList();
+    return presences;
+  } else {
+    throw Exception('Failed to load class presences');
+  }
+}
+
+
+
 
 
 
@@ -443,7 +422,6 @@ class MyCustomScrollBehavior extends MaterialScrollBehavior {
     );
   }
 
-  @override
   Color getScrollbarColor(Set<MaterialState> states) {
     if (states.contains(MaterialState.hovered)) {
       return Colors.white.withOpacity(0.9);

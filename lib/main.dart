@@ -73,6 +73,9 @@ class MyApp extends StatelessWidget {
             iconTheme: const IconThemeData(
               color: Colors.white, // Couleur des icones pour le thème clair
             ),
+            primaryIconTheme: const IconThemeData(
+              color: Colors.black,  // Couleur secondaires des icones pour le thème clair
+            ),
             useMaterial3: true,
           ),
           darkTheme: ThemeData(
@@ -96,7 +99,10 @@ class MyApp extends StatelessWidget {
               ),
             ),
             iconTheme: const IconThemeData(
-              color: Colors.black, // Couleur des icones pour le thème sombre
+              color: Colors.black,  // Couleur des icones pour le thème sombre
+            ),
+            primaryIconTheme: const IconThemeData(
+              color: Colors.white,  // Couleur secondaires des icones pour le thème sombre
             ),
             useMaterial3: true,
           ),
