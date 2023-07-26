@@ -355,16 +355,16 @@ class SoumettreButton extends StatelessWidget {
 }
 
 
-class NewBilan extends StatefulWidget {
+class AddBilan extends StatefulWidget {
   final Eleve eleve;
 
-  const NewBilan({required this.eleve, Key? key}) : super(key: key);
+  const AddBilan({required this.eleve, Key? key}) : super(key: key);
 
   @override
-  NewBilanState createState() => NewBilanState();
+  AddBilanState createState() => AddBilanState();
 }
 
-class NewBilanState extends State<NewBilan> {
+class AddBilanState extends State<AddBilan> {
 
   @override
   Widget build(BuildContext context) {

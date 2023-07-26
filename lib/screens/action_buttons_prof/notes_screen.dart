@@ -5,12 +5,12 @@ import '../../utilities/constantes.dart';
 import '../../../utils.dart';
 
 
-class CommentaireBlock extends StatelessWidget {
+class NoteBlock extends StatelessWidget {
   final Eleve eleve;
 
-  const CommentaireBlock({required this.eleve, Key? key}) : super(key: key);
+  const NoteBlock({required this.eleve, Key? key}) : super(key: key);
 
-  Widget buildCommentaireRow(Commentaire commentaire, int index, Color color) {
+  Widget buildNoteRow(Note note, int index, Color color) {
     return SizedBox(
       width: double.infinity,
       child: Card(
@@ -22,11 +22,11 @@ class CommentaireBlock extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                "Date: ${commentaire.date.substring(8,10)}/${commentaire.date.substring(5,7)}/${commentaire.date.substring(0,4)}   Par: ${commentaire.from}",
+                "Date: ${note.date.substring(8,10)}/${note.date.substring(5,7)}/${note.date.substring(0,4)}   Type: ${note.type}   Note: ${note.note}/20",
                 style: const TextStyle(fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 5),
-              Text(commentaire.comment),
+              Text(note.commentaire),
             ],
           ),
         ),
@@ -34,15 +34,15 @@ class CommentaireBlock extends StatelessWidget {
     );
   }
 
-  List<Widget> createCommentaireRows(Eleve eleve) {
+  List<Widget> createNoteRows(Eleve eleve) {
     List<Widget> rows = [];
 
-    // On ne prend que les 2 derniers commentaires
+    // On ne prend que les 2 derniers Notes
 
-    for (int i = 0; i < eleve.commentaires.length; i++) {
-      Commentaire commentaire = eleve.commentaires[i];
+    for (int i = 0; i < eleve.notes.length; i++) {
+      Note note = eleve.notes[i];
       Color color = (i % 2 == 0 ? Colors.grey[300] : Colors.grey[400]) ?? Colors.grey;
-      rows.add(buildCommentaireRow(commentaire, i, color));
+      rows.add(buildNoteRow(note, i, color));
     }
 
     // Ajoutez une marge en bas du dernier élément
@@ -55,7 +55,7 @@ class CommentaireBlock extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> commentaireRows = createCommentaireRows(eleve);
+    List<Widget> noteRows = createNoteRows(eleve);
     return ClipRRect(
       borderRadius: BorderRadius.circular(arrondiBox),
       child: FractionallySizedBox(
@@ -74,7 +74,7 @@ class CommentaireBlock extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.only(right: 8, left: 8, top: 8, bottom: 8 - epaisseurContour),
                 child: Text(
-                  'Commentaires',
+                  'Notes',
                   style: TextStyle(
                     color: Theme.of(context).primaryColor,
                     fontWeight: FontWeight.bold,
@@ -94,8 +94,8 @@ class CommentaireBlock extends StatelessWidget {
                   bottomRight: Radius.circular(arrondiBox),
                 ),
               ),
-              child: commentaireRows.isEmpty
-                ? Container(
+              child: noteRows.isEmpty
+                  ? Container(
                 height: 10,
                 decoration: const BoxDecoration(
                   color: Colors.transparent,
@@ -105,8 +105,8 @@ class CommentaireBlock extends StatelessWidget {
                   ),
                 ),
               )
-                : Column(
-                children: commentaireRows,
+                  : Column(
+                children: noteRows,
               ),
             ),
           ],
@@ -115,10 +115,10 @@ class CommentaireBlock extends StatelessWidget {
     );  }
 }
 
-class CommentaireScreen extends StatelessWidget {
+class NoteScreen extends StatelessWidget {
   final Eleve eleve;
 
-  const CommentaireScreen({required this.eleve, Key? key}) : super(key: key);
+  const NoteScreen({required this.eleve, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -127,7 +127,7 @@ class CommentaireScreen extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: orangePerso,
         title:Text(
-          'Détails des commentaires',
+          'Détails des notes',
           style: TextStyle(
             fontWeight: FontWeight.bold,
             color: theme.primaryColor,
@@ -142,7 +142,7 @@ class CommentaireScreen extends StatelessWidget {
             child: Column(
               children: [
                 const SizedBox(height: 20),
-                CommentaireBlock(eleve: eleve),
+                NoteBlock(eleve: eleve),
                 const SizedBox(height: 20),
               ],
             ),

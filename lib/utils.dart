@@ -319,6 +319,28 @@ Future<Eleve> getCommentsEleve(String token, String login, Eleve eleve) async {
   return eleve;
 }
 
+Future<Eleve> getNotesEleve(String token, String login, Eleve eleve) async {
+  final response = await http.get(
+    Uri.parse('https://app.easystudies.fr/api/grades_get.php?_token=$token&_login=$login&_studentLogin=${eleve.identifier}'),
+  );
+
+  if (response.statusCode != 200) {
+    throw Exception('Failed to load student grades');
+  }
+
+  final jsonResponse = jsonDecode(response.body);
+  List<dynamic> gradesData = jsonResponse["_data"];
+
+  List<Note> notes = [];
+  for (var u in gradesData) {
+    Note note = Note(u["_date"], u["_type"], u["_grade"], u["_comment"]);
+    notes.add(note);
+  }
+
+  eleve.notes = notes;
+  return eleve;
+}
+
 Future<Eleve> getBilansEleve(String token, String login, Eleve eleve) async {
   final response = await http.get(Uri.parse('https://app.easystudies.fr/api/students_bilans.php?_token=$token&_login=$login&_studentLogin=${eleve.identifier}'));
 
@@ -340,17 +362,21 @@ Future<Eleve> getBilansEleve(String token, String login, Eleve eleve) async {
 
 Future<Eleve> getAllEleve(String token, String login, Eleve eleve) async {
   final detailsFuture = getDetailsEleve(token, login, eleve);
-  final bilansFuture = getBilansEleve(token, login, eleve);
   final commentsFuture = getCommentsEleve(token, login, eleve);
+  final notesFuture = getNotesEleve(token, login, eleve);
+  final bilansFuture = getBilansEleve(token, login, eleve);
 
-  final responses = await Future.wait([detailsFuture, bilansFuture, commentsFuture]);
+
+  final responses = await Future.wait([detailsFuture, commentsFuture, notesFuture, bilansFuture]);
 
   Eleve detailedEleve = responses[0];
-  Eleve eleveWithBilans = responses[1];
-  Eleve eleveWithComments = responses[2];
+  Eleve eleveWithComments = responses[1];
+  Eleve eleveWithNotes = responses[2];
+  Eleve eleveWithBilans = responses[3];
 
-  detailedEleve.bilans = eleveWithBilans.bilans;
   detailedEleve.commentaires = eleveWithComments.commentaires;
+  detailedEleve.notes = eleveWithNotes.notes;
+  detailedEleve.bilans = eleveWithBilans.bilans;
 
   return detailedEleve;
 }

@@ -5,7 +5,8 @@ const couleurIcone = Colors.white;
 
 const double tailleSmiley = 30;
 const double arrondiBox = 10;
-const double epaisseurContourCommentaire = 2;
+const double epaisseurContour = 2;
+const double espacementBlocsDetailsEleve = 15;
 
 Image smiley1 = Image.asset('assets/smiley/1.png', height: tailleSmiley);
 Image smiley2 = Image.asset('assets/smiley/2.png', height: tailleSmiley);
