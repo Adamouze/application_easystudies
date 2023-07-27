@@ -4,12 +4,12 @@ import 'dart:async';
 
 import 'details_eleve_screen.dart';
 
-import '../../logs/auth_stat.dart';
+import '../../../logs/auth_stat.dart';
 
-import '../../utilities/constantes.dart';
-import '../../utilities/theme_provider.dart';
+import '../../../utilities/constantes.dart';
+import '../../../utilities/theme_provider.dart';
 
-import '../../utils.dart';
+import '../../../utils.dart';
 
 
 class RepertoryScreen extends StatefulWidget {

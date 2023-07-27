@@ -37,6 +37,7 @@ class Eleve {
 
   String _photo = "";
 
+  List<Devoir> _devoirs = [];
   List<Commentaire> _commentaires = [];
   List<Note> _notes = [];
   List<Bilan> _bilans = [];
@@ -74,6 +75,7 @@ class Eleve {
 
   String get photo => _photo;
 
+  List<Devoir> get devoirs => _devoirs;
   List<Commentaire> get commentaires => _commentaires;
   List<Note> get notes => _notes;
   List<Bilan> get bilans => _bilans;
@@ -104,23 +106,23 @@ class Eleve {
   set bilans(List<Bilan> value) {_bilans = value;}
 }
 
-class Note {
-  String _date = "";
-  String _type = "";
-  String _note = "";
-  String _commentaire = "";
+class Devoir {
+  String _index;
+  String _date;
+  String _comment;
+  String _fait;
 
-  Note(this._date, this._type, this._note, this._commentaire);
+  Devoir(this._index, this._date, this._comment, this._fait);
 
+  String get index => _index;
   String get date => _date;
-  String get type => _type;
-  String get note => _note;
-  String get commentaire => _commentaire;
+  String get comment => _comment;
+  String get fait => _fait;
 
+  set index(String value) {_index = value;}
   set date(String value) {_date = value;}
-  set type(String value) {_type = value;}
-  set note(String value) {_note = value;}
-  set commentaire(String value) {_commentaire = value;}
+  set comment(String value) {_comment = value;}
+  set fait(String value) {_fait = value;}
 }
 
 class Commentaire {
@@ -143,6 +145,25 @@ class Commentaire {
   set heure(String value) {_heure = value;}
   set from(String value) {_from = value;}
   set comment(String value) {_comment = value;}
+}
+
+class Note {
+  String _date = "";
+  String _type = "";
+  String _note = "";
+  String _commentaire = "";
+
+  Note(this._date, this._type, this._note, this._commentaire);
+
+  String get date => _date;
+  String get type => _type;
+  String get note => _note;
+  String get commentaire => _commentaire;
+
+  set date(String value) {_date = value;}
+  set type(String value) {_type = value;}
+  set note(String value) {_note = value;}
+  set commentaire(String value) {_commentaire = value;}
 }
 
 class Bilan {

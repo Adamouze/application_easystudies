@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-import '../../utilities/constantes.dart';
+import '../../../utilities/constantes.dart';
 import 'details_bilan.dart';
 
-import '../../../utils.dart';
+import '../../../../utils.dart';
 
 
 class BilanBlock extends StatelessWidget {

@@ -7,8 +7,8 @@ import '../utilities/constantes.dart';
 import 'app_bar.dart';
 import 'body.dart';
 
-import 'action_buttons_prof/repertory_screen.dart';
-import 'action_buttons_prof/cours_screen.dart';
+import 'action_buttons_prof/partie_annuaire/repertory_screen.dart';
+import 'action_buttons_prof/partie_cours/cours_screen.dart';
 
 class HomeContent extends StatelessWidget {
   const HomeContent({Key? key}) : super(key: key);

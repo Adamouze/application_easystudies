@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import '../../utilities/constantes.dart';
+import '../../../../utilities/constantes.dart';
 
-import '../../utils.dart';
+import '../../../../utils.dart';
 
 
 
@@ -373,7 +373,7 @@ class AddBilanState extends State<AddBilan> {
       appBar: AppBar(
         backgroundColor: orangePerso,
         title:Text(
-          'Nouveau bilan',
+          'Nouveau bilan - ${widget.eleve.prenom}',
           style: TextStyle(
             fontWeight: FontWeight.bold,
             color: theme.primaryColor,

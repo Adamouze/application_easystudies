@@ -4,7 +4,7 @@ import 'package:EasyStudies/logs/auth_stat.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:EasyStudies/screens/action_buttons_prof/details_cours_screen.dart';
+import 'package:EasyStudies/screens/action_buttons_prof/partie_cours/details_cours_screen.dart';
 import 'package:EasyStudies/utils.dart';
 
 class CourseDialog extends StatefulWidget {
