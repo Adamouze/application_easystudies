@@ -7,6 +7,7 @@ import 'dart:math' as math;
 import '../../../utilities/constantes.dart';
 import '../../../logs/auth_stat.dart';
 
+import 'devoirs_screen.dart';
 import 'commentaires_screen.dart';
 import 'notes_screen.dart';
 import 'bilans_screen.dart';
@@ -408,13 +409,13 @@ class DevoirBlock extends StatefulWidget {
 
 class DevoirBlockState extends State<DevoirBlock> {
 
-  Widget buildCommentaireRow(Commentaire commentaire, int index, Color color) {
+  Widget buildDevoirRow(Devoir devoir, int index, Color color) {
     return InkWell(
       onTap: () {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => CommentaireScreen(eleve: widget.eleve),
+            builder: (context) => DevoirScreen(eleve: widget.eleve),
           ),
         );
       },
@@ -428,13 +429,27 @@ class DevoirBlockState extends State<DevoirBlock> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  "Date: ${commentaire.date.substring(8,10)}/${commentaire.date.substring(5,7)}/${commentaire.date.substring(0,4)}   Par: ${commentaire.from}",
-                  style: const TextStyle(fontWeight: FontWeight.bold),
+                RichText(
+                  text: TextSpan(
+                    text: "Date: ",
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                    children: <TextSpan>[
+                      TextSpan(
+                        text: afficherDate(devoir.date),
+                        style: afficherDate(devoir.date) == "non renseigné"
+                            ? TextStyle(fontWeight: FontWeight.normal, fontStyle: FontStyle.italic, color: Colors.grey[700])
+                            : const TextStyle(fontStyle: FontStyle.normal, color: Colors.black),
+                      ),
+                      TextSpan(
+                        text: "   Fait: ${devoir.fait}",
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
                 ),
                 const SizedBox(height: 5),
                 Text(
-                  commentaire.comment,
+                  devoir.comment,
                   maxLines: 2, // Limite à deux lignes
                   overflow: TextOverflow.ellipsis, // Ajoute des ellipses à la fin si le texte est trop long
                 ),
@@ -446,18 +461,18 @@ class DevoirBlockState extends State<DevoirBlock> {
     );
   }
 
-  List<Widget> commentaireRows = [];
+  List<Widget> devoirRows = [];
 
-  List<Widget> createCommentaireRows(Eleve eleve) {
+  List<Widget> createDevoirRows(Eleve eleve) {
     List<Widget> rows = [];
 
     // On ne prend que les 2 derniers commentaires
-    var commentaires = eleve.commentaires.take(2).toList();
+    var devoirs = eleve.devoirs.take(2).toList();
 
-    for (int i = 0; i < commentaires.length; i++) {
-      Commentaire commentaire = commentaires[i];
+    for (int i = 0; i < devoirs.length; i++) {
+      Devoir devoir = devoirs[i];
       Color color = (i % 2 == 0 ? Colors.grey[300] : Colors.grey[400]) ?? Colors.grey;
-      rows.add(buildCommentaireRow(commentaire, i, color));
+      rows.add(buildDevoirRow(devoir, i, color));
     }
 
     // Ajoutez une marge en bas du dernier élément
@@ -471,7 +486,7 @@ class DevoirBlockState extends State<DevoirBlock> {
   @override
   void initState() {
     super.initState();
-    commentaireRows = createCommentaireRows(widget.eleve);
+    devoirRows = createDevoirRows(widget.eleve);
   }
 
 
@@ -499,7 +514,7 @@ class DevoirBlockState extends State<DevoirBlock> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween, // Aligns the children on the horizontal axis
                   children: [
                     Text(
-                      'Commentaires',
+                      'Devoirs',
                       style: TextStyle(
                         color: theme.primaryColor,
                         fontWeight: FontWeight.bold,
@@ -512,7 +527,7 @@ class DevoirBlockState extends State<DevoirBlock> {
                       onPressed: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => CommentaireScreen(eleve: widget.eleve)),
+                          MaterialPageRoute(builder: (context) => DevoirScreen(eleve: widget.eleve)),
                         );
                       },
                     )
@@ -532,7 +547,7 @@ class DevoirBlockState extends State<DevoirBlock> {
                   bottomRight: Radius.circular(arrondiBox),
                 ),
               ),
-              child: commentaireRows.isEmpty
+              child: devoirRows.isEmpty
                 ? Container(
                 height: 10,
                 decoration: const BoxDecoration(
@@ -544,7 +559,7 @@ class DevoirBlockState extends State<DevoirBlock> {
                 ),
               )
                   : Column(
-                  children: commentaireRows,
+                  children: devoirRows,
               ),
             ),
           ],
@@ -584,9 +599,23 @@ class CommentaireBlockState extends State<CommentaireBlock> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  "Date: ${commentaire.date.substring(8,10)}/${commentaire.date.substring(5,7)}/${commentaire.date.substring(0,4)}   Par: ${commentaire.from}",
-                  style: const TextStyle(fontWeight: FontWeight.bold),
+                RichText(
+                  text: TextSpan(
+                    text: "Date: ",
+                    style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+                    children: <TextSpan>[
+                      TextSpan(
+                        text: afficherDate(commentaire.date),
+                        style: afficherDate(commentaire.date) == "non renseigné"
+                            ? TextStyle(fontWeight: FontWeight.normal, fontStyle: FontStyle.italic, color: Colors.grey[700])
+                            : const TextStyle(fontStyle: FontStyle.normal, color: Colors.black),
+                      ),
+                      TextSpan(
+                        text: "   Par: ${commentaire.from}",
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
                 ),
                 const SizedBox(height: 5),
                 Text(
@@ -745,14 +774,18 @@ class NoteBlockState extends State<NoteBlock> {
                     Expanded(
                       child: RichText(
                         text: TextSpan(
-                          children: [
+                          text: "Date: ",
+                          style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+                          children: <TextSpan>[
                             TextSpan(
-                              text: "Date: ${note.date.substring(8,10)}/${note.date.substring(5,7)}/${note.date.substring(0,4)}   ",
-                              style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+                              text: afficherDate(note.date),
+                              style: afficherDate(note.date) == "non renseigné"
+                                  ? TextStyle(fontWeight: FontWeight.normal, fontStyle: FontStyle.italic, color: Colors.grey[700])
+                                  : const TextStyle(fontStyle: FontStyle.normal, color: Colors.black),
                             ),
                             TextSpan(
-                              text: "Type: ${note.type}   ",
-                              style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+                              text: "   Type: ${note.type}",
+                              style: const TextStyle(fontWeight: FontWeight.bold),
                             ),
                           ],
                         ),
@@ -921,7 +954,16 @@ class BilanBlockState extends State<BilanBlock> {
         }),
         cells: <DataCell>[
           DataCell(Center(child: Text((i+1).toString()))), // centrage du contenu
-          DataCell(Center(child: Text('${bilan.date.substring(8,10)}/${bilan.date.substring(5,7)}/${bilan.date.substring(0,4)}'))),
+          DataCell(Center(
+              child: RichText(
+                text: TextSpan(
+                  text: afficherDate(bilan.date),
+                  style: afficherDate(bilan.date) == "non renseigné"
+                      ? TextStyle(fontWeight: FontWeight.normal, fontStyle: FontStyle.italic, color: Colors.grey[700])
+                      : const TextStyle(fontStyle: FontStyle.normal, color: Colors.black),
+                ),
+              ),
+          )),
           DataCell(Center(child: getSmiley(bilan.global))),
           DataCell(Center(child: getSmiley(bilan.comp))),
           DataCell(Center(child: getSmiley(bilan.assidu))),
@@ -1314,6 +1356,8 @@ class DetailsEleveState extends State<DetailsEleve> {
                     EleveContactBlock(eleve: eleve),
                     const SizedBox(height: espacementBlocsDetailsEleve),
                     EleveComptabiliteBlock(eleve: eleve),
+                    const SizedBox(height: espacementBlocsDetailsEleve),
+                    DevoirBlock(eleve: eleve),
                     const SizedBox(height: espacementBlocsDetailsEleve),
                     CommentaireBlock(eleve: eleve),
                     const SizedBox(height: espacementBlocsDetailsEleve),

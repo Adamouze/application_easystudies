@@ -1,6 +1,6 @@
-import 'package:EasyStudies/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 import 'screens/splash_screen.dart';
 import 'screens/app_bar.dart';
@@ -19,7 +19,10 @@ import 'utilities/theme_provider.dart';
 import 'logs/auth_stat.dart';
 
 
-void main() {
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await initializeDateFormatting('fr_FR', null);
   runApp(
     MultiProvider(
       providers: [
@@ -45,7 +48,9 @@ class MyApp extends StatelessWidget {
       builder: (context, themeProvider, child) {
         return MaterialApp(
           title: 'EasyStudies',
+/*
           scrollBehavior: MyCustomScrollBehavior(),
+*/
           theme: ThemeData(
             scrollbarTheme: ScrollbarThemeData(
               thumbColor: MaterialStateProperty.all(Colors.blueAccent),
@@ -95,7 +100,7 @@ class MyApp extends StatelessWidget {
                 color: Colors.white,  // Couleur du texte pour le thème sombre
               ),
               bodySmall: TextStyle(
-                color: Colors.grey[400],  // Couleur de texte grisé pour le thème sombre
+                color: Colors.grey[500],  // Couleur de texte grisé pour le thème sombre
               ),
             ),
             iconTheme: const IconThemeData(

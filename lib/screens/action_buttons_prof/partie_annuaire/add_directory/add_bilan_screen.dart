@@ -53,12 +53,19 @@ class BaseDeNotationBlockState extends State<BaseDeNotationBlock> {
   TableRow _createRatingRow(String title, int groupValue, ValueChanged<int?> onChanged) {
     return TableRow(
       children: [
-        Center(child: Text(title)),
+        Align(
+          alignment: Alignment.center,
+          child: Padding(
+            padding: const EdgeInsets.only(top: 12.0, bottom: 12.0),
+            child: Text(title),
+          ),
+        ),
         for (int value = 1; value <= 5; value++)
           RatingCell(value: value, groupValue: groupValue, onChanged: onChanged),
       ],
     );
   }
+
 
 
   @override

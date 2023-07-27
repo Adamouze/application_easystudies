@@ -6,12 +6,12 @@ import '../../../utilities/constantes.dart';
 import '../../../utils.dart';
 
 
-class CommentaireBlock extends StatelessWidget {
+class DevoirBlock extends StatelessWidget {
   final Eleve eleve;
 
-  const CommentaireBlock({required this.eleve, Key? key}) : super(key: key);
+  const DevoirBlock({required this.eleve, Key? key}) : super(key: key);
 
-  Widget buildCommentaireRow(Commentaire commentaire, int index, Color color) {
+  Widget buildDevoirRow(Devoir devoir, int index, Color color) {
     return SizedBox(
       width: double.infinity,
       child: Card(
@@ -25,23 +25,23 @@ class CommentaireBlock extends StatelessWidget {
               RichText(
                 text: TextSpan(
                   text: "Date: ",
-                  style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+                  style: const TextStyle(fontWeight: FontWeight.bold),
                   children: <TextSpan>[
                     TextSpan(
-                      text: afficherDate(commentaire.date),
-                      style: afficherDate(commentaire.date) == "non renseigné"
+                      text: afficherDate(devoir.date),
+                      style: afficherDate(devoir.date) == "non renseigné"
                           ? TextStyle(fontWeight: FontWeight.normal, fontStyle: FontStyle.italic, color: Colors.grey[700])
                           : const TextStyle(fontStyle: FontStyle.normal, color: Colors.black),
                     ),
                     TextSpan(
-                      text: "   Par: ${commentaire.from}",
+                      text: "   Fait: ${devoir.fait}",
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                   ],
                 ),
               ),
               const SizedBox(height: 5),
-              Text(commentaire.comment),
+              Text(devoir.comment),
             ],
           ),
         ),
@@ -49,13 +49,13 @@ class CommentaireBlock extends StatelessWidget {
     );
   }
 
-  List<Widget> createCommentaireRows(Eleve eleve) {
+  List<Widget> createDevoirRows(Eleve eleve) {
     List<Widget> rows = [];
 
-    for (int i = 0; i < eleve.commentaires.length; i++) {
-      Commentaire commentaire = eleve.commentaires[i];
+    for (int i = 0; i < eleve.devoirs.length; i++) {
+      Devoir devoir = eleve.devoirs[i];
       Color color = (i % 2 == 0 ? Colors.grey[300] : Colors.grey[400]) ?? Colors.grey;
-      rows.add(buildCommentaireRow(commentaire, i, color));
+      rows.add(buildDevoirRow(devoir, i, color));
     }
 
     // Ajoutez une marge en bas du dernier élément
@@ -68,7 +68,7 @@ class CommentaireBlock extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> commentaireRows = createCommentaireRows(eleve);
+    List<Widget> devoirRows = createDevoirRows(eleve);
     return ClipRRect(
       borderRadius: BorderRadius.circular(arrondiBox),
       child: FractionallySizedBox(
@@ -87,7 +87,7 @@ class CommentaireBlock extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.only(right: 8, left: 8, top: 8, bottom: 8 - epaisseurContour),
                 child: Text(
-                  'Commentaires',
+                  'Devoirs',
                   style: TextStyle(
                     color: Theme.of(context).primaryColor,
                     fontWeight: FontWeight.bold,
@@ -107,8 +107,8 @@ class CommentaireBlock extends StatelessWidget {
                   bottomRight: Radius.circular(arrondiBox),
                 ),
               ),
-              child: commentaireRows.isEmpty
-                ? Container(
+              child: devoirRows.isEmpty
+                  ? Container(
                 height: 10,
                 decoration: const BoxDecoration(
                   color: Colors.transparent,
@@ -118,8 +118,8 @@ class CommentaireBlock extends StatelessWidget {
                   ),
                 ),
               )
-                : Column(
-                children: commentaireRows,
+                  : Column(
+                children: devoirRows,
               ),
             ),
           ],
@@ -128,10 +128,10 @@ class CommentaireBlock extends StatelessWidget {
     );  }
 }
 
-class CommentaireScreen extends StatelessWidget {
+class DevoirScreen extends StatelessWidget {
   final Eleve eleve;
 
-  const CommentaireScreen({required this.eleve, Key? key}) : super(key: key);
+  const DevoirScreen({required this.eleve, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -140,7 +140,7 @@ class CommentaireScreen extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: orangePerso,
         title:Text(
-          'Détails des commentaires',
+          'Détails des devoirs',
           style: TextStyle(
             fontWeight: FontWeight.bold,
             color: theme.primaryColor,
@@ -155,7 +155,7 @@ class CommentaireScreen extends StatelessWidget {
             child: Column(
               children: [
                 const SizedBox(height: 20),
-                CommentaireBlock(eleve: eleve),
+                DevoirBlock(eleve: eleve),
                 const SizedBox(height: 20),
               ],
             ),

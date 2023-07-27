@@ -21,9 +21,33 @@ class NoteBlock extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                "Date: ${note.date.substring(8,10)}/${note.date.substring(5,7)}/${note.date.substring(0,4)}   Type: ${note.type}   Note: ${note.note}/20",
-                style: const TextStyle(fontWeight: FontWeight.bold),
+              Row(
+                children: [
+                  Expanded(
+                    child: RichText(
+                      text: TextSpan(
+                        text: "Date: ",
+                        style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+                        children: <TextSpan>[
+                          TextSpan(
+                            text: afficherDate(note.date),
+                            style: afficherDate(note.date) == "non renseigné"
+                                ? TextStyle(fontWeight: FontWeight.normal, fontStyle: FontStyle.italic, color: Colors.grey[700])
+                                : const TextStyle(fontStyle: FontStyle.normal, color: Colors.black),
+                          ),
+                          TextSpan(
+                            text: "   Type: ${note.type}",
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Text(
+                    "Note: ${note.note}/20",
+                    style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+                  ),
+                ],
               ),
               const SizedBox(height: 5),
               Text(note.commentaire),

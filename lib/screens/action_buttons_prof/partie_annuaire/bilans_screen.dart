@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../utilities/constantes.dart';
 import 'details_bilan.dart';
+import 'add_directory/add_bilan_screen.dart';
 
 import '../../../../utils.dart';
 
@@ -37,7 +38,16 @@ class BilanBlock extends StatelessWidget {
           }),
           cells: <DataCell>[
             DataCell(Center(child: Text((i+1).toString()))), // centrage du contenu
-            DataCell(Center(child: Text('${bilan.date.substring(8,10)}/${bilan.date.substring(5,7)}/${bilan.date.substring(0,4)}'))),
+            DataCell(Center(
+                child: RichText(
+                  text: TextSpan(
+                    text: afficherDate(bilan.date),
+                    style: afficherDate(bilan.date) == "non renseigné"
+                        ? TextStyle(fontWeight: FontWeight.normal, fontStyle: FontStyle.italic, color: Colors.grey[700])
+                        : const TextStyle(fontStyle: FontStyle.normal, color: Colors.black),
+                  ),
+                ),
+            )),
             DataCell(Center(child: getSmiley(bilan.global))),
             DataCell(Center(child: getSmiley(bilan.comp))),
             DataCell(Center(child: getSmiley(bilan.assidu))),
@@ -215,6 +225,27 @@ class BilanScreen extends StatelessWidget {
                 const SizedBox(height: 20),
                 BilanBlock(eleve: eleve),
                 const SizedBox(height: 20),
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Transform.scale(
+                    scale: 1.4,
+                    child: FloatingActionButton(
+                      backgroundColor: Colors.blue,
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => AddBilan(eleve: eleve)),
+                        );
+                      },
+                      tooltip: "Ajout d'un bilan",
+                      elevation: 6.0,
+                      shape: const CircleBorder(),
+                      child: addBilan,
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 20)
               ],
             ),
           )

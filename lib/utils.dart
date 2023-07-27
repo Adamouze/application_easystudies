@@ -9,6 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
+
 
 
 ///Fichier contenant toutes les classes utilisées dans les autres layout pour essayer de rendre le tout plus ergonomique et facile d'utilisation
@@ -443,14 +445,20 @@ Future<List<Presence>> fetchClassPresences(String classID, String token, String 
 
 
 
+String afficherDate(String date) {
+  if (date == "0000-00-00") {
+    return "non renseigné";
+  } else {
+    return DateFormat('dd MMM y', 'fr_FR').format(DateTime.parse(date));
+  }
+}
 
 
 
 
 
 
-
-class MyCustomScrollBehavior extends MaterialScrollBehavior {
+/*class MyCustomScrollBehavior extends MaterialScrollBehavior {
   @override
   Set<PointerDeviceKind> get dragDevices => {
     PointerDeviceKind.touch,
@@ -474,6 +482,6 @@ class MyCustomScrollBehavior extends MaterialScrollBehavior {
     }
     return Colors.white.withOpacity(0.5);
   }
-}
+}*/
 
 
