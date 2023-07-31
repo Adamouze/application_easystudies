@@ -30,11 +30,12 @@ class _CoursDetailsScreenState extends State<CoursDetailsScreen> {
 
   String formatStudentText(int studentCount) {
     if (studentCount == 0) {
-      return "0 élève présent";
+      return "0 présent";
     } else if (studentCount == 1) {
-      return "1 élève présent";
+      return "1 présent";
     } else {
-      return "$studentCount élèves présents";
+      return "$studentCount présents";
+
     }
   }
 
@@ -129,7 +130,7 @@ class _CoursDetailsScreenState extends State<CoursDetailsScreen> {
                     ),
                     child: const Center(
                       child: Text(
-                        "Liste d'élèves",
+                        "Liste de présence",
                         style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
@@ -157,7 +158,7 @@ class _CoursDetailsScreenState extends State<CoursDetailsScreen> {
                           ),
                         ),
                         Text(
-                          '${widget.location} ${widget.Cours.type}',
+                          widget.location,
                           style: const TextStyle(
                             fontSize: 16,
                             color: Colors.white,

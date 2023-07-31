@@ -509,6 +509,7 @@ Widget getSmiley(String rating) {
   Scrollbar buildScrollbar(
       BuildContext context, Widget child, ScrollableDetails details) {
     return Scrollbar(
+      controller: details.controller,  // Ajout du controller ici
       thickness: 5.0,
       radius: const Radius.circular(10),
       thumbVisibility: true,
@@ -523,5 +524,6 @@ Widget getSmiley(String rating) {
     return Colors.white.withOpacity(0.5);
   }
 }*/
+
 
 
