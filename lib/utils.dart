@@ -6,8 +6,11 @@ import 'package:http/http.dart' as http;
 */
 
 import 'dart:convert';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+
+import 'utilities/constantes.dart';
 
 
 
@@ -470,6 +473,23 @@ String afficherDate(String date) {
     return "non renseigné";
   } else {
     return DateFormat('dd MMM y', 'fr_FR').format(DateTime.parse(date));
+  }
+}
+
+Widget getSmiley(String rating) {
+  switch (rating) {
+    case "1":
+      return smiley1;
+    case "2":
+      return smiley2;
+    case "3":
+      return smiley3;
+    case "4":
+      return smiley4;
+    case "5":
+      return smiley5;
+    default:
+      return Container();
   }
 }
 
