@@ -5,8 +5,6 @@ import 'dart:async';
 import 'package:http/http.dart' as http;
 */
 
-import 'package:flutter/material.dart';
-import 'package:flutter/gestures.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
@@ -269,6 +267,28 @@ class Presence {
       prix: double.parse(json['_prix']),
     );
   }
+}
+
+Future<Eleve> getNomPrenomEleve(String token, String login, Eleve eleve) async {
+  final response = await http.get(Uri.parse('https://app.easystudies.fr/api/students_details.php?_token=$token&_login=$login&_studentLogin=${eleve.identifier}'));
+
+  if (response.statusCode != 200) {
+    throw Exception('Failed to load user details');
+  }
+
+  final jsonResponse = jsonDecode(response.body);
+
+  if (jsonResponse.isEmpty) {
+    throw Exception('No student details received');
+  }
+
+  Map<String, dynamic> details = jsonResponse[0];
+
+  Eleve newEleve = Eleve.fromEleve(eleve);
+  newEleve.nom = details["_nom"];
+  newEleve.prenom = details["_prenom"];
+
+  return newEleve;
 }
 
 Future<List<Eleve>> getListEleves(String token, String login) async {

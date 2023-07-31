@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:expandable/expandable.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'dart:math' as math;
 
 
@@ -222,52 +223,98 @@ class EleveContactBlock extends StatelessWidget {
                         ),
                         child: Padding(
                           padding: const EdgeInsets.all(8),
-                          child: Row(
+                          child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                              Expanded(
-                                flex: 2,
-                                child: ListView(
-                                  shrinkWrap: true,
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  children: const <Widget>[
-                                    Text("Numéro de fixe : "),
-                                    Text("Mobile de l'élève: "),
-                                    Text("Mobile d'un parent : "),
-                                    Text("Email de l'élève : "),
-                                    Text("Email d'un parent : "),
-                                    Text("Adresse : "),
-                                    Text(""),
-                                  ],
-                                ),
+                              // Ici les informations
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Expanded(
+                                    flex: 2,
+                                    child: ListView(
+                                      shrinkWrap: true,
+                                      physics: const NeverScrollableScrollPhysics(),
+                                      children: const <Widget>[
+                                        Text("Numéro de fixe : "),
+                                        Text("Mobile de l'élève: "),
+                                        Text("Mobile d'un parent : "),
+                                        Text("Email de l'élève : "),
+                                        Text("Email d'un parent : "),
+                                        Text("Adresse : "),
+                                        Text(""),
+                                      ],
+                                    ),
+                                  ),
+                                  Expanded(
+                                    flex: 3,
+                                    child: ListView(
+                                      shrinkWrap: true,
+                                      physics: const NeverScrollableScrollPhysics(),
+                                      children: <Widget>[
+                                        eleve.numFix == ""
+                                            ? Text("non renseigné", style: TextStyle(color: theme.textTheme.bodySmall?.color, fontStyle: FontStyle.italic))
+                                            : Text(eleve.numFix),
+                                        Text(eleve.numMobileEleve),
+                                        Text(eleve.numMobileParents),
+                                        Tooltip(
+                                          message: eleve.emailEleve,
+                                          child: Text(
+                                            eleve.emailEleve,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ),
+                                        Tooltip(
+                                          message: eleve.emailParents,
+                                          child: Text(
+                                            eleve.emailParents,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ),
+                                        Text(eleve.adresse),
+                                        Text(eleve.ville),
+                                      ],
+                                    ),
+                                  ),
+                                ],
                               ),
-                              Expanded(
-                                flex: 3,
-                                child: ListView(
-                                  shrinkWrap: true,
-                                  physics: const NeverScrollableScrollPhysics(),
+                              // Ici les boutons
+                              Padding(
+                                padding: const EdgeInsets.only(top: 16), // Espace entre les informations et les boutons
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceAround,
                                   children: <Widget>[
-                                    eleve.numFix == ""
-                                        ? Text("non renseigné", style: TextStyle(color: theme.textTheme.bodySmall?.color, fontStyle: FontStyle.italic))
-                                        : Text(eleve.numFix),
-                                    Text(eleve.numMobileEleve),
-                                    Text(eleve.numMobileParents),
-                                    Tooltip(
-                                      message: eleve.emailEleve,
-                                      child: Text(
-                                        eleve.emailEleve,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
+                                    Column(
+                                      children: <Widget>[
+                                        IconButton(
+                                          icon: const Icon(Icons.phone),
+                                          color: eleve.numFix == "" ? Colors.grey : Colors.black,
+                                          onPressed: eleve.numFix == "" ? null : () => launchUrl(Uri.parse("tel://${eleve.numFix}")),
+                                        ),
+                                        const Text('Fixe'),
+                                      ],
                                     ),
-                                    Tooltip(
-                                      message: eleve.emailParents,
-                                      child: Text(
-                                        eleve.emailParents,
-                                        overflow: TextOverflow.ellipsis,
+                                    if (eleve.numMobileEleve != eleve.numMobileParents)
+                                      Column(
+                                        children: <Widget>[
+                                          IconButton(
+                                            icon: const Icon(Icons.phone),
+                                            color: Colors.green,
+                                            onPressed: eleve.numMobileEleve == "" ? null : () => launchUrl(Uri.parse("tel://${eleve.numMobileEleve}")),
+                                          ),
+                                          const Text('Élève'),
+                                        ],
                                       ),
+                                    Column(
+                                      children: <Widget>[
+                                        IconButton(
+                                          icon: const Icon(Icons.phone),
+                                          color: Colors.red,
+                                          onPressed: eleve.numMobileParents == "" ? null : () => launchUrl(Uri.parse("tel://${eleve.numMobileParents}")),
+                                        ),
+                                        const Text('Parents'),
+                                      ],
                                     ),
-                                    Text(eleve.adresse),
-                                    Text(eleve.ville),
                                   ],
                                 ),
                               ),
@@ -276,6 +323,7 @@ class EleveContactBlock extends StatelessWidget {
                         ),
                       ),
                     ),
+
                   ),
                 ],
               ),
