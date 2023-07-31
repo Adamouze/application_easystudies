@@ -436,6 +436,7 @@ class MyCustomScrollBehavior extends MaterialScrollBehavior {
   Scrollbar buildScrollbar(
       BuildContext context, Widget child, ScrollableDetails details) {
     return Scrollbar(
+      controller: details.controller,  // Ajout du controller ici
       thickness: 5.0,
       radius: const Radius.circular(10),
       thumbVisibility: true,
@@ -443,7 +444,6 @@ class MyCustomScrollBehavior extends MaterialScrollBehavior {
     );
   }
 
-  @override
   Color getScrollbarColor(Set<MaterialState> states) {
     if (states.contains(MaterialState.hovered)) {
       return Colors.white.withOpacity(0.9);
@@ -451,5 +451,6 @@ class MyCustomScrollBehavior extends MaterialScrollBehavior {
     return Colors.white.withOpacity(0.5);
   }
 }
+
 
 
