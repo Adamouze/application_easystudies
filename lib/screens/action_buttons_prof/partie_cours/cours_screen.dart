@@ -302,124 +302,128 @@ class _CoursScreenState extends State<CoursScreen> {
               child: Text('Erreur : ${snapshot.error}'),
             );
           } else {
-            return Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                children: <Widget>[
-                  ElevatedButton.icon(
-                    icon: const Icon(Icons.add, color: Colors.white),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.orangeAccent,
-                    ),
-                    label: const Text('Ajouter un cours',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontFamily: 'NotoSans',
-                      ),
-                    ),
-                    onPressed: () {
-                      showDialog(
-                        context: context,
-                        builder: (context) => CourseDialog(addCourse: _addCourse),
-                      );
-                    },
-                  ),
-                  const SizedBox(height: 10.0),
-                  Container(
-                    padding: const EdgeInsets.all(10.0),
-                    decoration: const BoxDecoration(
-                      color: Colors.orangeAccent,
-                      borderRadius: BorderRadius.vertical(
-                        top: Radius.circular(10),
-                      ),
-                    ),
-                    child: DropdownButtonHideUnderline(
-                      child: DropdownButton<String>(
-                        isExpanded: true,
-                        dropdownColor: Colors.orangeAccent,
-                        value: _selectedLocation,
-                        icon: const Icon(Icons.arrow_downward, color: Colors.white),
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: 'NotoSans',
-                        ),
-                        onChanged: (String? newValue) {
-                          setState(() {
-                            _selectedLocation = newValue!;
-                          });
-                        },
-                        items: _coursList.keys.map<DropdownMenuItem<String>>((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(
-                              value,
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontFamily: 'NotoSans',
-                              ),
-                            ),
-                          );
-                        }).toList(),
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: const BorderRadius.vertical(
-                          bottom: Radius.circular(10),
-                        ),
-                        border: Border.all(
+            return Stack(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    children: <Widget>[
+                      Container(
+                        padding: const EdgeInsets.all(8.0),
+                        decoration: BoxDecoration(
                           color: Colors.orangeAccent,
-                          width: 2,
+                          borderRadius: const BorderRadius.vertical(
+                            top: Radius.circular(10),
+                          ),
+                          border: Border.all(
+                            color: Colors.orangeAccent,
+                            width: 2,
+                          ),
+                        ),
+                        child: DropdownButtonHideUnderline(
+                          child: DropdownButton<String>(
+                            isExpanded: true,
+                            dropdownColor: Colors.orangeAccent,
+                            value: _selectedLocation,
+                            icon: const Icon(Icons.arrow_downward, color: Colors.white),
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: 'NotoSans',
+                            ),
+                            onChanged: (String? newValue) {
+                              setState(() {
+                                _selectedLocation = newValue!;
+                              });
+                            },
+                            items: _coursList.keys.map<DropdownMenuItem<String>>((String value) {
+                              return DropdownMenuItem<String>(
+                                value: value,
+                                child: Text(
+                                  value,
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: 'NotoSans',
+                                  ),
+                                ),
+                              );
+                            }).toList(),
+                          ),
                         ),
                       ),
-                      child: ListView.builder(
-                        itemCount: _coursList[_selectedLocation]?.length ?? 0,
-                        itemBuilder: (context, index) {
-                          Course currentCourse = _coursList[_selectedLocation]![index];
-                          return Card(
-                            color: Colors.orangeAccent,
-                            child: ListTile(
-                              leading: const Icon(Icons.book, color: Colors.white),
-                              title: Text(
-                                'Cours du ${currentCourse.date} ${currentCourse.type}',
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontFamily: 'NotoSans',
-                                ),
-                              ),
-                              trailing: const Icon(Icons.more_horiz, color: Colors.white),
-                              onTap: () {
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                    builder: (context) => CoursDetailsScreen(
-                                      title: 'Cours du ${currentCourse.date}',
-                                      Cours: currentCourse,
-                                      location: _selectedLocation,
+                      Expanded(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: const BorderRadius.vertical(
+                              bottom: Radius.circular(10),
+                            ),
+                            border: Border.all(
+                              color: Colors.orangeAccent,
+                              width: 2,
+                            ),
+                          ),
+                          child: ListView.builder(
+                            itemCount: _coursList[_selectedLocation]?.length ?? 0,
+                            itemBuilder: (context, index) {
+                              Course currentCourse = _coursList[_selectedLocation]![index];
+                              return Card(
+                                color: Colors.white,
+                                child: ListTile(
+                                  leading: const Icon(Icons.book, color: Colors.black),
+                                  title: Text(
+                                    'Cours du ${currentCourse.date} - ${currentCourse.type}',
+                                    style: const TextStyle(
+                                      color: Colors.black,
+                                      fontFamily: 'NotoSans',
                                     ),
                                   ),
-                                );
-                              },
-                            ),
-                          );
-                        },
+                                  trailing: const Icon(Icons.more_horiz, color: Colors.black),
+                                  onTap: () {
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (context) => CoursDetailsScreen(
+                                          title: 'Cours du ${currentCourse.date}',
+                                          Cours: currentCourse,
+                                          location: _selectedLocation,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              );
+                            },
+                          ),
+                        ),
                       ),
+                    ],
+                  ),
+                ),
+                Align(
+                  alignment: Alignment.bottomRight,
+                  child: Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: FloatingActionButton(
+                      backgroundColor: Colors.orangeAccent,
+                      child: const Icon(Icons.add, color: Colors.white),
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (context) => CourseDialog(addCourse: _addCourse),
+                        );
+                      },
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             );
           }
         },
       ),
     );
   }
+
 
 
 }

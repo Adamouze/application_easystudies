@@ -330,26 +330,18 @@ class CustomAppBar extends PreferredSize {
                   },
                   child: Card(
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
+                      borderRadius: BorderRadius.circular(30),
                     ),
                     color: Colors.white,
                     child: const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                      padding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Icon(
                             Icons.settings,
                             color: orangePerso,
-                            size: 40,
-                          ),
-                          Text(
-                            'Paramètres',
-                            style: TextStyle(
-                              color: orangePerso,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 12,
-                            ),
+                            size: 50,
                           ),
                         ],
                       ),
@@ -364,8 +356,6 @@ class CustomAppBar extends PreferredSize {
 
               else {
                 return SizedBox(
-                  width: 115,  // Augmentez la largeur pour tenir le bouton et le texte
-                  height: 50,
                   child: ElevatedButton(
                     onPressed: () {
                       showDialog(
@@ -377,35 +367,19 @@ class CustomAppBar extends PreferredSize {
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(150),
-                      ),
+                      shape: const CircleBorder(),  // Ici, vous changez RoundedRectangleBorder par CircleBorder
                       padding: const EdgeInsets.all(3),
                     ),
-                    child: const Row(  // Utilisez un widget Row
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        FittedBox(
-                          child: Icon(
-                            Icons.account_circle_rounded,
-                            size: 50,
-                            color: orangePerso,
-                          ),
-                        ),
-                        SizedBox(width: 0),  // Espacement entre l'icône et le texte
-                        Text(  // Ajoutez un widget Text pour 'Se connecter'
-                          'Connexion',
-                          style: TextStyle(
-                            color: orangePerso,  // Mettez la couleur que vous voulez
-                            fontSize: 12,
-                            fontFamily: 'NotoSans',
-                            fontWeight: FontWeight.bold,// Ajustez la taille du texte
-                          ),
-                        ),
-                      ],
+                    child: const FittedBox(  // Ici, pas besoin de Row si vous avez seulement une icône
+                      child: Icon(
+                        Icons.account_circle_rounded,
+                        size: 50,
+                        color: orangePerso,
+                      ),
                     ),
                   ),
                 );
+
 
               }
             },
