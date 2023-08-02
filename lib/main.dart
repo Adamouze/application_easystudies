@@ -1,3 +1,4 @@
+import 'package:EasyStudies/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -48,9 +49,7 @@ class MyApp extends StatelessWidget {
       builder: (context, themeProvider, child) {
         return MaterialApp(
           title: 'EasyStudies',
-/*
           scrollBehavior: MyCustomScrollBehavior(),
-*/
           theme: ThemeData(
             scrollbarTheme: ScrollbarThemeData(
               thumbColor: MaterialStateProperty.all(Colors.blueAccent),
