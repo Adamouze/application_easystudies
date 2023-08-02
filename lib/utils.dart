@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 */
 
 import 'dart:convert';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
@@ -498,7 +499,7 @@ Widget getSmiley(String rating) {
 
 
 
-/*class MyCustomScrollBehavior extends MaterialScrollBehavior {
+class MyCustomScrollBehavior extends MaterialScrollBehavior {
   @override
   Set<PointerDeviceKind> get dragDevices => {
     PointerDeviceKind.touch,
@@ -523,7 +524,7 @@ Widget getSmiley(String rating) {
     }
     return Colors.white.withOpacity(0.5);
   }
-}*/
+}
 
 
 
