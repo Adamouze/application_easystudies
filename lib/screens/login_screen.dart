@@ -43,7 +43,15 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
             userType = 'home';
         }
         Navigator.of(context).pushNamed('/$userType');
-        Provider.of<AuthState>(context, listen: false).setAuthenticationStatus(true, userType, jsonResponse['_identifier'], jsonResponse['_token']);
+        Provider.of<AuthState>(context, listen: false).setAuthenticationStatus(
+            true,
+            userType,
+            jsonResponse['_identifier'],
+            jsonResponse['_token'],
+            jsonResponse['_prenom'],
+            jsonResponse['_nom']
+        );
+
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             shape: const RoundedRectangleBorder(

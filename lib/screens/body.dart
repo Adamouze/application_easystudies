@@ -13,8 +13,6 @@ import '../utilities/constantes.dart';
 import '../utilities/video_youtube.dart';
 import '../utilities/facebook_news.dart';
 
-import '../utils.dart';
-
 
 
 class QuitDialog extends StatefulWidget {
@@ -110,6 +108,87 @@ class QuitDialogState extends State<QuitDialog> with SingleTickerProviderStateMi
   }
 }
 
+class WelcomeBanner extends StatefulWidget {
+  final String prenom;
+  final String nom;
+
+  const WelcomeBanner({required this.prenom, required this.nom, Key? key,}) : super(key: key);
+
+  @override
+  _WelcomeBannerState createState() => _WelcomeBannerState();
+}
+
+class _WelcomeBannerState extends State<WelcomeBanner>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: tempsAnimationWelcomeBar),
+    )..repeat();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  Color getAnimatedColor(double offset) { // TODO: Faire en sorte que ça revient en arrière après pour éviter le saut de couleur
+    return HSVColor.lerp(
+      HSVColor.fromColor(Colors.red),
+      HSVColor.fromColor(Colors.purple),
+      (_controller.value + offset) % 1,
+    )!.toColor();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (context, child) {
+        return Container(
+          padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                getAnimatedColor((1.0/6.0)),
+                getAnimatedColor(0),
+              ],
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: theme.colorScheme.shadow,
+                spreadRadius: 5,
+                blurRadius: 7,
+                offset: const Offset(0, 3),
+              ),
+            ],
+            borderRadius: BorderRadius.circular(30.0),
+          ),
+          child: Text(
+            "Bienvenue ${widget.prenom} ${widget.nom}",
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: Colors.black,
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+
+
 
 class CustomBody extends StatefulWidget {
   const CustomBody({this.userType = "default", Key? key,}) : super(key: key);
@@ -150,420 +229,384 @@ class _CustomBodyState extends State<CustomBody> {
     )) ?? false;
   }
 
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
     final authState = Provider.of<AuthState>(context, listen: false);
-    final token = authState.token ?? '';
-    final login = authState.identifier ?? '';
-
-    Eleve? eleve;
-    eleve = Eleve.basic(login, '', '', '', '', '');
-
-    Future<Eleve?> getFutureEleve(String token, String login, Eleve eleve) {
-      if (widget.userType == "eleve" || widget.userType == "prof") {
-        return getNomPrenomEleve(token, login, eleve);
-      } else {
-        return Future<Eleve?>.value(null);  // Retourne un future qui résout immédiatement à null
-      }
-    }
+    final prenom = authState.prenom ?? '';
+    final nom = (authState.nom ?? '').replaceAll('ë', 'Ë');
 
     return WillPopScope(
       onWillPop: _onWillPop,
-      child: FutureBuilder<Eleve?>(
-        future: getFutureEleve(token, login, eleve),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const CircularProgressIndicator(); // Afficher une indicateur de chargement pendant le chargement des données
-          } else if (snapshot.hasError) {
-            return Text('Erreur: ${snapshot.error}'); // Afficher une erreur si quelque chose ne va pas
-          } else {
-            eleve = snapshot.data; // Mettre à jour eleve avec les données obtenues
-            return Align(
-              alignment: Alignment.topCenter,
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    const SizedBox(height: 20),
-                    if (widget.userType == "eleve" || widget.userType == "prof")
-                      if (eleve?.prenom != null && eleve?.nom != null)
-                        Container(
-                          padding: const EdgeInsets.all(8.0),
-                          decoration: BoxDecoration(
-                            color: Colors.grey[300],
-                            borderRadius: BorderRadius.circular(8.0),
-                          ),
-                          child: Text(
-                            "Bienvenue ${eleve!.prenom} ${eleve!.nom} ",
-                            style: const TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                    if (widget.userType == "eleve" || widget.userType == "prof")
-                      if (eleve?.prenom != null && eleve?.nom != null)
-                        const SizedBox(height: 16),
+      child: Align(
+        alignment: Alignment.topCenter,
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              const SizedBox(height: 10),
+              if (widget.userType == "eleve" || widget.userType == "prof")
+                if (prenom.isNotEmpty && nom.isNotEmpty)
+                  WelcomeBanner(prenom: prenom, nom: nom),
+              if (widget.userType == "eleve" || widget.userType == "prof")
+                if (prenom.isNotEmpty && nom.isNotEmpty)
+                  const SizedBox(height: 10),
 
-                    FractionallySizedBox(
-                      widthFactor: 0.95,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: <Widget>[
-                          Container(
-                            decoration: const BoxDecoration(
-                              color: Colors.orangeAccent,
-                              borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(10),
-                                topRight: Radius.circular(10),
-                              ),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(
-                                'Dernière News - செய்திகள்',
-                                style: TextStyle(
-                                    color: theme.primaryColor,
-                                    fontFamily: 'Noto Sans',
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                          ),
-                          Container(
-                            decoration: BoxDecoration(
-                              color: theme.cardColor,
-                              borderRadius: const BorderRadius.only(
-                                bottomLeft: Radius.circular(10),
-                                bottomRight: Radius.circular(10),
-                              ),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.2), // Couleur de l'ombre
-                                  offset: const Offset(0, 3), // Position de l'ombre
-                                  blurRadius: 6, // Flou de l'ombre
-                                  spreadRadius: 2, // Taille de l'ombre
-                                ),
-                              ],
-                            ),
-                            padding: const EdgeInsets.all(16),
-                            child: FutureBuilder<String?>(
-                              future: facebookService.fetchLatestNewsData(),
-                              builder: (context, snapshot) {
-                                if (snapshot.hasData) {
-                                  final latestNewsData = snapshot.data!;
-                                  return Text(latestNewsData);
-                                } else if (snapshot.hasError) {
-                                  return Text(
-                                    'Failed to fetch news data',
-                                    style: TextStyle(color: theme.textTheme.bodyLarge?.color),
-                                  );
-                                } else {
-                                  return const CircularProgressIndicator(color: Colors.orangeAccent);
-                                }
-                              },
-                            ),
+
+              FractionallySizedBox(
+                widthFactor: 0.95,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: <Widget>[
+                    Container(
+                      decoration: const BoxDecoration(
+                        color: Colors.orangeAccent,
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(10),
+                          topRight: Radius.circular(10),
+                        ),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          'Dernière News - செய்திகள்',
+                          style: TextStyle(
+                              color: theme.primaryColor,
+                              fontFamily: 'Noto Sans',
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: theme.cardColor,
+                        borderRadius: const BorderRadius.only(
+                          bottomLeft: Radius.circular(10),
+                          bottomRight: Radius.circular(10),
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.2), // Couleur de l'ombre
+                            offset: const Offset(0, 3), // Position de l'ombre
+                            blurRadius: 6, // Flou de l'ombre
+                            spreadRadius: 2, // Taille de l'ombre
                           ),
                         ],
                       ),
+                      padding: const EdgeInsets.all(16),
+                      child: FutureBuilder<String?>(
+                        future: facebookService.fetchLatestNewsData(),
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            final latestNewsData = snapshot.data!;
+                            return Text(latestNewsData);
+                          } else if (snapshot.hasError) {
+                            return Text(
+                              'Failed to fetch news data',
+                              style: TextStyle(color: theme.textTheme.bodyLarge?.color),
+                            );
+                          } else {
+                            return const CircularProgressIndicator(color: Colors.orangeAccent);
+                          }
+                        },
+                      ),
                     ),
+                  ],
+                ),
+              ),
 
-                    const SizedBox(height: 16),
+              const SizedBox(height: 16),
 
-                    FractionallySizedBox(
-                      widthFactor: 0.95,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: <Widget>[
-                          Container(
-                            decoration: BoxDecoration(
-                              color: Colors.orangeAccent,
-                              borderRadius: const BorderRadius.only(
-                                topLeft: Radius.circular(10),
-                                topRight: Radius.circular(10),
-                              ),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.2),
-                                  spreadRadius: 1,
-                                  blurRadius: 2,
-                                  offset: const Offset(0, 2), // changes position of shadow
-                                ),
-                              ],
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(
-                                'Vidéos',
-                                style: TextStyle(
-                                  color: theme.primaryColor,
-                                  fontWeight: FontWeight.bold,
-                                  fontFamily: 'NotoSans',
-                                ),
-                              ),
-                            ),
+              FractionallySizedBox(
+                widthFactor: 0.95,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: <Widget>[
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.orangeAccent,
+                        borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(10),
+                          topRight: Radius.circular(10),
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.2),
+                            spreadRadius: 1,
+                            blurRadius: 2,
+                            offset: const Offset(0, 2), // changes position of shadow
                           ),
-                          Container(
-                            decoration: BoxDecoration(
-                              color: theme.cardColor,
-                              borderRadius: const BorderRadius.only(
-                                bottomLeft: Radius.circular(10),
-                                bottomRight: Radius.circular(10),
-                              ),
-                            ),
-                            child: FutureBuilder<List<VideoDetail>>(
-                              future: youtubeService.fetchAllVideoDetails(),
-                              builder: (context, snapshot) {
-                                if (snapshot.hasData) {
-                                  final videoDetails = snapshot.data!;
-                                  final pageController = PageController(initialPage: 1);
+                        ],
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          'Vidéos',
+                          style: TextStyle(
+                            color: theme.primaryColor,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: 'NotoSans',
+                          ),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: theme.cardColor,
+                        borderRadius: const BorderRadius.only(
+                          bottomLeft: Radius.circular(10),
+                          bottomRight: Radius.circular(10),
+                        ),
+                      ),
+                      child: FutureBuilder<List<VideoDetail>>(
+                        future: youtubeService.fetchAllVideoDetails(),
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            final videoDetails = snapshot.data!;
+                            final pageController = PageController(initialPage: 1);
 
-                                  return Stack(
-                                    alignment: Alignment.center,
-                                    children: [
-                                      SizedBox(
-                                        height: 300,
-                                        child: PageView.builder(
-                                          controller: pageController,
-                                          itemCount: videoDetails.length * 10,
-                                          itemBuilder: (context, index) {
-                                            final videoDetail = videoDetails[index % videoDetails.length];
-                                            return GestureDetector(
-                                              onTap: () {
-                                                Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                    builder: (context) => VideoPlayerPage(videoId: videoDetail.videoId, videoDetail: videoDetail),
+                            return Stack(
+                              alignment: Alignment.center,
+                              children: [
+                                SizedBox(
+                                  height: 300,
+                                  child: PageView.builder(
+                                    controller: pageController,
+                                    itemCount: videoDetails.length * 10,
+                                    itemBuilder: (context, index) {
+                                      final videoDetail = videoDetails[index % videoDetails.length];
+                                      return GestureDetector(
+                                        onTap: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) => VideoPlayerPage(videoId: videoDetail.videoId, videoDetail: videoDetail),
+                                            ),
+                                          );
+                                        },
+                                        child: Card(
+                                          color: theme.cardColor,
+                                          elevation: 3,
+                                          clipBehavior: Clip.antiAlias,
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Container(
+                                                height: 200,
+                                                decoration: BoxDecoration(
+                                                  image: DecorationImage(
+                                                    image: NetworkImage(videoDetail.thumbnailUrl),
+                                                    fit: BoxFit.cover,
                                                   ),
-                                                );
-                                              },
-                                              child: Card(
-                                                color: theme.cardColor,
-                                                elevation: 3,
-                                                clipBehavior: Clip.antiAlias,
+                                                ),
+                                              ),
+                                              Container(
+                                                padding: const EdgeInsets.all(8),
                                                 child: Column(
                                                   crossAxisAlignment: CrossAxisAlignment.start,
                                                   children: [
-                                                    Container(
-                                                      height: 200,
-                                                      decoration: BoxDecoration(
-                                                        image: DecorationImage(
-                                                          image: NetworkImage(videoDetail.thumbnailUrl),
-                                                          fit: BoxFit.cover,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    Container(
-                                                      padding: const EdgeInsets.all(8),
-                                                      child: Column(
-                                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                                        children: [
-                                                          Text(
-                                                            videoDetail.title,
-                                                            style: TextStyle(
-                                                              color:theme.textTheme.bodyLarge?.color,
-                                                              fontSize: 18,
-                                                              fontWeight: FontWeight.bold,
-                                                              fontFamily: 'NotoSans',
-                                                            ),
-                                                          ),
-                                                        ],
+                                                    Text(
+                                                      videoDetail.title,
+                                                      style: TextStyle(
+                                                        color:theme.textTheme.bodyLarge?.color,
+                                                        fontSize: 18,
+                                                        fontWeight: FontWeight.bold,
+                                                        fontFamily: 'NotoSans',
                                                       ),
                                                     ),
                                                   ],
                                                 ),
                                               ),
-                                            );
-                                          },
-                                        ),
-                                      ),
-
-                                      // Navigation buttons
-                                      Positioned(
-                                        left: 0,
-                                        child: Container(
-                                          decoration: const BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            color: Colors.orangeAccent,
-                                          ),
-                                          child: IconButton(
-                                            icon: Icon(Icons.arrow_back,
-                                              color: theme.iconTheme.color,
-                                            ),
-                                            onPressed: () {
-                                              int currentPage = pageController.page?.toInt() ?? 0;
-                                              if (currentPage == 0) {
-                                                // If we're at the first page (duplicate last video), jump without animation to the last "real" page
-                                                pageController.jumpToPage(videoDetails.length - 2);
-                                              } else {
-                                                pageController.previousPage(
-                                                  duration: const Duration(milliseconds: 400),
-                                                  curve: Curves.easeInOut,
-                                                );
-                                              }
-                                            },
+                                            ],
                                           ),
                                         ),
-                                      ),
-                                      Positioned(
-                                        right: 0,
-                                        child: Container(
-                                          decoration: const BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            color: Colors.orangeAccent,
-                                          ),
-                                          child: IconButton(
-                                            icon: Icon(Icons.arrow_forward,
-                                              color: theme.iconTheme.color,
-                                            ),
-                                            onPressed: () {
-                                              int currentPage = pageController.page?.toInt() ?? 0;
-                                              if (currentPage == videoDetails.length - 1) {
-                                                // If we're at the last page (duplicate first video), jump without animation to the first "real" page
-                                                pageController.jumpToPage(1);
-                                              } else {
-                                                pageController.nextPage(
-                                                  duration: const Duration(milliseconds: 400),
-                                                  curve: Curves.easeInOut,
-                                                );
-                                              }
-                                            },
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  );
-                                } else if (snapshot.hasError) {
-                                  return Text('Failed to fetch video details: ${snapshot.error}');
-                                } else {
-                                  return const CircularProgressIndicator(color: Colors.orangeAccent);
-                                }
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+                                      );
+                                    },
+                                  ),
+                                ),
 
-                    const SizedBox(height: 16),
-
-                    FractionallySizedBox(
-                      widthFactor: 0.95,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: <Widget>[
-                          Container(
-                            decoration: BoxDecoration(
-                              color: Colors.orangeAccent,
-                              borderRadius: const BorderRadius.only(
-                                topLeft: Radius.circular(10),
-                                topRight: Radius.circular(10),
-                              ),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.2),
-                                  spreadRadius: 1,
-                                  blurRadius: 2,
-                                  offset: const Offset(0, 2), // changes position of shadow
+                                // Navigation buttons
+                                Positioned(
+                                  left: 0,
+                                  child: Container(
+                                    decoration: const BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Colors.orangeAccent,
+                                    ),
+                                    child: IconButton(
+                                      icon: Icon(Icons.arrow_back,
+                                        color: theme.iconTheme.color,
+                                      ),
+                                      onPressed: () {
+                                        int currentPage = pageController.page?.toInt() ?? 0;
+                                        if (currentPage == 0) {
+                                          // If we're at the first page (duplicate last video), jump without animation to the last "real" page
+                                          pageController.jumpToPage(videoDetails.length - 2);
+                                        } else {
+                                          pageController.previousPage(
+                                            duration: const Duration(milliseconds: 400),
+                                            curve: Curves.easeInOut,
+                                          );
+                                        }
+                                      },
+                                    ),
+                                  ),
+                                ),
+                                Positioned(
+                                  right: 0,
+                                  child: Container(
+                                    decoration: const BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Colors.orangeAccent,
+                                    ),
+                                    child: IconButton(
+                                      icon: Icon(Icons.arrow_forward,
+                                        color: theme.iconTheme.color,
+                                      ),
+                                      onPressed: () {
+                                        int currentPage = pageController.page?.toInt() ?? 0;
+                                        if (currentPage == videoDetails.length - 1) {
+                                          // If we're at the last page (duplicate first video), jump without animation to the first "real" page
+                                          pageController.jumpToPage(1);
+                                        } else {
+                                          pageController.nextPage(
+                                            duration: const Duration(milliseconds: 400),
+                                            curve: Curves.easeInOut,
+                                          );
+                                        }
+                                      },
+                                    ),
+                                  ),
                                 ),
                               ],
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(
-                                'Contact',
-                                style: TextStyle(
-                                  color: theme.primaryColor,
-                                  fontWeight: FontWeight.bold,
-                                  fontFamily: 'NotoSans',
-                                ),
-                              ),
-                            ),
-                          ),
-                          Container(
-                            decoration: BoxDecoration(
-                              color: theme.cardColor,
-                              borderRadius: const BorderRadius.only(
-                                bottomLeft: Radius.circular(10),
-                                bottomRight: Radius.circular(10),
-                              ),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.2),
-                                  spreadRadius: 1,
-                                  blurRadius: 2,
-                                  offset: const Offset(0, 2), // changes position of shadow
-                                ),
-                              ],
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(16),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                children: <Widget>[
-                                  GestureDetector(
-                                    onTap: () async {
-                                      _launchmail(_url_mail);
-                                    },
-                                    child: const Icon(Icons.mail, color: Colors.orangeAccent),
-                                  ),
-                                  GestureDetector(
-                                    onTap: () async {
-                                      _launchURL(_url_tel);
-                                    },
-                                    child: const Icon(Icons.phone, color: Colors.orangeAccent),
-                                  ),
-                                  GestureDetector(
-                                    onTap: () async {
-                                      _launchURL(_url_facebook);
-                                    },
-                                    child: const Icon(Icons.facebook, color: Colors.orangeAccent),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-
-                        ],
+                            );
+                          } else if (snapshot.hasError) {
+                            return Text('Failed to fetch video details: ${snapshot.error}');
+                          } else {
+                            return const CircularProgressIndicator(color: Colors.orangeAccent);
+                          }
+                        },
                       ),
                     ),
-
-                    const SizedBox(height: 16),
-
-                    if (widget.userType == "eleve")
-                      Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Transform.scale(
-                          scale: 1.4,
-                          child: FloatingActionButton(
-                            backgroundColor: Colors.blue,
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => const QRCodeScreen()),
-                              );
-                            },
-                            tooltip: 'QR Code',
-                            elevation: 6.0,
-                            shape: const CircleBorder(),
-                            child: const Icon(
-                              Icons.qr_code_2_sharp,
-                              color: couleurIcone,
-                              size: 32.0,
-                            ),
-                          ),
-                        ),
-                      ),
-
-                    const SizedBox(height: 20),
                   ],
                 ),
               ),
-            );
-          }
-        },
+
+              const SizedBox(height: 16),
+
+              FractionallySizedBox(
+                widthFactor: 0.95,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: <Widget>[
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.orangeAccent,
+                        borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(10),
+                          topRight: Radius.circular(10),
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.2),
+                            spreadRadius: 1,
+                            blurRadius: 2,
+                            offset: const Offset(0, 2), // changes position of shadow
+                          ),
+                        ],
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          'Contact',
+                          style: TextStyle(
+                            color: theme.primaryColor,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: 'NotoSans',
+                          ),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: theme.cardColor,
+                        borderRadius: const BorderRadius.only(
+                          bottomLeft: Radius.circular(10),
+                          bottomRight: Radius.circular(10),
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.2),
+                            spreadRadius: 1,
+                            blurRadius: 2,
+                            offset: const Offset(0, 2), // changes position of shadow
+                          ),
+                        ],
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: <Widget>[
+                            GestureDetector(
+                              onTap: () async {
+                                _launchmail(_url_mail);
+                              },
+                              child: const Icon(Icons.mail, color: Colors.orangeAccent),
+                            ),
+                            GestureDetector(
+                              onTap: () async {
+                                _launchURL(_url_tel);
+                              },
+                              child: const Icon(Icons.phone, color: Colors.orangeAccent),
+                            ),
+                            GestureDetector(
+                              onTap: () async {
+                                _launchURL(_url_facebook);
+                              },
+                              child: const Icon(Icons.facebook, color: Colors.orangeAccent),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+
+                  ],
+                ),
+              ),
+
+              const SizedBox(height: 16),
+
+              if (widget.userType == "eleve")
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Transform.scale(
+                    scale: 1.4,
+                    child: FloatingActionButton(
+                      backgroundColor: Colors.blue,
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const QRCodeScreen()),
+                        );
+                      },
+                      tooltip: 'QR Code',
+                      elevation: 6.0,
+                      shape: const CircleBorder(),
+                      child: const Icon(
+                        Icons.qr_code_2_sharp,
+                        color: couleurIcone,
+                        size: 32.0,
+                      ),
+                    ),
+                  ),
+                ),
+
+              const SizedBox(height: 20),
+            ],
+          ),
+        ),
       ),
     );
   }

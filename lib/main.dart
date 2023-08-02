@@ -112,6 +112,7 @@ class MyApp extends StatelessWidget {
             useMaterial3: true,
           ),
 
+
           themeMode: themeProvider.themeMode,
           initialRoute: '/',
           onGenerateRoute: (settings) {

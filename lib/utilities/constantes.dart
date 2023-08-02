@@ -8,11 +8,23 @@ const double arrondiBox = 10;
 const double epaisseurContour = 2;
 const double espacementBlocsDetailsEleve = 15;
 
+const int tempsAnimationWelcomeBar = 60;
+
 Image smiley1 = Image.asset('assets/smiley/1.png', height: tailleSmiley);
 Image smiley2 = Image.asset('assets/smiley/2.png', height: tailleSmiley);
 Image smiley3 = Image.asset('assets/smiley/3.png', height: tailleSmiley);
 Image smiley4 = Image.asset('assets/smiley/4.png', height: tailleSmiley);
 Image smiley5 = Image.asset('assets/smiley/5.png', height: tailleSmiley);
+
+const Image addComment = Image(
+  image: AssetImage('assets/divers/add_comment.png'),
+  alignment: Alignment.center,
+);
+
+const Image addDevoirs = Image(
+  image: AssetImage('assets/divers/add_devoirs.png'),
+  alignment: Alignment.center,
+);
 
 const Image addBilan = Image(
   image: AssetImage('assets/divers/add_bilan.png'),

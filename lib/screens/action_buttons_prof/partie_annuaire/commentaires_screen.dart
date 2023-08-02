@@ -1,3 +1,4 @@
+import 'package:EasyStudies/screens/action_buttons_prof/partie_annuaire/add_directory/add_commentaire_screen.dart';
 import 'package:flutter/material.dart';
 
 import '../../../utilities/constantes.dart';
@@ -150,15 +151,38 @@ class CommentaireScreen extends StatelessWidget {
         ),
       ),
       body: SingleChildScrollView(
-          child: Center(
-            child: Column(
-              children: [
-                const SizedBox(height: 20),
-                CommentaireBlock(eleve: eleve),
-                const SizedBox(height: 20),
-              ],
+        child: Center(
+          child: Column(
+            children: [
+              const SizedBox(height: 20),
+              CommentaireBlock(eleve: eleve),
+              const SizedBox(height: 120),
+            ],
+          ),
+        )
+      ),
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(bottom: 16.0, right: 16.0), // Écartement aux bords
+        child: Transform.scale(
+          scale: 1.3,
+          child: FloatingActionButton(
+            backgroundColor: orangePerso,
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => AddCommentaire(eleve: eleve)),
+              );
+            },
+            tooltip: "Ajout d'un commentaire",
+            elevation: 10.0, // Rehaussement
+            shape: const CircleBorder(),
+            child: ColorFiltered(
+              colorFilter: ColorFilter.mode(
+                  theme.iconTheme.color ?? Colors.white, BlendMode.srcIn),
+              child: addComment,
             ),
-          )
+          ),
+        ),
       ),
     );
   }

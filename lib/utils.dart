@@ -466,6 +466,78 @@ Future<List<Presence>> fetchClassPresences(String classID, String token, String 
 
 
 
+Future<void> addCommentaireToDatabase(String token, String login, Eleve eleve, Commentaire commentaire) async {
+  final uri = Uri.parse('https://app.easystudies.fr/api/ajouter_commentaire');  // TODO: à remplacer
+  final response = await http.post(
+    uri,
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token', // si l'authentification est nécessaire
+    },
+    body: jsonEncode({
+      '_data': [
+        {
+          '_identifier': eleve.identifier,
+          '_date': commentaire.date,
+          '_from': commentaire.from,
+          '_comment': commentaire.comment,
+        }
+      ],
+    }),
+  );
+
+  if (response.statusCode != 200) {
+    throw Exception('Failed to add commentaire');
+  }
+}
+
+Future<void> addNoteToDatabase(String token, String login, Eleve eleve, Note note) async {
+  final uri = Uri.parse('https://app.easystudies.fr/api/ajouter_note'); // TODO: à remplacer
+  final response = await http.post(
+    uri,
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token', // si l'authentification est nécessaire
+    },
+    body: jsonEncode({
+      '_data': [
+        {
+          '_identifier': eleve.identifier,
+          '_date': note.date,
+          '_grade': note.note,
+          '_type': note.type,
+          '_comment': note.commentaire,
+        }
+      ],
+    }),
+  );
+
+  if (response.statusCode != 200) {
+    throw Exception('Failed to add note');
+  }
+}
+
+Future<void> addBilanToDatabase(String token, String login, Eleve eleve, Bilan bilan) async {
+  final uri = Uri.parse('https://app.easystudies.fr/api/ajouter_bilan'); // TODO: à remplacer
+  final response = await http.post(
+    uri,
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token', // si l'authentification est nécessaire
+    },
+    body: jsonEncode({
+      '_login': login,
+      '_studentLogin': eleve.identifier,
+      // Autres attributs du bilan
+    }),
+  );
+
+  if (response.statusCode != 200) {
+    throw Exception('Failed to add bilan');
+  }
+}
+
+
 
 
 String afficherDate(String date) {

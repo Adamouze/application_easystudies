@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../utilities/constantes.dart';
-
 import '../../../../utils.dart';
-
+import '../../../../logs/auth_stat.dart';
 
 
 class RatingCell extends StatefulWidget {
@@ -37,7 +37,8 @@ class RatingCellState extends State<RatingCell> {
 }
 
 class BaseDeNotationBlock extends StatefulWidget {
-  const BaseDeNotationBlock({Key? key}) : super(key: key);
+  final Bilan bilan;
+  const BaseDeNotationBlock({required this.bilan, Key? key}) : super(key: key);
 
   @override
   BaseDeNotationBlockState createState() => BaseDeNotationBlockState();
@@ -61,12 +62,28 @@ class BaseDeNotationBlockState extends State<BaseDeNotationBlock> {
           ),
         ),
         for (int value = 1; value <= 5; value++)
-          RatingCell(value: value, groupValue: groupValue, onChanged: onChanged),
+          RatingCell(value: value, groupValue: groupValue, onChanged: (value) {
+            onChanged(value);
+            switch (groupValue) {
+              case 1:
+                widget.bilan.global = value.toString();
+                break;
+              case 2:
+                widget.bilan.comp = value.toString();
+                break;
+              case 3:
+                widget.bilan.assidu = value.toString();
+                break;
+              case 4:
+                widget.bilan.dm = value.toString();
+                break;
+              default:
+                break;
+            }
+          }),
       ],
     );
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -159,16 +176,18 @@ class BaseDeNotationBlockState extends State<BaseDeNotationBlock> {
   }
 }
 
-
 class BilanBlock extends StatefulWidget {
-  const BilanBlock({Key? key}) : super(key: key);
+  final Bilan bilan;
+  const BilanBlock({required this.bilan ,Key? key}) : super(key: key);
 
   @override
   BilanBlockState createState() => BilanBlockState();
 }
 
 class BilanBlockState extends State<BilanBlock> {
+
   DateTime _date = DateTime.now();
+
   Map<String, bool> matieres = {
     'Mathématiques': false,
     'Français / Philosophie': false,
@@ -179,9 +198,12 @@ class BilanBlockState extends State<BilanBlock> {
     'Comptabilité / Gestion': false,
     'Autres': false,
   };
-  String axes = '';
-  String pointsForts = '';
-  String commentaires = '';
+
+  void updateSubjects() {
+    widget.bilan.subjects = matieres.keys
+        .where((key) => matieres[key] == true) // Filtrer les matières sélectionnées
+        .join('\\r\\n'); // Joindre avec le séparateur
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -241,13 +263,15 @@ class BilanBlockState extends State<BilanBlock> {
                     final DateTime? picked = await showDatePicker(
                       context: context,
                       initialDate: _date,
-                      firstDate: DateTime(2023),
+                      firstDate: DateTime(2015),
                       lastDate: DateTime.now(),
                     );
-                    if (picked != null && picked != _date)
+                    if (picked != null && picked != _date) {
                       setState(() {
                         _date = picked;
+                        widget.bilan.date = DateFormat('yyyy-MM-dd').format(picked);
                       });
+                    }
                   },
                   child: TextField(
                     enabled: false,
@@ -273,6 +297,7 @@ class BilanBlockState extends State<BilanBlock> {
                             onChanged: (bool? value) {
                               setState(() {
                                 matieres[key] = value ?? false;
+                                updateSubjects();
                               });
                             },
                           ),
@@ -285,35 +310,59 @@ class BilanBlockState extends State<BilanBlock> {
                     );
                   }).toList(),
                 ),
-                TextField(
-                  decoration: const InputDecoration(
-                    labelText: 'Axes d\'amélioration',
-                    contentPadding: EdgeInsets.only(left: 10.0),
+                Padding(
+                  padding: const EdgeInsets.all(10.0), // Ajout de marge extérieure
+                  child: TextField(
+                    maxLines: null, // permet plusieurs lignes
+                    keyboardType: TextInputType.multiline,
+                    decoration: const InputDecoration(
+                      hintText: 'Écrivez ici...',
+                      labelText: 'Axe d\'amélioration',
+                      contentPadding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
+                      border: OutlineInputBorder(),
+
+                    ),
+                    style: const TextStyle(
+                      color: Colors.black,
+                    ),
+                    onChanged: (value) => widget.bilan.toImprove = value,
                   ),
-                  style: const TextStyle(
-                    color: Colors.black, // change this color to your preference
-                  ),
-                  onChanged: (value) => setState(() => axes = value),
                 ),
-                TextField(
-                  decoration: const InputDecoration(
-                    labelText: 'Points forts',
-                    contentPadding: EdgeInsets.only(left: 10.0),
+                Padding(
+                  padding: const EdgeInsets.all(10.0), // Ajout de marge extérieure
+                  child: TextField(
+                    maxLines: null, // permet plusieurs lignes
+                    keyboardType: TextInputType.multiline,
+                    decoration: const InputDecoration(
+                      hintText: 'Écrivez ici...',
+                      labelText: 'Points forts',
+                      contentPadding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
+                      border: OutlineInputBorder(),
+
+                    ),
+                    style: const TextStyle(
+                      color: Colors.black,
+                    ),
+                    onChanged: (value) => widget.bilan.good = value,
                   ),
-                  style: const TextStyle(
-                    color: Colors.black, // change this color to your preference
-                  ),
-                  onChanged: (value) => setState(() => pointsForts = value),
                 ),
-                TextField(
-                  decoration: const InputDecoration(
-                    labelText: 'Commentaires',
-                    contentPadding: EdgeInsets.only(left: 10.0),
+                Padding(
+                  padding: const EdgeInsets.all(10.0), // Ajout de marge extérieure
+                  child: TextField(
+                    maxLines: null, // permet plusieurs lignes
+                    keyboardType: TextInputType.multiline,
+                    decoration: const InputDecoration(
+                      hintText: 'Écrivez ici...',
+                      labelText: 'Commentaire',
+                      contentPadding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
+                      border: OutlineInputBorder(),
+
+                    ),
+                    style: const TextStyle(
+                      color: Colors.black,
+                    ),
+                    onChanged: (value) => widget.bilan.comment = value,
                   ),
-                  style: const TextStyle(
-                    color: Colors.black, // change this color to your preference
-                  ),
-                  onChanged: (value) => setState(() => commentaires = value),
                 ),
                 const SizedBox(height: 10),
               ],
@@ -327,7 +376,16 @@ class BilanBlockState extends State<BilanBlock> {
 
 
 class SoumettreButton extends StatelessWidget {
-  const SoumettreButton({Key? key}) : super(key: key);
+  final Eleve eleve;
+  final Bilan bilan;
+  final VoidCallback onSubmit; // Rappel à appeler lors de la soumission
+
+  const SoumettreButton({
+    required this.eleve,
+    required this.bilan,
+    required this.onSubmit, // Inclure le rappel dans le constructeur
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -346,7 +404,8 @@ class SoumettreButton extends StatelessWidget {
         ),
         ElevatedButton.icon(
           onPressed: () {
-            // TODO : Ajouter le nouveau bilan dans la liste des bilans
+            onSubmit(); // Appelle le rappel lorsqu'il est pressé
+            Navigator.pop(context); // Optionnel : ferme la page actuelle
           },
           icon: const Icon(Icons.check),
           label: const Text('Ajouter'),
@@ -364,7 +423,6 @@ class SoumettreButton extends StatelessWidget {
 
 class AddBilan extends StatefulWidget {
   final Eleve eleve;
-
   const AddBilan({required this.eleve, Key? key}) : super(key: key);
 
   @override
@@ -373,9 +431,38 @@ class AddBilan extends StatefulWidget {
 
 class AddBilanState extends State<AddBilan> {
 
+  final Bilan bilan = Bilan("", "", "", "", "", "", "", "", "", "");
+
+  void handleSubmitBilan(String token, String login) async {
+    try {
+      await addBilanToDatabase(token, login, widget.eleve, bilan);
+      print('Bilan ajouté avec succès.');
+
+      // Appel à getBilansEleve pour rafraîchir les bilans
+      await getBilansEleve(token, login, widget.eleve);
+
+    } catch (e) {
+      print('Erreur lors de l\'ajout du bilan: $e');
+    }
+  }
+
+
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+
+    final authState = Provider.of<AuthState>(context, listen: false);
+    final token = authState.token;
+    final login = authState.identifier;
+
+    if (token == null) {
+      return const Text("ERREUR de token dans la requête API");
+    }
+    if (login == null) {
+      return const Text("ERREUR de login dans la requête API");
+    }
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: orangePerso,
@@ -387,17 +474,21 @@ class AddBilanState extends State<AddBilan> {
           ),
         ),
       ),
-      body: const SingleChildScrollView(
+      body: SingleChildScrollView(
         child: Center(
           child: Column(
             children: [
-              SizedBox(height: 20),
-              BaseDeNotationBlock(),
-              SizedBox(height: 20),
-              BilanBlock(),
-              SizedBox(height: 20),
-              SoumettreButton(),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
+              BaseDeNotationBlock(bilan: bilan),
+              const SizedBox(height: 20),
+              BilanBlock(bilan: bilan),
+              const SizedBox(height: 20),
+              SoumettreButton(
+                eleve: widget.eleve,
+                bilan: bilan,
+                onSubmit: () => handleSubmitBilan(token, login),
+              ),
+              const SizedBox(height: 20),
             ],
           ),
         )
