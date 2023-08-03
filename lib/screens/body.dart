@@ -52,7 +52,7 @@ class QuitDialogState extends State<QuitDialog> with SingleTickerProviderStateMi
           borderRadius: BorderRadius.circular(20.0),
           side: const BorderSide(color: Colors.white, width: 8),
         ),
-        backgroundColor: Colors.orangeAccent,
+        backgroundColor: orangePerso,
         title: const Text('Confirmation',
           style: TextStyle(
             color: Colors.white,
@@ -77,7 +77,7 @@ class QuitDialogState extends State<QuitDialog> with SingleTickerProviderStateMi
               onPressed: () => Navigator.pop(context, 'Non'),
               child: const Text('Non',
                 style: TextStyle(
-                  color: Colors.orangeAccent,
+                  color: orangePerso,
                   fontWeight: FontWeight.bold,
                   fontFamily: 'NotoSans',
                 ),
@@ -95,7 +95,7 @@ class QuitDialogState extends State<QuitDialog> with SingleTickerProviderStateMi
               },
               child: const Text('Oui',
                 style: TextStyle(
-                  color: Colors.orangeAccent,
+                  color: orangePerso,
                   fontWeight: FontWeight.bold,
                   fontFamily: 'NotoSans',
                 ),
@@ -118,8 +118,7 @@ class WelcomeBanner extends StatefulWidget {
   _WelcomeBannerState createState() => _WelcomeBannerState();
 }
 
-class _WelcomeBannerState extends State<WelcomeBanner>
-    with SingleTickerProviderStateMixin {
+class _WelcomeBannerState extends State<WelcomeBanner> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
 
   @override
@@ -176,7 +175,7 @@ class _WelcomeBannerState extends State<WelcomeBanner>
             "Bienvenue ${widget.prenom} ${widget.nom}",
             textAlign: TextAlign.center,
             style: const TextStyle(
-              fontSize: 20,
+              fontSize: 17,
               fontWeight: FontWeight.bold,
               color: Colors.black,
             ),
@@ -186,8 +185,6 @@ class _WelcomeBannerState extends State<WelcomeBanner>
     );
   }
 }
-
-
 
 
 class CustomBody extends StatefulWidget {
@@ -253,6 +250,8 @@ class _CustomBodyState extends State<CustomBody> {
                 if (prenom.isNotEmpty && nom.isNotEmpty)
                   const SizedBox(height: 10),
 
+              if (widget.userType != "eleve" && widget.userType != "prof")
+                const SizedBox(height: 16),
 
               FractionallySizedBox(
                 widthFactor: 0.95,
@@ -261,7 +260,7 @@ class _CustomBodyState extends State<CustomBody> {
                   children: <Widget>[
                     Container(
                       decoration: const BoxDecoration(
-                        color: Colors.orangeAccent,
+                        color: orangePerso,
                         borderRadius: BorderRadius.only(
                           topLeft: Radius.circular(10),
                           topRight: Radius.circular(10),
@@ -307,7 +306,7 @@ class _CustomBodyState extends State<CustomBody> {
                               style: TextStyle(color: theme.textTheme.bodyLarge?.color),
                             );
                           } else {
-                            return const CircularProgressIndicator(color: Colors.orangeAccent);
+                            return const CircularProgressIndicator(color: orangePerso);
                           }
                         },
                       ),
@@ -325,7 +324,7 @@ class _CustomBodyState extends State<CustomBody> {
                   children: <Widget>[
                     Container(
                       decoration: BoxDecoration(
-                        color: Colors.orangeAccent,
+                        color: orangePerso,
                         borderRadius: const BorderRadius.only(
                           topLeft: Radius.circular(10),
                           topRight: Radius.circular(10),
@@ -432,7 +431,7 @@ class _CustomBodyState extends State<CustomBody> {
                                   child: Container(
                                     decoration: const BoxDecoration(
                                       shape: BoxShape.circle,
-                                      color: Colors.orangeAccent,
+                                      color: orangePerso,
                                     ),
                                     child: IconButton(
                                       icon: Icon(Icons.arrow_back,
@@ -458,7 +457,7 @@ class _CustomBodyState extends State<CustomBody> {
                                   child: Container(
                                     decoration: const BoxDecoration(
                                       shape: BoxShape.circle,
-                                      color: Colors.orangeAccent,
+                                      color: orangePerso,
                                     ),
                                     child: IconButton(
                                       icon: Icon(Icons.arrow_forward,
@@ -484,7 +483,7 @@ class _CustomBodyState extends State<CustomBody> {
                           } else if (snapshot.hasError) {
                             return Text('Failed to fetch video details: ${snapshot.error}');
                           } else {
-                            return const CircularProgressIndicator(color: Colors.orangeAccent);
+                            return const CircularProgressIndicator(color: orangePerso);
                           }
                         },
                       ),
@@ -502,7 +501,7 @@ class _CustomBodyState extends State<CustomBody> {
                   children: <Widget>[
                     Container(
                       decoration: BoxDecoration(
-                        color: Colors.orangeAccent,
+                        color: orangePerso,
                         borderRadius: const BorderRadius.only(
                           topLeft: Radius.circular(10),
                           topRight: Radius.circular(10),
@@ -553,19 +552,19 @@ class _CustomBodyState extends State<CustomBody> {
                               onTap: () async {
                                 _launchmail(_url_mail);
                               },
-                              child: const Icon(Icons.mail, color: Colors.orangeAccent),
+                              child: const Icon(Icons.mail, color: orangePerso),
                             ),
                             GestureDetector(
                               onTap: () async {
                                 _launchURL(_url_tel);
                               },
-                              child: const Icon(Icons.phone, color: Colors.orangeAccent),
+                              child: const Icon(Icons.phone, color: orangePerso),
                             ),
                             GestureDetector(
                               onTap: () async {
                                 _launchURL(_url_facebook);
                               },
-                              child: const Icon(Icons.facebook, color: Colors.orangeAccent),
+                              child: const Icon(Icons.facebook, color: orangePerso),
                             ),
                           ],
                         ),

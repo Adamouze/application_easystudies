@@ -585,7 +585,6 @@ class MyCustomScrollBehavior extends MaterialScrollBehavior {
       controller: details.controller,  // Ajout du controller ici
       thickness: 5.0,
       radius: const Radius.circular(10),
-      thumbVisibility: true,
       child: child,
     );
   }

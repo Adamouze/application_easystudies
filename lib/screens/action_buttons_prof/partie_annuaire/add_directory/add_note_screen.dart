@@ -18,6 +18,13 @@ class NoteBlock extends StatefulWidget {
 class NoteBlockState extends State<NoteBlock> {
 
   DateTime _date = DateTime.now();
+  String? _selectedType;
+  bool isDropDownOpened = false;
+
+  final borderStyle = const OutlineInputBorder(
+    borderSide: BorderSide(color: Colors.grey),
+  );
+
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +35,7 @@ class NoteBlockState extends State<NoteBlock> {
         children: <Widget>[
           Container(
             decoration: BoxDecoration(
-              color: Colors.orangeAccent,
+              color: orangePerso,
               borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(10),
                 topRight: Radius.circular(10),
@@ -96,20 +103,104 @@ class NoteBlockState extends State<NoteBlock> {
                         Icons.calendar_month,
                         color: Colors.black,
                       ),
-                      border: const OutlineInputBorder(),
+                        border: borderStyle,
                     ),
                   ),
                 ),
+
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: InputDecorator(
+                    decoration: InputDecoration(
+                      labelText: "Type",
+                      labelStyle: const TextStyle(color: Colors.black),
+                      border: borderStyle,
+                    ),
+                    child: DropdownButtonHideUnderline(
+                      child: DropdownButton<String>(
+                        value: _selectedType,
+                        isDense: true,
+                        icon: Icon(
+                          isDropDownOpened ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
+                          color: Colors.black, // Couleur de la flèche déroulante
+                        ),
+                        style: const TextStyle(
+                          color: Colors.black,
+                        ),
+                        dropdownColor: Colors.white, // Couleur de fond du menu déroulant
+                        hint: const Text("Choisir le type de la note..."),
+                        items: const [
+                          DropdownMenuItem(
+                            value: "1",
+                            child: Text("Int. de fin de cours"),
+                          ),
+                          DropdownMenuItem(
+                            value: "2",
+                            child: Text("Stage"),
+                          ),
+                          DropdownMenuItem(
+                            value: "3",
+                            child: Text("Int. surprise"),
+                          ),
+                        ],
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            _selectedType = newValue!;
+                            isDropDownOpened = !isDropDownOpened;
+                            switch (_selectedType) {
+                              case "1":
+                                widget.note.type = "IRFC";
+                                break;
+                              case "2":
+                                widget.note.type = "STAGE";
+                                break;
+                              case "3":
+                                widget.note.type = "IS";
+                                break;
+                              default:
+                                break;
+                            }
+                          });
+                        },
+                        onTap: () {
+                          setState(() {
+                            isDropDownOpened = !isDropDownOpened;
+                          });
+                        },
+                      ),
+                    ),
+                  ),
+                ),
+
                 Padding(
                   padding: const EdgeInsets.all(10.0), // Ajout de marge extérieure
                   child: TextField(
                     maxLines: null, // permet plusieurs lignes
                     keyboardType: TextInputType.multiline,
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
+                      hintText: 'Rentrez la note ici...',
+                      labelText: 'Note',
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
+                      border: borderStyle,
+
+                    ),
+                    style: const TextStyle(
+                      color: Colors.black,
+                    ),
+                    onChanged: (value) => widget.note.note = value,
+                  ),
+                ),
+
+                Padding(
+                  padding: const EdgeInsets.all(10.0), // Ajout de marge extérieure
+                  child: TextField(
+                    maxLines: null, // permet plusieurs lignes
+                    keyboardType: TextInputType.multiline,
+                    decoration: InputDecoration(
                       hintText: 'Écrivez votre commentaire ici...',
                       labelText: 'Commentaire',
-                      contentPadding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
-                      border: OutlineInputBorder(),
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
+                      border: borderStyle,
 
                     ),
                     style: const TextStyle(
@@ -118,7 +209,8 @@ class NoteBlockState extends State<NoteBlock> {
                     onChanged: (value) => widget.note.commentaire = value,
                   ),
                 ),
-                const SizedBox(height: 10),
+
+                const SizedBox(height: 5),
               ],
             ),
           ),
@@ -151,7 +243,7 @@ class SoumettreButton extends StatelessWidget {
           icon: const Icon(Icons.arrow_back),
           label: const Text('Retour'),
           style: ButtonStyle(
-            backgroundColor: MaterialStateProperty.all<Color>(Colors.orangeAccent),
+            backgroundColor: MaterialStateProperty.all<Color>(orangePerso),
             foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
           ),
         ),

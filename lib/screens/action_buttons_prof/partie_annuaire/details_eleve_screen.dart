@@ -1372,7 +1372,7 @@ class DetailsEleveState extends State<DetailsEleve> {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(
             child: CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(Colors.orangeAccent),
+              valueColor: AlwaysStoppedAnimation<Color>(orangePerso),
             ),
           );
         } else if (snapshot.hasError) {

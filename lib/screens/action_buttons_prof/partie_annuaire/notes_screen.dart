@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
+import 'add_directory/add_note_screen.dart';
 import '../../../../utilities/constantes.dart';
-
 import '../../../../../utils.dart';
+
 
 
 class NoteBlock extends StatelessWidget {
@@ -162,15 +163,38 @@ class NoteScreen extends StatelessWidget {
         ),
       ),
       body: SingleChildScrollView(
-          child: Center(
-            child: Column(
-              children: [
-                const SizedBox(height: 20),
-                NoteBlock(eleve: eleve),
-                const SizedBox(height: 20),
-              ],
+        child: Center(
+          child: Column(
+            children: [
+              const SizedBox(height: 20),
+              NoteBlock(eleve: eleve),
+              const SizedBox(height: 120),
+            ],
+          ),
+        ),
+      ),
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(bottom: 16.0, right: 16.0), // Écartement aux bords
+        child: Transform.scale(
+          scale: 1.3,
+          child: FloatingActionButton(
+            backgroundColor: orangePerso,
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => AddNote(eleve: eleve)),
+              );
+            },
+            tooltip: "Ajout d'un commentaire",
+            elevation: 10.0, // Rehaussement
+            shape: const CircleBorder(),
+            child: ColorFiltered(
+              colorFilter: ColorFilter.mode(
+                  theme.iconTheme.color ?? Colors.white, BlendMode.srcIn),
+              child: addDevoirs,
             ),
-          )
+          ),
+        ),
       ),
     );
   }

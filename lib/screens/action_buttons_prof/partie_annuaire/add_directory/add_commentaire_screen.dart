@@ -28,7 +28,7 @@ class CommentaireBlockState extends State<CommentaireBlock> {
         children: <Widget>[
           Container(
             decoration: BoxDecoration(
-              color: Colors.orangeAccent,
+              color: orangePerso,
               borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(10),
                 topRight: Radius.circular(10),
@@ -151,7 +151,7 @@ class SoumettreButton extends StatelessWidget {
           icon: const Icon(Icons.arrow_back),
           label: const Text('Retour'),
           style: ButtonStyle(
-            backgroundColor: MaterialStateProperty.all<Color>(Colors.orangeAccent),
+            backgroundColor: MaterialStateProperty.all<Color>(orangePerso),
             foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
           ),
         ),

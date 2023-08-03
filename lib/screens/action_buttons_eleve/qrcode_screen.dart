@@ -67,7 +67,7 @@ class _QRCodeScreenState extends State<QRCodeScreen> {
                 const SizedBox(height: 20), // Space between QR Code and button
                 ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      foregroundColor: Colors.orangeAccent, backgroundColor: Colors.white, // this sets the color of the button's text and icon
+                      foregroundColor: orangePerso, backgroundColor: Colors.white, // this sets the color of the button's text and icon
                       textStyle: const TextStyle(fontSize: 20, fontFamily: 'NotoSans',fontWeight: FontWeight.bold), // adjust font size here
                     ),
                     onPressed: () {

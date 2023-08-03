@@ -94,7 +94,7 @@ class BaseDeNotationBlockState extends State<BaseDeNotationBlock> {
         children: <Widget>[
           Container(
             decoration: BoxDecoration(
-              color: Colors.orangeAccent,
+              color: orangePerso,
               borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(10),
                 topRight: Radius.circular(10),
@@ -214,7 +214,7 @@ class BilanBlockState extends State<BilanBlock> {
         children: <Widget>[
           Container(
             decoration: BoxDecoration(
-              color: Colors.orangeAccent,
+              color: orangePerso,
               borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(10),
                 topRight: Radius.circular(10),
@@ -258,6 +258,7 @@ class BilanBlockState extends State<BilanBlock> {
             ),
             child: Column(
               children: <Widget>[
+
                 TextButton(
                   onPressed: () async {
                     final DateTime? picked = await showDatePicker(
@@ -275,41 +276,62 @@ class BilanBlockState extends State<BilanBlock> {
                   },
                   child: TextField(
                     enabled: false,
-                    decoration: InputDecoration(
-                      labelText: DateFormat('dd/MM/yyyy').format(_date),
-                      labelStyle: const TextStyle(color: Colors.black),
-                      suffixIcon: const Icon(
-                        Icons.calendar_month,
-                        color: orangePerso,
+                      decoration: InputDecoration(
+                        labelText: DateFormat('dd/MM/yyyy').format(_date),
+                        labelStyle: const TextStyle(color: Colors.black),
+                        suffixIcon: const Padding(
+                          padding: EdgeInsets.only(right: 20.0), // Ajustez cette valeur pour déplacer l'icône
+                          child: Icon(
+                            Icons.calendar_month,
+                            color: Colors.black,
+                          ),
+                        ),
+                        border: const OutlineInputBorder(),
+                      )
+                  ),
+                ),
+
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: Colors.grey, // Couleur de la bordure
+                        width: 1.0, // Épaisseur de la bordure
                       ),
-                      border: const OutlineInputBorder(),
+                      borderRadius: BorderRadius.circular(4.0), // Arrondissement des coins si vous le souhaitez
+                    ),
+                    child: ExpansionTile(
+                      title: const Text(
+                        "Sélection des matières",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      children: matieres.keys.map((String key) {
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 0.0), // ajustez cette valeur pour contrôler l'espace entre les éléments
+                          child: Row(
+                            children: <Widget>[
+                              Checkbox(
+                                value: matieres[key],
+                                onChanged: (bool? value) {
+                                  setState(() {
+                                    matieres[key] = value ?? false;
+                                    updateSubjects();
+                                  });
+                                },
+                              ),
+                              Text(
+                                key,
+                                style: const TextStyle(color: Colors.black),
+                              ),
+                            ],
+                          ),
+                        );
+                      }).toList(),
                     ),
                   ),
                 ),
-                Column(
-                  children: matieres.keys.map((String key) {
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 0.0), // adjust this value to control the space between the items
-                      child: Row(
-                        children: <Widget>[
-                          Checkbox(
-                            value: matieres[key],
-                            onChanged: (bool? value) {
-                              setState(() {
-                                matieres[key] = value ?? false;
-                                updateSubjects();
-                              });
-                            },
-                          ),
-                          Text(
-                            key,
-                            style: const TextStyle(color: Colors.black),
-                          ),
-                        ],
-                      ),
-                    );
-                  }).toList(),
-                ),
+
                 Padding(
                   padding: const EdgeInsets.all(10.0), // Ajout de marge extérieure
                   child: TextField(
@@ -328,6 +350,7 @@ class BilanBlockState extends State<BilanBlock> {
                     onChanged: (value) => widget.bilan.toImprove = value,
                   ),
                 ),
+
                 Padding(
                   padding: const EdgeInsets.all(10.0), // Ajout de marge extérieure
                   child: TextField(
@@ -346,6 +369,7 @@ class BilanBlockState extends State<BilanBlock> {
                     onChanged: (value) => widget.bilan.good = value,
                   ),
                 ),
+
                 Padding(
                   padding: const EdgeInsets.all(10.0), // Ajout de marge extérieure
                   child: TextField(
@@ -364,7 +388,8 @@ class BilanBlockState extends State<BilanBlock> {
                     onChanged: (value) => widget.bilan.comment = value,
                   ),
                 ),
-                const SizedBox(height: 10),
+
+                const SizedBox(height: 5),
               ],
             ),
           ),
@@ -398,7 +423,7 @@ class SoumettreButton extends StatelessWidget {
           icon: const Icon(Icons.arrow_back),
           label: const Text('Retour'),
           style: ButtonStyle(
-            backgroundColor: MaterialStateProperty.all<Color>(Colors.orangeAccent),
+            backgroundColor: MaterialStateProperty.all<Color>(orangePerso),
             foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
           ),
         ),
@@ -488,7 +513,7 @@ class AddBilanState extends State<AddBilan> {
                 bilan: bilan,
                 onSubmit: () => handleSubmitBilan(token, login),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 100),
             ],
           ),
         )
