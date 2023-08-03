@@ -85,6 +85,9 @@ class MyApp extends StatelessWidget {
             useMaterial3: true,
           ),
           darkTheme: ThemeData(
+            scrollbarTheme: ScrollbarThemeData(
+              thumbColor: MaterialStateProperty.all(Colors.blueAccent),
+            ),
             textSelectionTheme: const TextSelectionThemeData(
               cursorColor: orangePerso,
               selectionColor: orangePerso,
@@ -113,6 +116,7 @@ class MyApp extends StatelessWidget {
             useMaterial3: true,
           ),
           themeMode: themeProvider.themeMode,
+
 
           localizationsDelegates: const [
             GlobalMaterialLocalizations.delegate,
