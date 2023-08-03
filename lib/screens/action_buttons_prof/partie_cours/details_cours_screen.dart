@@ -20,13 +20,15 @@ class CoursDetailsScreen extends StatefulWidget {
 }
 
 class _CoursDetailsScreenState extends State<CoursDetailsScreen> {
-  List<String> scannedIDs = [];
-  final defaultDuration = 2;
+  late Future<List<Presence>> presencesFuture;
 
-  void scanID(String newID) {
-    setState(() {
-      scannedIDs.add(newID);
-    });
+  @override
+  void initState() {
+    super.initState();
+    final authState = context.read<AuthState>(); // Get the instance of AuthState
+    final token = authState.token; // Get token from AuthState
+    final identifier = authState.identifier; // Get identifier from AuthState
+    presencesFuture = fetchClassPresences(widget.Cours.index.toString(), token!, identifier!);
   }
 
   String formatStudentText(int studentCount) {
@@ -49,9 +51,24 @@ class _CoursDetailsScreenState extends State<CoursDetailsScreen> {
     if (status.isGranted) {
       String? scanResult = await Scanner(context: context).scanBarcode();
       if (scanResult != null && scanResult.isNotEmpty && scanResult != '-1') {
-        scanID(scanResult);
+        // Utiliser la fonction updatePresence ici
+        final authState = context.read<AuthState>();
+        final token = authState.token!;
+        final login = authState.identifier!; // Assuming login is stored in identifier
+        final idClass = widget.Cours.index;
+        print(idClass);
+        const action = 'add';
+        const nbHours = '2';
+
+        final result = await updatePresence(token, login, idClass, scanResult, action, nbHours);
+        // Si le résultat est true, réactualiser la liste des présences
+        if (result) {
+          setState(() {
+            presencesFuture = fetchClassPresences(idClass.toString(), token, login);
+          });
+        }
       }
-    }else {
+    } else {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.only(
@@ -76,12 +93,6 @@ class _CoursDetailsScreenState extends State<CoursDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-
-    final authState = context.read<AuthState>(); // Get the instance of AuthState
-    final token = authState.token; // Get token from AuthState
-    final identifier = authState.identifier; // Get identifier from AuthState
-
-    Future<List<Presence>> presencesFuture = fetchClassPresences(widget.Cours.index.toString(), token!, identifier!);
 
     return Scaffold(
       backgroundColor: theme.primaryColor,
@@ -116,8 +127,6 @@ class _CoursDetailsScreenState extends State<CoursDetailsScreen> {
               return Center(child: Text('Erreur: ${snapshot.error}')); // Error handling
             } else {
               List<Presence> presences = snapshot.data!;
-              scannedIDs = presences.map((presence) => presence.identifier).toList();
-
               return Column(
                 children: [
                   Container(
@@ -150,7 +159,7 @@ class _CoursDetailsScreenState extends State<CoursDetailsScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          formatStudentText(scannedIDs.length),
+                          formatStudentText(presences.map((presence) => presence.identifier).toList().length),
                           style: const TextStyle(
                             fontSize: 16,
                             color: Colors.white,
@@ -220,7 +229,15 @@ class _CoursDetailsScreenState extends State<CoursDetailsScreen> {
                                     DataCell(
                                       SizedBox(
                                         width: 2 * width,
-                                        child: Text(presence.nom + '\n' + presence.prenom, textAlign: TextAlign.center),
+                                        child: Tooltip(
+                                          message: presence.nom + ' ' + presence.prenom,
+                                          child: Text(
+                                            presence.nom + '\n' + presence.prenom,
+                                            textAlign: TextAlign.center,
+                                            overflow: TextOverflow.ellipsis,
+                                            maxLines: 2, // Pour permettre une ligne pour le nom et une pour le prénom
+                                          ),
+                                        ),
                                       ),
                                     ),
                                     DataCell(

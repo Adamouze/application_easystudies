@@ -48,6 +48,7 @@ class Eleve {
 
   Eleve.basic(this._identifier, this._nom, this._prenom, this._classe, this._civilite, this._idFamille);
 
+
   // Un constructeur qui accepte un autre objet Eleve et copie ses champs
   Eleve.fromEleve(Eleve eleve) {
     _identifier = eleve.identifier;
@@ -463,6 +464,21 @@ Future<List<Presence>> fetchClassPresences(String classID, String token, String 
   } else {
     throw Exception('Failed to load class presences');
   }
+}
+
+Future<bool> updatePresence(String token, String login, String classID, String identifier, String action, String nbHours) async {
+
+  final response = await http.get(Uri.parse('https://app.easystudies.fr/api/scan_presences.php?_token=$token&_login=$login&_idClass=$classID&_identifier=$identifier&_action=$action&_nbHours=$nbHours'));
+
+  if (response.statusCode == 200) {
+    final Map<String, dynamic> data = json.decode(response.body);
+    if (data.containsKey('_data') &&
+        data['_data'].containsKey('_result') &&
+        data['_data']['_result'] is bool) {
+      return data['_data']['_result'];
+    }
+  }
+  throw Exception('Failed to load data');
 }
 
 
