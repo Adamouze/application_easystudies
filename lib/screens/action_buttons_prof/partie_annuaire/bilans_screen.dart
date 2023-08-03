@@ -137,7 +137,7 @@ class BilanBlock extends StatelessWidget {
           children: <Widget>[
             Container(
               decoration: BoxDecoration(
-                color: Colors.orangeAccent,
+                color: orangePerso,
                 borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(arrondiBox),
                   topRight: Radius.circular(arrondiBox),
@@ -224,31 +224,29 @@ class BilanScreen extends StatelessWidget {
               children: [
                 const SizedBox(height: 20),
                 BilanBlock(eleve: eleve),
-                const SizedBox(height: 20),
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Transform.scale(
-                    scale: 1.4,
-                    child: FloatingActionButton(
-                      backgroundColor: Colors.blue,
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => AddBilan(eleve: eleve)),
-                        );
-                      },
-                      tooltip: "Ajout d'un bilan",
-                      elevation: 6.0,
-                      shape: const CircleBorder(),
-                      child: addBilan,
-                    ),
-                  ),
-                ),
-
-                const SizedBox(height: 20)
+                const SizedBox(height: 120)
               ],
             ),
           )
+      ),
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(bottom: 16.0, right: 16.0), // Écartement aux bords
+        child: Transform.scale(
+          scale: 1.3,
+          child: FloatingActionButton(
+            backgroundColor: Colors.blue,
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => AddBilan(eleve: eleve)),
+              );
+            },
+            tooltip: "Ajout d'un bilan",
+            elevation: 10.0, // Rehaussement
+            shape: const CircleBorder(),
+            child: addBilan,
+          ),
+        ),
       ),
     );
   }

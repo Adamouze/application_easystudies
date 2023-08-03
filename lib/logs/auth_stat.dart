@@ -9,11 +9,16 @@ class AuthState with ChangeNotifier {
   String? _userType;
   String? _identifier;
   String? _token;
+  String? _prenom;
+  String? _nom;
 
   bool get isAuthenticated => _isAuthenticated;
   String? get userType => _userType;
   String? get identifier => _identifier;
   String? get token => _token;
+  String? get prenom => _prenom;
+  String? get nom => _nom;
+
 
   AuthState() {
     loadInitialData();
@@ -25,6 +30,8 @@ class AuthState with ChangeNotifier {
     _userType = prefs.getString('userType');
     _identifier = prefs.getString('identifier');
     _token = prefs.getString('token');
+    _prenom = prefs.getString('prenom');
+    _nom = prefs.getString('nom');
     if (_isAuthenticated && _token != null) {  // Only check the token validity if the user is authenticated
       checkTokenValidity();
     }
@@ -32,16 +39,20 @@ class AuthState with ChangeNotifier {
   }
 
 
-  void setAuthenticationStatus(bool status, String userType, String identifier, String token) async {
+  void setAuthenticationStatus(bool status, String userType, String identifier, String token, String prenom, String nom) async {
     final prefs = await SharedPreferences.getInstance();
     _isAuthenticated = status;
     _userType = userType;
     _identifier = identifier;
     _token = token;
+    _prenom = prenom;
+    _nom = nom;
     prefs.setBool('isAuthenticated', status);
     prefs.setString('userType', userType);
     prefs.setString('identifier', identifier);
     prefs.setString('token', token);
+    prefs.setString('prenom', prenom);
+    prefs.setString('nom', nom);
     notifyListeners();
   }
 
@@ -65,8 +76,16 @@ class AuthState with ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     _isAuthenticated = false;
     _userType = 'home';
+    _identifier = null;
+    _token = null;
+    _prenom = null;
+    _nom = null;
     prefs.setBool('isAuthenticated', false);
     prefs.setString('userType', 'home');
+    prefs.remove('identifier');
+    prefs.remove('token');
+    prefs.remove('prenom');
+    prefs.remove('nom');
     notifyListeners();
   }
 }

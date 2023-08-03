@@ -2,6 +2,7 @@
 
 import 'dart:convert';
 
+import 'package:EasyStudies/utilities/constantes.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -43,7 +44,15 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
             userType = 'home';
         }
         Navigator.of(context).pushNamed('/$userType');
-        Provider.of<AuthState>(context, listen: false).setAuthenticationStatus(true, userType, jsonResponse['_identifier'], jsonResponse['_token']);
+        Provider.of<AuthState>(context, listen: false).setAuthenticationStatus(
+            true,
+            userType,
+            jsonResponse['_identifier'],
+            jsonResponse['_token'],
+            jsonResponse['_prenom'],
+            jsonResponse['_nom']
+        );
+
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             shape: const RoundedRectangleBorder(
@@ -128,7 +137,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
             ),
             child: Container(
               decoration: BoxDecoration(
-                color: Colors.orangeAccent,
+                color: orangePerso,
                 borderRadius: BorderRadius.circular(20.0),
                 border: Border.all(color: theme.colorScheme.background, width: 8),
               ),
@@ -165,7 +174,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                             ],
                           ),
                           child: TextFormField(
-                            cursorColor: Colors.orangeAccent,
+                            cursorColor: orangePerso,
                             decoration: const InputDecoration(
                               errorStyle: TextStyle(
                                 color: Colors.red,
@@ -175,11 +184,11 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                               labelText: 'Identifiant',
                               prefixIcon: Icon(
                                 Icons.person,
-                                color: Colors.orangeAccent,
+                                color: orangePerso,
                               ),
                               border: InputBorder.none,
                               labelStyle: TextStyle(
-                                color: Colors.orangeAccent,
+                                color: orangePerso,
                                 fontWeight: FontWeight.bold,
                                 fontFamily: 'NotoSans',
                               ),
@@ -210,7 +219,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                             ],
                           ),
                           child: TextFormField(
-                            cursorColor: Colors.orangeAccent,
+                            cursorColor: orangePerso,
                             decoration: const InputDecoration(
                               errorStyle: TextStyle(
                                 color: Colors.red,
@@ -220,11 +229,11 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                               labelText: 'Mot de passe',
                               prefixIcon: Icon(
                                 Icons.lock,
-                                color: Colors.orangeAccent,
+                                color: orangePerso,
                               ),
                               border: InputBorder.none,
                               labelStyle: TextStyle(
-                                color: Colors.orangeAccent,
+                                color: orangePerso,
                                 fontWeight: FontWeight.bold,
                                 fontFamily: 'NotoSans',
                               ),
@@ -246,7 +255,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                           widthFactor: 1,
                           child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
-                              foregroundColor: Colors.orangeAccent,
+                              foregroundColor: orangePerso,
                               backgroundColor: theme.colorScheme.background,
                               textStyle: const TextStyle(
                                 fontFamily: 'NotoSans',

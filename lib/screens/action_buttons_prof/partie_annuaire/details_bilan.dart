@@ -41,7 +41,7 @@ class BaseDeNotationBlock extends StatelessWidget {
         children: <Widget>[
           Container(
             decoration: BoxDecoration(
-              color: Colors.orangeAccent,
+              color: orangePerso,
               borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(10),
                 topRight: Radius.circular(10),
@@ -156,7 +156,7 @@ class BilanBlock extends StatelessWidget {
         children: <Widget>[
           Container(
             decoration: BoxDecoration(
-              color: Colors.orangeAccent,
+              color: orangePerso,
               borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(10),
                 topRight: Radius.circular(10),
@@ -279,8 +279,6 @@ class BilanBlock extends StatelessWidget {
 }
 
 
-
-
 class DetailsBilanContent extends StatelessWidget {
   final Eleve eleve;
   final Bilan bilan;
@@ -312,7 +310,7 @@ class DetailsBilanContent extends StatelessWidget {
               BaseDeNotationBlock(bilan: bilan),
               const SizedBox(height: 20),
               BilanBlock(bilan: bilan),
-              const SizedBox(height: 20),
+              const SizedBox(height: 100),
             ],
           ),
         )

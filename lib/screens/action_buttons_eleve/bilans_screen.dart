@@ -141,7 +141,7 @@ class BilanBlock extends StatelessWidget {
                 children: <Widget>[
                   Container(
                     decoration: BoxDecoration(
-                      color: Colors.orangeAccent,
+                      color: orangePerso,
                       borderRadius: const BorderRadius.only(
                         topLeft: Radius.circular(arrondiBox),
                         topRight: Radius.circular(arrondiBox),
@@ -197,7 +197,7 @@ class BilanBlock extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 100),
           ],
         ),
       ),

@@ -78,7 +78,7 @@ class EleveScreenState extends State<EleveScreen> {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(
             child: CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(Colors.orangeAccent),
+              valueColor: AlwaysStoppedAnimation<Color>(orangePerso),
             ),
           );
         } else if (snapshot.hasError) {
@@ -88,7 +88,7 @@ class EleveScreenState extends State<EleveScreen> {
           return WillPopScope(
             onWillPop: _onWillPop,
             child: Scaffold(
-              appBar: CustomAppBar(color: orangePerso, context: context),
+              appBar: CustomAppBar(context: context),
               body: getScreen(_selectedIndex, eleve),
               bottomNavigationBar: Theme(
                 data: Theme.of(context).copyWith(
@@ -96,7 +96,7 @@ class EleveScreenState extends State<EleveScreen> {
                 ),
                 child: BottomNavigationBar(
                   type: BottomNavigationBarType.fixed,
-                  backgroundColor: Colors.orangeAccent,
+                  backgroundColor: orangePerso,
                   unselectedItemColor: Colors.white,
                   selectedItemColor: Colors.blueAccent,
                   items: const <BottomNavigationBarItem>[

@@ -1,5 +1,6 @@
 // ignore_for_file: library_private_types_in_public_api, use_build_context_synchronously, deprecated_member_use, prefer_interpolation_to_compose_strings, non_constant_identifier_names
 
+import 'package:EasyStudies/utilities/constantes.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
@@ -99,7 +100,7 @@ class _CoursDetailsScreenState extends State<CoursDetailsScreen> {
         iconTheme: IconThemeData(
           color: theme.primaryColor,
         ),
-        backgroundColor: Colors.orangeAccent,
+        backgroundColor: orangePerso,
         title: Row(
           children: [
             const Icon(Icons.book, color: Colors.white),
@@ -121,7 +122,7 @@ class _CoursDetailsScreenState extends State<CoursDetailsScreen> {
           future: presencesFuture,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator(color: Colors.orangeAccent)); // Loading indicator
+              return const Center(child: CircularProgressIndicator(color: orangePerso)); // Loading indicator
             } else if (snapshot.hasError) {
               return Center(child: Text('Erreur: ${snapshot.error}')); // Error handling
             } else {
@@ -131,7 +132,7 @@ class _CoursDetailsScreenState extends State<CoursDetailsScreen> {
                   Container(
                     padding: const EdgeInsets.all(8.0),
                     decoration: const BoxDecoration(
-                      color: Colors.orangeAccent,
+                      color: orangePerso,
                       borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(10),
                         topRight: Radius.circular(10),
@@ -152,7 +153,7 @@ class _CoursDetailsScreenState extends State<CoursDetailsScreen> {
                   Container(
                     padding: const EdgeInsets.all(8.0),
                     decoration: const BoxDecoration(
-                      color: Colors.orangeAccent,
+                      color: orangePerso,
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -189,7 +190,7 @@ class _CoursDetailsScreenState extends State<CoursDetailsScreen> {
                               bottom: Radius.circular(10),
                             ),
                             border: Border.all(
-                              color: Colors.orangeAccent,
+                              color: orangePerso,
                               width: 2,
                             ),
                           ),

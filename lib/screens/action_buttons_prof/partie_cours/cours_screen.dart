@@ -1,6 +1,7 @@
 // ignore_for_file: library_private_types_in_public_api
 
 import 'package:EasyStudies/logs/auth_stat.dart';
+import 'package:EasyStudies/utilities/constantes.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -63,7 +64,7 @@ class _CourseDialogState extends State<CourseDialog> with SingleTickerProviderSt
         child: Container(
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
-            color: Colors.orangeAccent,
+            color: orangePerso,
             borderRadius: BorderRadius.circular(20),
           ),
           child: Form(
@@ -95,12 +96,12 @@ class _CourseDialogState extends State<CourseDialog> with SingleTickerProviderSt
                             filled: true,
                             labelText: 'Lieu',
                             labelStyle: TextStyle(
-                              color: Colors.orangeAccent,
+                              color: orangePerso,
                               fontFamily: 'NotoSans',
                               fontWeight: FontWeight.bold,
                               fontSize: 16,
                             ),
-                            prefixIcon: Icon(Icons.location_on, color: Colors.orangeAccent),
+                            prefixIcon: Icon(Icons.location_on, color: orangePerso),
                           ),
                           items: snapshot.data!.map((String value) {
                             return DropdownMenuItem<String>(
@@ -124,7 +125,7 @@ class _CourseDialogState extends State<CourseDialog> with SingleTickerProviderSt
                     } else {
                       return const Center(
                         child: CircularProgressIndicator(
-                          valueColor: AlwaysStoppedAnimation<Color>(Colors.orangeAccent),
+                          valueColor: AlwaysStoppedAnimation<Color>(orangePerso),
                         ),
                       );
                     }
@@ -138,12 +139,12 @@ class _CourseDialogState extends State<CourseDialog> with SingleTickerProviderSt
                     filled: true,
                     labelText: 'Date',
                     labelStyle: TextStyle(
-                      color: Colors.orangeAccent,
+                      color: orangePerso,
                       fontFamily: 'NotoSans',
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
                     ),
-                    prefixIcon: Icon(Icons.calendar_today, color: Colors.orangeAccent),
+                    prefixIcon: Icon(Icons.calendar_today, color: orangePerso),
                   ),
                   readOnly: true,
                   onTap: () async {
@@ -181,7 +182,7 @@ class _CourseDialogState extends State<CourseDialog> with SingleTickerProviderSt
                       child: const Text('Annuler',
                         style: TextStyle(
                           fontFamily: 'NotoSans',
-                          color: Colors.orangeAccent,
+                          color: orangePerso,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -200,7 +201,7 @@ class _CourseDialogState extends State<CourseDialog> with SingleTickerProviderSt
                       child: const Text('Ajouter',
                         style: TextStyle(
                           fontFamily: 'NotoSans',
-                          color: Colors.orangeAccent,
+                          color: orangePerso,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -294,7 +295,7 @@ class _CoursScreenState extends State<CoursScreen> {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
               child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.orangeAccent),
+                valueColor: AlwaysStoppedAnimation<Color>(orangePerso),
               ),
             );
           } else if (snapshot.hasError) {
@@ -311,19 +312,19 @@ class _CoursScreenState extends State<CoursScreen> {
                       Container(
                         padding: const EdgeInsets.all(8.0),
                         decoration: BoxDecoration(
-                          color: Colors.orangeAccent,
+                          color: orangePerso,
                           borderRadius: const BorderRadius.vertical(
                             top: Radius.circular(10),
                           ),
                           border: Border.all(
-                            color: Colors.orangeAccent,
+                            color: orangePerso,
                             width: 2,
                           ),
                         ),
                         child: DropdownButtonHideUnderline(
                           child: DropdownButton<String>(
                             isExpanded: true,
-                            dropdownColor: Colors.orangeAccent,
+                            dropdownColor: orangePerso,
                             value: _selectedLocation,
                             icon: const Icon(Icons.arrow_downward, color: Colors.white),
                             style: const TextStyle(
@@ -360,7 +361,7 @@ class _CoursScreenState extends State<CoursScreen> {
                               bottom: Radius.circular(10),
                             ),
                             border: Border.all(
-                              color: Colors.orangeAccent,
+                              color: orangePerso,
                               width: 2,
                             ),
                           ),
@@ -405,7 +406,7 @@ class _CoursScreenState extends State<CoursScreen> {
                   child: Padding(
                     padding: const EdgeInsets.all(20.0),
                     child: FloatingActionButton(
-                      backgroundColor: Colors.orangeAccent,
+                      backgroundColor: orangePerso,
                       child: const Icon(Icons.add, color: Colors.white),
                       onPressed: () {
                         showDialog(

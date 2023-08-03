@@ -48,7 +48,7 @@ class ProfScreenState extends State<ProfScreen> {
     return WillPopScope(
       onWillPop: _onWillPop,
       child: Scaffold(
-        appBar: CustomAppBar(color: orangePerso, context: context),
+        appBar: CustomAppBar(context: context),
         body: Stack(
           children: <Widget>[
             _widgetOptions.elementAt(_selectedIndex),
@@ -60,7 +60,7 @@ class ProfScreenState extends State<ProfScreen> {
           ),
           child: BottomNavigationBar(
             type: BottomNavigationBarType.fixed,
-            backgroundColor: Colors.orangeAccent,
+            backgroundColor: orangePerso,
             unselectedItemColor: Colors.white,
             selectedItemColor: Colors.blueAccent,
             items: const <BottomNavigationBarItem>[

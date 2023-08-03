@@ -181,16 +181,15 @@ class LogoutDialogState extends State<LogoutDialog> with SingleTickerProviderSta
 
 
 class CustomAppBar extends PreferredSize {
-  final MaterialAccentColor color;
   final BuildContext context;
 
-  CustomAppBar({Key? key, required this.color, required this.context}) : super(
+  CustomAppBar({Key? key, required this.context}) : super(
     key: key,
     preferredSize: const Size.fromHeight(80.0),
     child: AppBar(
       automaticallyImplyLeading: false,
       toolbarHeight: 80.0,
-      backgroundColor: color,
+      backgroundColor: orangePerso,
       title: Row(
         children: [
           SizedBox(

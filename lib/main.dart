@@ -2,6 +2,8 @@ import 'package:EasyStudies/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+
 
 import 'screens/splash_screen.dart';
 import 'screens/app_bar.dart';
@@ -54,13 +56,13 @@ class MyApp extends StatelessWidget {
             scrollbarTheme: ScrollbarThemeData(
               thumbColor: MaterialStateProperty.all(Colors.blueAccent),
             ),
-            dividerColor: Colors.orangeAccent,
+            dividerColor: orangePerso,
             textSelectionTheme: const TextSelectionThemeData(
-              cursorColor: Colors.orangeAccent,
-              selectionColor: Colors.orangeAccent,
-              selectionHandleColor: Colors.orangeAccent,
+              cursorColor: orangePerso,
+              selectionColor: orangePerso,
+              selectionHandleColor: orangePerso,
             ),
-            colorScheme: ColorScheme.fromSeed(seedColor: Colors.orangeAccent).copyWith(
+            colorScheme: ColorScheme.fromSeed(seedColor: orangePerso).copyWith(
               background: Colors.white,  // Couleur de fond pour le thème clair
               shadow: Colors.grey.withOpacity(0.5),
             ),
@@ -84,11 +86,11 @@ class MyApp extends StatelessWidget {
           ),
           darkTheme: ThemeData(
             textSelectionTheme: const TextSelectionThemeData(
-              cursorColor: Colors.orangeAccent,
-              selectionColor: Colors.orangeAccent,
-              selectionHandleColor: Colors.orangeAccent,
+              cursorColor: orangePerso,
+              selectionColor: orangePerso,
+              selectionHandleColor: orangePerso,
             ),
-            colorScheme: ColorScheme.fromSeed(seedColor: Colors.orangeAccent).copyWith(
+            colorScheme: ColorScheme.fromSeed(seedColor: orangePerso).copyWith(
               background: Colors.grey[850],  // Couleur de fond pour le thème sombre
               shadow: Colors.grey[850],
             ),
@@ -110,8 +112,17 @@ class MyApp extends StatelessWidget {
             ),
             useMaterial3: true,
           ),
-
           themeMode: themeProvider.themeMode,
+
+          localizationsDelegates: const [
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: const [
+            Locale('fr', 'FR'), // Français
+          ],
+
           initialRoute: '/',
           onGenerateRoute: (settings) {
             if (settings.name == '/') {
@@ -164,7 +175,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(color: orangePerso, context: context),
+      appBar: CustomAppBar(context: context),
       body: const CustomBody(),
     );
   }
