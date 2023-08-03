@@ -72,6 +72,8 @@ class EleveScreenState extends State<EleveScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return FutureBuilder<Eleve>(
       future: _eleveFuture,
       builder: (BuildContext context, AsyncSnapshot<Eleve> snapshot) {
@@ -91,14 +93,14 @@ class EleveScreenState extends State<EleveScreen> {
               appBar: CustomAppBar(context: context),
               body: getScreen(_selectedIndex, eleve),
               bottomNavigationBar: Theme(
-                data: Theme.of(context).copyWith(
-                  splashColor: Colors.orange,
+                data: theme.copyWith(
+                  splashColor: couleurSplashBottomBar,
                 ),
                 child: BottomNavigationBar(
                   type: BottomNavigationBarType.fixed,
                   backgroundColor: orangePerso,
-                  unselectedItemColor: Colors.white,
-                  selectedItemColor: Colors.blueAccent,
+                  unselectedItemColor: theme.primaryColor,
+                  selectedItemColor: couleurItemBottomBar,
                   items: const <BottomNavigationBarItem>[
                     BottomNavigationBarItem(
                       icon: Icon(Icons.home),

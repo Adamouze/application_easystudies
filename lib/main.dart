@@ -52,6 +52,7 @@ class MyApp extends StatelessWidget {
         return MaterialApp(
           title: 'EasyStudies',
           scrollBehavior: MyCustomScrollBehavior(),
+
           theme: ThemeData(
             scrollbarTheme: ScrollbarThemeData(
               thumbColor: MaterialStateProperty.all(Colors.blueAccent),
@@ -84,6 +85,7 @@ class MyApp extends StatelessWidget {
             ),
             useMaterial3: true,
           ),
+
           darkTheme: ThemeData(
             scrollbarTheme: ScrollbarThemeData(
               thumbColor: MaterialStateProperty.all(Colors.blueAccent),
@@ -115,6 +117,7 @@ class MyApp extends StatelessWidget {
             ),
             useMaterial3: true,
           ),
+
           themeMode: themeProvider.themeMode,
 
 

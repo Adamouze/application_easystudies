@@ -95,7 +95,6 @@ class _CoursDetailsScreenState extends State<CoursDetailsScreen> {
     final theme = Theme.of(context);
 
     return Scaffold(
-      backgroundColor: theme.primaryColor,
       appBar: AppBar(
         iconTheme: IconThemeData(
           color: theme.primaryColor,
@@ -103,12 +102,12 @@ class _CoursDetailsScreenState extends State<CoursDetailsScreen> {
         backgroundColor: orangePerso,
         title: Row(
           children: [
-            const Icon(Icons.book, color: Colors.white),
+            Icon(Icons.book, color: theme.iconTheme.color),
             const SizedBox(width: 10.0),
             Text(
               widget.title,
-              style: const TextStyle(
-                color: Colors.white,
+              style: TextStyle(
+                color: theme.primaryColor,
                 fontWeight: FontWeight.bold,
                 fontFamily: 'NotoSans',
               ),
@@ -138,13 +137,13 @@ class _CoursDetailsScreenState extends State<CoursDetailsScreen> {
                         topRight: Radius.circular(10),
                       ),
                     ),
-                    child: const Center(
+                    child: Center(
                       child: Text(
                         "Liste de présence",
                         style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
-                          color: Colors.white,
+                          color: theme.primaryColor,
                           fontFamily: 'NotoSans',
                         ),
                       ),
@@ -160,18 +159,18 @@ class _CoursDetailsScreenState extends State<CoursDetailsScreen> {
                       children: [
                         Text(
                           formatStudentText(presences.map((presence) => presence.identifier).toList().length),
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 16,
-                            color: Colors.white,
+                            color: theme.primaryColor,
                             fontFamily: 'NotoSans',
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                         Text(
                           widget.location,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 16,
-                            color: Colors.white,
+                            color: theme.primaryColor,
                             fontFamily: 'NotoSans',
                             fontWeight: FontWeight.bold,
                           ),
@@ -185,7 +184,7 @@ class _CoursDetailsScreenState extends State<CoursDetailsScreen> {
                         var width = MediaQuery.of(context).orientation == Orientation.portrait ? constraints.maxWidth / 4.5 : constraints.maxWidth / 4;
                         return Container(
                           decoration: BoxDecoration(
-                            color: Colors.white,
+                            color: theme.cardColor,
                             borderRadius: const BorderRadius.vertical(
                               bottom: Radius.circular(10),
                             ),
@@ -201,19 +200,31 @@ class _CoursDetailsScreenState extends State<CoursDetailsScreen> {
                                 DataColumn(
                                   label: SizedBox(
                                     width: width,
-                                    child: const Text('Identifiant', textAlign: TextAlign.center),
+                                    child: Text(
+                                      'Identifiant',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(color: theme.textTheme.bodyLarge?.color),
+                                    ),
                                   ),
                                 ),
                                 DataColumn(
                                   label: SizedBox(
                                     width: 2 * width,
-                                    child: const Text('Nom/Prénom', textAlign: TextAlign.center),
+                                    child: Text(
+                                      'Nom/Prénom',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(color: theme.textTheme.bodyLarge?.color),
+                                    ),
                                   ),
                                 ),
                                 DataColumn(
                                   label: SizedBox(
                                     width: width,
-                                    child: const Text('Durée', textAlign: TextAlign.center),
+                                    child: Text(
+                                      'Durée',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(color: theme.textTheme.bodyLarge?.color),
+                                    ),
                                   ),
                                 ),
                               ],
@@ -223,7 +234,11 @@ class _CoursDetailsScreenState extends State<CoursDetailsScreen> {
                                     DataCell(
                                       SizedBox(
                                         width: width,
-                                        child: Text(presence.identifier, textAlign: TextAlign.center),
+                                        child: Text(
+                                          presence.identifier,
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(color: theme.textTheme.bodyLarge?.color),
+                                        ),
                                       ),
                                     ),
                                     DataCell(
@@ -236,6 +251,7 @@ class _CoursDetailsScreenState extends State<CoursDetailsScreen> {
                                             textAlign: TextAlign.center,
                                             overflow: TextOverflow.ellipsis,
                                             maxLines: 2, // Pour permettre une ligne pour le nom et une pour le prénom
+                                            style: TextStyle(color: theme.textTheme.bodyLarge?.color),
                                           ),
                                         ),
                                       ),
@@ -243,7 +259,11 @@ class _CoursDetailsScreenState extends State<CoursDetailsScreen> {
                                     DataCell(
                                       SizedBox(
                                         width: width,
-                                        child: Text(presence.nbHeures.toStringAsFixed(1), textAlign: TextAlign.center),
+                                        child: Text(
+                                          presence.nbHeures.toStringAsFixed(1),
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(color: theme.textTheme.bodyLarge?.color),
+                                        ),
                                       ),
                                     ),
                                   ],
@@ -255,6 +275,8 @@ class _CoursDetailsScreenState extends State<CoursDetailsScreen> {
                       },
                     ),
                   ),
+                  const SizedBox(height: 10),
+
                   Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: Transform.scale(

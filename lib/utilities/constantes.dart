@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 
-const orangePerso = Colors.green;
+const orangePerso = Colors.orangeAccent;
 const couleurIcone = Colors.white;
+
+const couleurSplashBottomBar = Colors.blue;
+const couleurItemBottomBar = Colors.blueAccent;
 
 const double tailleSmiley = 30;
 const double arrondiBox = 10;

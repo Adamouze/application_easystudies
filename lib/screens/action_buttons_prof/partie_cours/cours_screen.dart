@@ -53,18 +53,20 @@ class _CourseDialogState extends State<CourseDialog> with SingleTickerProviderSt
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return SlideTransition(
       position: _offsetAnimation,
       child : Dialog(
         insetPadding: const EdgeInsets.all(20),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20.0),
-          side: const BorderSide(color: Colors.white, width: 8),
+          side: const BorderSide(color: orangePerso, width: 4),
         ),
         child: Container(
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
-            color: orangePerso,
+            color: theme.cardColor,
             borderRadius: BorderRadius.circular(20),
           ),
           child: Form(
@@ -73,11 +75,11 @@ class _CourseDialogState extends State<CourseDialog> with SingleTickerProviderSt
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                const Text(
+                Text(
                   'Ajout d\'un cours',
                   style: TextStyle(
                     fontFamily: 'NotoSans',
-                    color: Colors.white,
+                    color: theme.textTheme.bodyLarge?.color,
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
                   ),
@@ -288,6 +290,8 @@ class _CoursScreenState extends State<CoursScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Scaffold(
       body: FutureBuilder(
         future: _dataLoadFuture,
@@ -356,7 +360,6 @@ class _CoursScreenState extends State<CoursScreen> {
                       Expanded(
                         child: Container(
                           decoration: BoxDecoration(
-                            color: Colors.white,
                             borderRadius: const BorderRadius.vertical(
                               bottom: Radius.circular(10),
                             ),
@@ -370,17 +373,17 @@ class _CoursScreenState extends State<CoursScreen> {
                             itemBuilder: (context, index) {
                               Course currentCourse = _coursList[_selectedLocation]![index];
                               return Card(
-                                color: Colors.white,
+                                color: theme.cardColor,
                                 child: ListTile(
-                                  leading: const Icon(Icons.book, color: Colors.black),
+                                  leading: Icon(Icons.book, color: theme.primaryIconTheme.color),
                                   title: Text(
                                     'Cours du ${afficherDate(currentCourse.date)} - ${currentCourse.type}',
-                                    style: const TextStyle(
-                                      color: Colors.black,
+                                    style: TextStyle(
+                                      color: theme.textTheme.bodyLarge?.color,
                                       fontFamily: 'NotoSans',
                                     ),
                                   ),
-                                  trailing: const Icon(Icons.more_horiz, color: Colors.black),
+                                  trailing: Icon(Icons.more_horiz, color: theme.primaryIconTheme.color),
                                   onTap: () {
                                     Navigator.of(context).push(
                                       MaterialPageRoute(
