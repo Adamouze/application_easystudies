@@ -174,6 +174,8 @@ class _WelcomeBannerState extends State<WelcomeBanner> with SingleTickerProvider
           child: Text(
             "Bienvenue ${widget.prenom} ${widget.nom}",
             textAlign: TextAlign.center,
+            overflow: TextOverflow.ellipsis, // Ajoutez cette ligne
+            maxLines: 1, // Assurez-vous que le texte ne s'enroule pas sur plusieurs lignes
             style: const TextStyle(
               fontSize: 17,
               fontWeight: FontWeight.bold,
