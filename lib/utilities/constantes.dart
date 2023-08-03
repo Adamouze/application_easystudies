@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-const orangePerso = Colors.orangeAccent;
+const orangePerso = Colors.green;
 const couleurIcone = Colors.white;
 
 const double tailleSmiley = 30;
