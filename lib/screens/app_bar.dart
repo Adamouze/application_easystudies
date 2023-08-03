@@ -341,7 +341,7 @@ class CustomAppBar extends PreferredSize {
                           Icon(
                             Icons.settings,
                             color: orangePerso,
-                            size: 50,
+                            size: 40,
                           ),
                         ],
                       ),
@@ -373,7 +373,7 @@ class CustomAppBar extends PreferredSize {
                     child: const FittedBox(  // Ici, pas besoin de Row si vous avez seulement une icône
                       child: Icon(
                         Icons.account_circle_rounded,
-                        size: 50,
+                        size: 40,
                         color: orangePerso,
                       ),
                     ),

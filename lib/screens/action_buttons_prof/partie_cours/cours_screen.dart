@@ -373,7 +373,7 @@ class _CoursScreenState extends State<CoursScreen> {
                                 child: ListTile(
                                   leading: const Icon(Icons.book, color: Colors.black),
                                   title: Text(
-                                    'Cours du ${currentCourse.date} - ${currentCourse.type}',
+                                    'Cours du ${afficherDate(currentCourse.date)} - ${currentCourse.type}',
                                     style: const TextStyle(
                                       color: Colors.black,
                                       fontFamily: 'NotoSans',
@@ -384,7 +384,7 @@ class _CoursScreenState extends State<CoursScreen> {
                                     Navigator.of(context).push(
                                       MaterialPageRoute(
                                         builder: (context) => CoursDetailsScreen(
-                                          title: 'Cours du ${currentCourse.date}',
+                                          title: 'Cours du ${afficherDate(currentCourse.date)}',
                                           Cours: currentCourse,
                                           location: _selectedLocation,
                                         ),
