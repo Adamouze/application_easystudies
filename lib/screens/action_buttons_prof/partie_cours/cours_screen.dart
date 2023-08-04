@@ -21,6 +21,7 @@ class _CourseDialogState extends State<CourseDialog> with SingleTickerProviderSt
   final _formKey = GlobalKey<FormState>();
   String? _selectedLocation;
   DateTime _selectedDate = DateTime.now();
+
   final TextEditingController _dateController = TextEditingController();
 
   late final AnimationController _controller;
@@ -29,7 +30,7 @@ class _CourseDialogState extends State<CourseDialog> with SingleTickerProviderSt
   @override
   void initState() {
     super.initState();
-    _dateController.text = DateFormat('dd-MM-yyyy').format(_selectedDate);
+    _dateController.text = DateFormat('dd/MM/yyyy').format(_selectedDate);
     _controller = AnimationController(
       duration: const Duration(seconds: 1),
       vsync: this,
@@ -84,7 +85,9 @@ class _CourseDialogState extends State<CourseDialog> with SingleTickerProviderSt
                     fontWeight: FontWeight.bold,
                   ),
                 ),
+
                 const SizedBox(height: 15),
+
                 FutureBuilder<List<String>>(
                   builder: (BuildContext context, AsyncSnapshot<List<String>> snapshot) {
                     if (snapshot.connectionState == ConnectionState.done) {
@@ -133,20 +136,22 @@ class _CourseDialogState extends State<CourseDialog> with SingleTickerProviderSt
                     }
                   },
                 ),
+
                 const SizedBox(height: 15),
+
                 TextFormField(
                   controller: _dateController,
-                  decoration: const InputDecoration(
-                    fillColor: Colors.white,
+                  decoration: InputDecoration(
+                    fillColor: theme.primaryColor,
                     filled: true,
                     labelText: 'Date',
                     labelStyle: TextStyle(
-                      color: orangePerso,
+                      color: theme.textTheme.bodyLarge?.color,
                       fontFamily: 'NotoSans',
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
                     ),
-                    prefixIcon: Icon(Icons.calendar_today, color: orangePerso),
+                    prefixIcon: Icon(Icons.calendar_today, color: theme.primaryIconTheme.color) ,
                   ),
                   readOnly: true,
                   onTap: () async {
@@ -159,7 +164,7 @@ class _CourseDialogState extends State<CourseDialog> with SingleTickerProviderSt
                     if (date != null) {
                       setState(() {
                         _selectedDate = date;
-                        _dateController.text = DateFormat('dd-MM-yyyy').format(date);
+                        _dateController.text = DateFormat('dd/MM/yyyy').format(date);
                       });
                     }
                   },
@@ -170,13 +175,15 @@ class _CourseDialogState extends State<CourseDialog> with SingleTickerProviderSt
                     return null;
                   },
                 ),
+
                 const SizedBox(height: 20.0),
+
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     TextButton(
                       style: TextButton.styleFrom(
-                        backgroundColor: Colors.white,
+                        backgroundColor: theme.primaryColor,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20),
                         ),
@@ -195,7 +202,7 @@ class _CourseDialogState extends State<CourseDialog> with SingleTickerProviderSt
                     const SizedBox(width: 10),
                     TextButton(
                       style: TextButton.styleFrom(
-                        backgroundColor: Colors.white,
+                        backgroundColor: theme.primaryColor,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20),
                         ),
@@ -330,9 +337,9 @@ class _CoursScreenState extends State<CoursScreen> {
                             isExpanded: true,
                             dropdownColor: orangePerso,
                             value: _selectedLocation,
-                            icon: const Icon(Icons.arrow_downward, color: Colors.white),
-                            style: const TextStyle(
-                              color: Colors.white,
+                            icon: Icon(Icons.arrow_downward, color: theme.iconTheme.color),
+                            style: TextStyle(
+                              color: theme.primaryColor,
                               fontWeight: FontWeight.bold,
                               fontFamily: 'NotoSans',
                             ),
@@ -346,8 +353,8 @@ class _CoursScreenState extends State<CoursScreen> {
                                 value: value,
                                 child: Text(
                                   value,
-                                  style: const TextStyle(
-                                    color: Colors.white,
+                                  style: TextStyle(
+                                    color: theme.primaryColor,
                                     fontWeight: FontWeight.bold,
                                     fontFamily: 'NotoSans',
                                   ),
@@ -410,7 +417,7 @@ class _CoursScreenState extends State<CoursScreen> {
                     padding: const EdgeInsets.all(20.0),
                     child: FloatingActionButton(
                       backgroundColor: orangePerso,
-                      child: const Icon(Icons.add, color: Colors.white),
+                      child: Icon(Icons.add, color: theme.iconTheme.color),
                       onPressed: () {
                         showDialog(
                           context: context,

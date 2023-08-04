@@ -121,7 +121,11 @@ class _CoursDetailsScreenState extends State<CoursDetailsScreen> {
           future: presencesFuture,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator(color: orangePerso)); // Loading indicator
+              return const Center(
+                child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(orangePerso),
+                ),
+              );
             } else if (snapshot.hasError) {
               return Center(child: Text('Erreur: ${snapshot.error}')); // Error handling
             } else {

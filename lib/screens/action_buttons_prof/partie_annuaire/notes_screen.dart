@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import 'add_directory/add_note_screen.dart';
-import '../../../../utilities/constantes.dart';
-import '../../../../../utils.dart';
+import '../../../utilities/constantes.dart';
+import '../../../logs/auth_stat.dart';
+import '../../../utils.dart';
+
 
 
 
@@ -140,10 +143,26 @@ class NoteBlock extends StatelessWidget {
     );  }
 }
 
-class NoteScreen extends StatelessWidget {
+class NoteScreen extends StatefulWidget {
   final Eleve eleve;
 
   const NoteScreen({required this.eleve, Key? key}) : super(key: key);
+
+  @override
+  NoteScreenState createState() => NoteScreenState();
+}
+
+class NoteScreenState extends State<NoteScreen> {
+
+  void refreshNotes() async {
+    final authState = Provider.of<AuthState>(context, listen: false);
+    final token = authState.token ?? "";
+    final login = authState.identifier ?? "";
+    final newEleve = await getNotesEleve(token, login, widget.eleve);
+    setState(() {
+      widget.eleve.notes = newEleve.notes;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -167,7 +186,7 @@ class NoteScreen extends StatelessWidget {
           child: Column(
             children: [
               const SizedBox(height: 20),
-              NoteBlock(eleve: eleve),
+              NoteBlock(eleve: widget.eleve),
               const SizedBox(height: 120),
             ],
           ),
@@ -182,7 +201,7 @@ class NoteScreen extends StatelessWidget {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => AddNote(eleve: eleve)),
+                MaterialPageRoute(builder: (context) => AddNote(eleve: widget.eleve, onNoteAdded: refreshNotes)),
               );
             },
             tooltip: "Ajout d'un commentaire",

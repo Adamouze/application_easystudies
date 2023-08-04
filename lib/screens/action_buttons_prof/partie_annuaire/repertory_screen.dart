@@ -131,19 +131,17 @@ class RepertoryScreenState extends State<RepertoryScreen> {
                                 height: 55.0,
                                 width: 55.0,
                                 child: ClipOval(
-                                  child: eleves[index].photo == ""
-                                      ? Container(
-                                          decoration: BoxDecoration(
-                                            color: themeProvider.isDarkTheme ? Colors.white : null,
-                                            shape: BoxShape.circle,
-                                            border: Border.all(
-                                              color: themeProvider.isDarkTheme ? Colors.black : Colors.black,
-                                              width: 2.0,
-                                            ),
-                                          ),
-                                          child: Image.asset(getDefaultPhoto(eleves[index].civilite), fit: BoxFit.cover),
-                                        )
-                                      : Image.network(eleves[index].photo, fit: BoxFit.cover),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: themeProvider.isDarkTheme ? Colors.white : null,
+                                      shape: BoxShape.circle,
+                                      border: Border.all(
+                                        color: themeProvider.isDarkTheme ? Colors.black : Colors.black,
+                                        width: 2.0,
+                                      ),
+                                    ),
+                                    child: Image.asset(getDefaultPhoto(eleves[index].civilite), fit: BoxFit.cover),
+                                  ),
                                 ),
                               ),
                               title: Column(

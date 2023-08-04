@@ -308,7 +308,11 @@ class _CustomBodyState extends State<CustomBody> {
                               style: TextStyle(color: theme.textTheme.bodyLarge?.color),
                             );
                           } else {
-                            return const CircularProgressIndicator(color: orangePerso);
+                            return const Center(
+                              child: CircularProgressIndicator(
+                                valueColor: AlwaysStoppedAnimation<Color>(orangePerso),
+                              ),
+                            );
                           }
                         },
                       ),
@@ -485,7 +489,11 @@ class _CustomBodyState extends State<CustomBody> {
                           } else if (snapshot.hasError) {
                             return Text('Failed to fetch video details: ${snapshot.error}');
                           } else {
-                            return const CircularProgressIndicator(color: orangePerso);
+                            return const Center(
+                              child: CircularProgressIndicator(
+                                valueColor: AlwaysStoppedAnimation<Color>(orangePerso),
+                              ),
+                            );
                           }
                         },
                       ),

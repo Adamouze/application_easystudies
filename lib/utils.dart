@@ -1,9 +1,3 @@
-/*
-import 'dart:convert';
-import 'dart:async';
-
-import 'package:http/http.dart' as http;
-*/
 
 import 'dart:convert';
 import 'package:flutter/gestures.dart';
@@ -153,18 +147,21 @@ class Commentaire {
 }
 
 class Note {
+  String _index;
   String _date = "";
   String _type = "";
   String _note = "";
   String _commentaire = "";
 
-  Note(this._date, this._type, this._note, this._commentaire);
+  Note(this._index, this._date, this._type, this._note, this._commentaire);
 
+  String get index => _index;
   String get date => _date;
   String get type => _type;
   String get note => _note;
   String get commentaire => _commentaire;
 
+  set index(String value) {_index = value;}
   set date(String value) {_date = value;}
   set type(String value) {_type = value;}
   set note(String value) {_note = value;}
@@ -344,6 +341,8 @@ Future<Eleve> getDetailsEleve(String token, String login, Eleve eleve) async {
   newEleve.solde = details["_solde"];
   newEleve.prev = details["_prev"];
 
+  newEleve.photo = details["_picture"];
+
   return newEleve;
 }
 
@@ -381,7 +380,7 @@ Future<Eleve> getNotesEleve(String token, String login, Eleve eleve) async {
 
   List<Note> notes = [];
   for (var u in gradesData) {
-    Note note = Note(u["_date"], u["_type"], u["_grade"], u["_comment"]);
+    Note note = Note(u["_index"], u["_date"], u["_type"], u["_grade"], u["_comment"]);
     notes.add(note);
   }
 
@@ -483,51 +482,50 @@ Future<bool> updatePresence(String token, String login, String classID, String i
 
 
 
-Future<void> addCommentaireToDatabase(String token, String login, Eleve eleve, Commentaire commentaire) async {
-  final uri = Uri.parse('https://app.easystudies.fr/api/ajouter_commentaire');  // TODO: à remplacer
-  final response = await http.post(
-    uri,
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer $token', // si l'authentification est nécessaire
-    },
-    body: jsonEncode({
-      '_data': [
-        {
-          '_identifier': eleve.identifier,
-          '_date': commentaire.date,
-          '_from': commentaire.from,
-          '_comment': commentaire.comment,
-        }
-      ],
-    }),
-  );
+Future<void> manageComment(String token, String login, Eleve eleve, String action, Commentaire commentaire) async {
+  Map<String, dynamic> queryParams = {
+    '_token': token,
+    '_login': login,
+    '_identifier': eleve.identifier,
+    '_action': action,
+  };
+
+  // Ajoute les champs supplémentaires si l'action est "add" et le commentaire n'est pas nul
+  if (action == 'add') {
+    queryParams['_idComment'] = commentaire.index; // Utilisez l'index si disponible
+    queryParams['_from'] = commentaire.from;
+    queryParams['_comment'] = commentaire.comment;
+  }
+
+  final uri = Uri.https('app.easystudies.fr', '/api/comments.php', queryParams);
+
+  print(uri); // L'URL finale imprimée pour le débogage
+
+  final response = await http.get(uri);
 
   if (response.statusCode != 200) {
-    throw Exception('Failed to add commentaire');
+    throw Exception('Failed to manage commentaire');
   }
 }
 
-Future<void> addNoteToDatabase(String token, String login, Eleve eleve, Note note) async {
-  final uri = Uri.parse('https://app.easystudies.fr/api/ajouter_note'); // TODO: à remplacer
-  final response = await http.post(
-    uri,
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer $token', // si l'authentification est nécessaire
-    },
-    body: jsonEncode({
-      '_data': [
-        {
-          '_identifier': eleve.identifier,
-          '_date': note.date,
-          '_grade': note.note,
-          '_type': note.type,
-          '_comment': note.commentaire,
-        }
-      ],
-    }),
-  );
+Future<void> manageNote(String token, String login, Eleve eleve, String action, Note note) async {
+  Map<String, dynamic> queryParams = {
+    '_token': token,
+    '_login': login,
+    '_identifier': eleve.identifier,
+    '_action': action,
+    '_idGrade': note.index,
+    '_comment': note.commentaire,
+    '_date': note.date,
+    '_type': note.type,
+    '_grade': note.note,
+  };
+
+  final uri = Uri.https('app.easystudies.fr', '/api/grades.php', queryParams);
+
+  print(uri); // L'URL finale imprimée pour le débogage
+
+  final response = await http.get(uri);
 
   if (response.statusCode != 200) {
     throw Exception('Failed to add note');
@@ -581,10 +579,6 @@ Widget getSmiley(String rating) {
       return Container();
   }
 }
-
-
-
-
 
 
 class MyCustomScrollBehavior extends MaterialScrollBehavior {

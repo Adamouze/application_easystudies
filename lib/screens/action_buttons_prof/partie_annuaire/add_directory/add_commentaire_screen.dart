@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:intl/intl.dart';
 
 import '../../../../utilities/constantes.dart';
 import '../../../../utils.dart';
@@ -16,8 +15,25 @@ class CommentaireBlock extends StatefulWidget {
 }
 
 class CommentaireBlockState extends State<CommentaireBlock> {
+  final TextEditingController _controller = TextEditingController();
+  final ValueNotifier<bool> isCommentValidNotifier = ValueNotifier<bool>(false);
 
-  DateTime _date = DateTime.now();
+  @override
+  void initState() {
+    super.initState();
+    _controller.addListener(() {
+      widget.commentaire.comment = _controller.text;
+      isCommentValidNotifier.value = _controller.text.trim().isNotEmpty;
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    isCommentValidNotifier.dispose();
+    super.dispose();
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -72,37 +88,12 @@ class CommentaireBlockState extends State<CommentaireBlock> {
             ),
             child: Column(
               children: <Widget>[
-                TextButton(
-                  onPressed: () async {
-                    final DateTime? picked = await showDatePicker(
-                      context: context,
-                      initialDate: _date,
-                      firstDate: DateTime(2015),
-                      lastDate: DateTime.now(),
-                    );
-                    if (picked != null && picked != _date) {
-                      setState(() {
-                        _date = picked;
-                        widget.commentaire.date = DateFormat('yyyy-MM-dd').format(picked);
-                      });
-                    }
-                  },
-                  child: TextField(
-                    enabled: false,
-                    decoration: InputDecoration(
-                      labelText: DateFormat('dd/MM/yyyy').format(_date),
-                      labelStyle: const TextStyle(color: Colors.black),
-                      suffixIcon: const Icon(
-                        Icons.calendar_month,
-                        color: Colors.black,
-                      ),
-                      border: const OutlineInputBorder(),
-                    ),
-                  ),
-                ),
+                const SizedBox(height: 5),
+
                 Padding(
                   padding: const EdgeInsets.all(10.0), // Ajout de marge extérieure
                   child: TextField(
+                    controller: _controller,
                     maxLines: null, // permet plusieurs lignes
                     keyboardType: TextInputType.multiline,
                     decoration: const InputDecoration(
@@ -115,9 +106,20 @@ class CommentaireBlockState extends State<CommentaireBlock> {
                     style: const TextStyle(
                       color: Colors.black,
                     ),
-                    onChanged: (value) => widget.commentaire.comment = value,
+                    onChanged: (value) {
+                      setState(() {});
+                    },
                   ),
                 ),
+                if (_controller.text.isEmpty)
+                  const Padding(
+                    padding: EdgeInsets.only(left: 0.0),
+                    child: Text(
+                      'Veuillez remplir ce champ',
+                      style: TextStyle(color: Colors.red),
+                    ),
+                  ),
+
                 const SizedBox(height: 10),
               ],
             ),
@@ -128,24 +130,49 @@ class CommentaireBlockState extends State<CommentaireBlock> {
   }
 }
 
-class SoumettreButton extends StatelessWidget {
+class SoumettreButton extends StatefulWidget {
   final Eleve eleve;
   final Commentaire commentaire;
-  final VoidCallback onSubmit; // Rappel à appeler lors de la soumission
+  final VoidCallback onSubmit;
+  final ValueNotifier<bool> isCommentValidNotifier;
 
   const SoumettreButton({
     required this.eleve,
     required this.commentaire,
-    required this.onSubmit, // Inclure le rappel dans le constructeur
+    required this.onSubmit,
+    required this.isCommentValidNotifier,
     Key? key,
   }) : super(key: key);
+
+  @override
+  SoumettreButtonState createState() => SoumettreButtonState();
+}
+
+class SoumettreButtonState extends State<SoumettreButton> {
+  @override
+  void initState() {
+    super.initState();
+    widget.isCommentValidNotifier.addListener(_rebuild);
+  }
+
+  @override
+  void dispose() {
+    widget.isCommentValidNotifier.removeListener(_rebuild);
+    super.dispose();
+  }
+
+  void _rebuild() {
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween, // This centers the two buttons
       children: <Widget>[
+
         const SizedBox(),
+
         ElevatedButton.icon(
           onPressed: () => Navigator.pop(context),
           icon: const Icon(Icons.arrow_back),
@@ -155,11 +182,14 @@ class SoumettreButton extends StatelessWidget {
             foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
           ),
         ),
+
         ElevatedButton.icon(
-          onPressed: () {
-            onSubmit(); // Appelle le rappel lorsqu'il est pressé
-            Navigator.pop(context); // Optionnel : ferme la page actuelle
-          },
+          onPressed: widget.isCommentValidNotifier.value
+              ? () {
+                widget.onSubmit();
+                Navigator.pop(context);
+              }
+              : null,
           icon: const Icon(Icons.check),
           label: const Text('Ajouter'),
           style: ButtonStyle(
@@ -167,6 +197,7 @@ class SoumettreButton extends StatelessWidget {
             foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
           ),
         ),
+
         const SizedBox(),
       ],
     );
@@ -176,25 +207,29 @@ class SoumettreButton extends StatelessWidget {
 
 class AddCommentaire extends StatefulWidget {
   final Eleve eleve;
+  final Function? onCommentAdded;
 
-  const AddCommentaire({required this.eleve, Key? key}) : super(key: key);
+  const AddCommentaire({required this.eleve, this.onCommentAdded, Key? key}) : super(key: key);
 
   @override
   AddCommentaireState createState() => AddCommentaireState();
 }
 
 class AddCommentaireState extends State<AddCommentaire> {
+  final GlobalKey<CommentaireBlockState> commentaireBlockKey = GlobalKey<CommentaireBlockState>();
+
 
   final Commentaire commentaire = Commentaire("", "", "", "", "");
 
   void handleSubmitCommentaire(String token, String login) async {
     try {
-      await addCommentaireToDatabase(token, login, widget.eleve, commentaire);
+      await manageComment(token, login, widget.eleve, "add", commentaire);
       print('Commentaire ajouté avec succès.');
 
-      // Appel à getCommentsEleve pour rafraîchir les commentaires
-      await getCommentsEleve(token, login, widget.eleve);
-
+      // Appel au callback pour rafraîchir la liste des commentaires
+      if (widget.onCommentAdded != null) {
+        widget.onCommentAdded!();
+      }
     } catch (e) {
       print('Erreur lors de l\'ajout du commentaire: $e');
     }
@@ -215,7 +250,11 @@ class AddCommentaireState extends State<AddCommentaire> {
       return const Text("ERREUR de login dans la requête API");
     }
 
-    commentaire.from = '${authState.userType} (${authState.prenom})';
+    String? user = authState.userType;
+    if (user == "prof") {
+      user = "PROF";
+    }
+    commentaire.from = '$user (${authState.prenom})';
 
     return Scaffold(
       appBar: AppBar(
@@ -235,14 +274,28 @@ class AddCommentaireState extends State<AddCommentaire> {
           child: Center(
             child: Column(
               children: [
+
                 const SizedBox(height: 20),
-                CommentaireBlock(commentaire: commentaire),
-                const SizedBox(height: 20),
-                SoumettreButton(
-                  eleve: widget.eleve,
+
+                CommentaireBlock(
+                  key: commentaireBlockKey, // Passer la clé ici
                   commentaire: commentaire,
-                  onSubmit: () => handleSubmitCommentaire(token, login),
                 ),
+
+                const SizedBox(height: 20),
+
+                // Encapsuler SoumettreButton dans un Builder vous permet d'accéder à la clé après que le widget CommentaireBlock a été construit, éliminant ainsi le problème de nullité.
+                Builder(
+                  builder: (BuildContext context) {
+                    return SoumettreButton(
+                      eleve: widget.eleve,
+                      commentaire: commentaire,
+                      isCommentValidNotifier: commentaireBlockKey.currentState!.isCommentValidNotifier, // Ici, ça devrait être OK
+                      onSubmit: () => handleSubmitCommentaire(token, login),
+                    );
+                  },
+                ),
+
                 const SizedBox(height: 20),
               ],
             ),

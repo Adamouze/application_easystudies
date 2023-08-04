@@ -127,9 +127,31 @@ class EleveInfoBlock extends StatelessWidget {
 
                   Expanded(
                     flex: 2,
-                    child: eleve.photo == ""
-                        ? Image.asset(getDefaultPhoto(eleve.civilite), fit: BoxFit.cover)
-                        : Image.network(eleve.photo, fit: BoxFit.cover),
+                    child: Image.network(
+                      eleve.photo,
+                      fit: BoxFit.cover,
+                      loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
+                        if (loadingProgress == null) {
+                          // Le chargement est terminé et aucune erreur ne s'est produite
+                          return child;
+                        } else if (loadingProgress.expectedTotalBytes != null &&
+                            loadingProgress.cumulativeBytesLoaded < loadingProgress.expectedTotalBytes!) {
+                          // L'image est en cours de chargement
+                          return const Center(
+                            child: CircularProgressIndicator(
+                              valueColor: AlwaysStoppedAnimation<Color>(orangePerso),
+                            ),
+                          );
+                        } else {
+                          // Une erreur s'est produite (par exemple, une erreur 404)
+                          return Image.asset(getDefaultPhoto(eleve.civilite), fit: BoxFit.cover);
+                        }
+                      },
+                      errorBuilder: (context, error, stackTrace) {
+                        // En cas d'erreur, afficher l'image par défaut
+                        return Image.asset(getDefaultPhoto(eleve.civilite), fit: BoxFit.cover);
+                      },
+                    ),
                   ),
                 ],
               ),
@@ -1343,7 +1365,6 @@ class FancyFabState extends State<FancyFab> with SingleTickerProviderStateMixin 
 
 class DetailsEleve extends StatefulWidget {
   final Eleve eleve;
-
   const DetailsEleve({required this.eleve, Key? key}) : super(key: key);
 
   @override
@@ -1351,6 +1372,7 @@ class DetailsEleve extends StatefulWidget {
 }
 
 class DetailsEleveState extends State<DetailsEleve> {
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
