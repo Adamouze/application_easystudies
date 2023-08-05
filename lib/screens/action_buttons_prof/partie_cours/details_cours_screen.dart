@@ -6,7 +6,82 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'scanner.dart';
 import 'package:EasyStudies/utils.dart';
+import 'package:EasyStudies/screens/action_buttons_prof/partie_annuaire/details_eleve_screen.dart';
 import 'package:EasyStudies/logs/auth_stat.dart';
+
+class DurationDialog extends StatefulWidget {
+  final double initialDuration;
+  final Function(double) onValidate;
+
+  const DurationDialog({super.key, required this.initialDuration, required this.onValidate});
+
+  @override
+  _DurationDialogState createState() => _DurationDialogState();
+
+}
+
+class _DurationDialogState extends State<DurationDialog> {
+  late double selectedDuration;
+
+  @override
+  void initState() {
+    super.initState();
+    selectedDuration = widget.initialDuration;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      backgroundColor: Colors.white,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+        side: const BorderSide(
+          color: Colors.orangeAccent,
+          width: 3,
+        ),
+      ),
+      title: const Text(
+        "Choisir la durée",
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          fontFamily: 'NotoSans',
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+        content: DropdownButton<double>(
+          value: selectedDuration,
+          items: [
+            for (double i = 0.0; i <= 10; i += 0.5)
+              DropdownMenuItem(
+                value: i,
+                child: Text(i.toString()),
+              )
+          ],
+          onChanged: (value) {
+            setState(() {
+              selectedDuration = value!;
+            });
+          },
+        ),
+      actions: [
+        ElevatedButton(
+          onPressed: () {
+            widget.onValidate(selectedDuration);
+            Navigator.pop(context);
+          },
+          child: const Text("Valider", style: TextStyle(
+            fontFamily: 'NotoSans',
+            color: Colors.black, // Couleur de l'écriture noire
+          ),
+          ),
+
+        ),
+      ],
+    );
+  }
+}
+
+
 
 class CoursDetailsScreen extends StatefulWidget {
   final Course Cours;
@@ -21,6 +96,7 @@ class CoursDetailsScreen extends StatefulWidget {
 
 class _CoursDetailsScreenState extends State<CoursDetailsScreen> {
   late Future<List<Presence>> presencesFuture;
+  var defaultDuration = 2.0;
 
   @override
   void initState() {
@@ -56,16 +132,56 @@ class _CoursDetailsScreenState extends State<CoursDetailsScreen> {
         final token = authState.token!;
         final login = authState.identifier!; // Assuming login is stored in identifier
         final idClass = widget.Cours.index;
-        print(idClass);
         const action = 'add';
-        const nbHours = '2';
+        final String nbHours = defaultDuration.toString();
 
-        final result = await updatePresence(token, login, idClass, scanResult, action, nbHours);
+        final update = await updatePresence(token, login, idClass, scanResult, action, nbHours);
+        String nom = update[0];
+        String prenom = update[1];
+        String result = update[2];
         // Si le résultat est true, réactualiser la liste des présences
-        if (result) {
+        if (result=="true") {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(10),
+                topRight: Radius.circular(10),
+              ),
+            ),
+            backgroundColor: Colors.green,
+            content: Text('Élève $prenom $nom ajouté avec succès',
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 16,
+                fontFamily: 'NotoSans',
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            duration: const Duration(seconds: 2),
+          ));
           setState(() {
             presencesFuture = fetchClassPresences(idClass.toString(), token, login);
           });
+        }
+        else {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(10),
+                topRight: Radius.circular(10),
+              ),
+            ),
+            backgroundColor: Colors.red,
+            content: Text('Élève inconnu',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 16,
+                fontFamily: 'NotoSans',
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            duration: Duration(seconds: 2),
+          ));
         }
       }
     } else {
@@ -90,7 +206,13 @@ class _CoursDetailsScreenState extends State<CoursDetailsScreen> {
     }
   }
 
-  @override
+
+
+
+
+
+
+@override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
@@ -221,34 +343,152 @@ class _CoursDetailsScreenState extends State<CoursDetailsScreen> {
                                 return DataRow(
                                   cells: [
                                     DataCell(
-                                      SizedBox(
-                                        width: width,
-                                        child: Text(presence.identifier, textAlign: TextAlign.center),
+                                        SizedBox(
+                                          width: width,
+                                          child: Text(presence.identifier, textAlign: TextAlign.center),
+                                        ),
                                       ),
-                                    ),
                                     DataCell(
-                                      SizedBox(
-                                        width: 2 * width,
-                                        child: Tooltip(
-                                          message: presence.nom + ' ' + presence.prenom,
+                                      InkWell(
+                                        onLongPress: () {
+                                          showDialog(
+                                            context: context,
+                                            builder: (context) => Theme(
+                                              data: ThemeData(
+                                                dialogBackgroundColor: Colors.white, // Couleur de fond du dialogue
+                                              ),
+                                              child: SimpleDialog(
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius: BorderRadius.circular(20), // Bords arrondis
+                                                  side: const BorderSide(
+                                                    color: Colors.orangeAccent, // Couleur de la bordure
+                                                    width: 3, // Largeur de la bordure
+                                                  ),
+                                                ),
+                                                title: Text(
+                                                  presence.nom + '\n' + presence.prenom,
+                                                  textAlign: TextAlign.center,
+                                                  style: const TextStyle(
+                                                    color: Colors.black, // Couleur du texte du titre
+                                                    fontWeight: FontWeight.bold, // Gras
+                                                    fontFamily: 'NotoSans', // Police Noto Sans
+                                                  ),
+                                                ),
+                                                children: [
+                                                  SimpleDialogOption(
+                                                    onPressed: () async { // Marquez cette méthode comme asynchrone
+                                                      final authState = context.read<AuthState>();
+                                                      final token = authState.token!;
+                                                      final login = authState.identifier!; // Assuming login is stored in identifier
+                                                      Eleve student = await getBasicEleveInfo(token,login,presence.identifier);
+                                                      Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                          builder: (context) => DetailsEleve(eleve: student),
+                                                        ),
+                                                      );
+                                                    },
+                                                    child: const Row(
+                                                      children: [
+                                                        Icon(Icons.person, color: Colors.black), // Icône de la fiche élève
+                                                        SizedBox(width: 10.0),
+                                                        Text("Aller vers la fiche élève", style: TextStyle(color: Colors.black, fontFamily: 'NotoSans')),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  SimpleDialogOption(
+                                                    onPressed: () {
+                                                      showDialog(
+                                                        context: context,
+                                                        builder: (context) => DurationDialog(
+                                                          initialDuration: presence.nbHeures,
+                                                          onValidate: (selectedDuration) async {
+                                                            final authState = context.read<AuthState>();
+                                                            final token = authState.token!;
+                                                            final login = authState.identifier!;
+                                                            final idClass = widget.Cours.index;
+                                                            const action = 'update';
+                                                            final String nbHours = selectedDuration.toString();
+
+                                                            final update = await updatePresence(token, login, idClass, presence.identifier, action, nbHours);
+                                                            String result = update[2];
+
+                                                            if (result == "true") {
+                                                              setState(() {
+                                                                presencesFuture = fetchClassPresences(idClass.toString(), token, login);
+                                                              });
+                                                            }
+                                                          },
+                                                        ),
+                                                      );
+
+                                                    },
+                                                    child: const Row(
+                                                      children: [
+                                                        Icon(Icons.edit, color: Colors.black), // Icône pour modifier la durée
+                                                        SizedBox(width: 10.0),
+                                                        Text("Modifier la durée", style: TextStyle(color: Colors.black, fontFamily: 'NotoSans')),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  SimpleDialogOption(
+                                                    onPressed: () async {
+                                                      final authState = context.read<AuthState>();
+                                                      final token = authState.token!;
+                                                      final login = authState.identifier!;
+                                                      final idClass = widget.Cours.index;
+                                                      final update = await updatePresence(token, login, idClass, presence.identifier, 'update', '0');
+                                                      String result = update[2];
+                                                      // Si le résultat est true, réactualiser la liste des présences
+                                                      if (result=="true") {
+                                                        setState(() {
+                                                          presencesFuture = fetchClassPresences(idClass, token, login);
+                                                        });
+                                                      }// Supprimer la donnée
+                                                      Navigator.pop(context);
+                                                    },
+                                                    child: const Row(
+                                                      children: [
+                                                        Icon(Icons.delete, color: Colors.black), // Icône pour supprimer la donnée
+                                                        SizedBox(width: 10.0),
+                                                        Text("Supprimer de la liste", style: TextStyle(color: Colors.black, fontFamily: 'NotoSans')),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          );
+
+
+                                        },
+                                        splashColor: Colors.orangeAccent,
+                                        onTap: () {},
+                                        child: Container(
+                                          width: 2 * width,
+                                          color: Colors.grey.withAlpha(10),
                                           child: Text(
                                             presence.nom + '\n' + presence.prenom,
                                             textAlign: TextAlign.center,
                                             overflow: TextOverflow.ellipsis,
-                                            maxLines: 2, // Pour permettre une ligne pour le nom et une pour le prénom
+                                            maxLines: 2,
                                           ),
                                         ),
                                       ),
                                     ),
+
+
+
                                     DataCell(
                                       SizedBox(
-                                        width: width,
-                                        child: Text(presence.nbHeures.toStringAsFixed(1), textAlign: TextAlign.center),
+                                          width: width,
+                                          child: Text(presence.nbHeures.toStringAsFixed(1), textAlign: TextAlign.center),
+                                        ),
                                       ),
-                                    ),
                                   ],
                                 );
                               }).toList(),
+
                             ),
                           ),
                         );

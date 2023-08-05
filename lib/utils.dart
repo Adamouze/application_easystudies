@@ -429,6 +429,31 @@ Future<Eleve> getAllEleve(String token, String login, Eleve eleve) async {
   return detailedEleve;
 }
 
+Future<Eleve> getBasicEleveInfo(String token, String login, String identifier) async {
+  final response = await http.get(Uri.parse('https://app.easystudies.fr/api/students_list.php?_token=$token&_login=$login&_identifier=$identifier'));
+
+  if (response.statusCode != 200) {
+    throw Exception('Failed to load student');
+  }
+
+  final jsonResponse = jsonDecode(response.body);
+  Map<String, dynamic> details = jsonResponse[0];
+
+  String civilite = details["_civilite"];
+  String nom = details["_nom"];
+  String prenom = details["_prenom"];
+  String classe = details["_class"];
+  String family = details["_family"];
+
+  Eleve eleve = Eleve.basic(identifier, nom, prenom, classe, civilite, family);
+
+  return eleve;
+}
+
+
+
+
+
 
 Future<List<Centre>> fetchCenterList(String token, String identifier) async {
   final response = await http.get(Uri.parse('https://app.easystudies.fr/api/center_list.php?_token=$token&_login=$identifier'));
@@ -441,8 +466,8 @@ Future<List<Centre>> fetchCenterList(String token, String identifier) async {
   }
 }
 
-Future<List<Course>> fetchCourseList(String token, String identifier, String centre ) async {
-  final response = await http.get(Uri.parse('https://app.easystudies.fr/api/class_list.php?_token=$token&_login=$identifier&_center=$centre'));
+Future<List<Course>> fetchCourseList(String token, String identifier, String centre) async {
+  final response = await http.get(Uri.parse('https://app.easystudies.fr/api/classes.php?_token=$token&_login=$identifier&_action=list&_idClass=&_date=&_type=&_center=$centre&_comment='));
 
   if (response.statusCode == 200) {
     Map<String, dynamic> jsonResponse = jsonDecode(response.body);
@@ -466,20 +491,22 @@ Future<List<Presence>> fetchClassPresences(String classID, String token, String 
   }
 }
 
-Future<bool> updatePresence(String token, String login, String classID, String identifier, String action, String nbHours) async {
-
+Future<List<String>> updatePresence(String token, String login, String classID, String identifier, String action, String nbHours) async {
   final response = await http.get(Uri.parse('https://app.easystudies.fr/api/scan_presences.php?_token=$token&_login=$login&_idClass=$classID&_identifier=$identifier&_action=$action&_nbHours=$nbHours'));
-
+  print(response.body);
   if (response.statusCode == 200) {
     final Map<String, dynamic> data = json.decode(response.body);
-    if (data.containsKey('_data') &&
-        data['_data'].containsKey('_result') &&
-        data['_data']['_result'] is bool) {
-      return data['_data']['_result'];
+    if (data.containsKey('_data')) {
+      String nom = data['_data']['_nom'] ?? "";
+      String prenom = data['_data']['_prenom'] ?? "";
+      String result = data['_data']['_result'].toString();
+
+      return [nom, prenom, result];
     }
   }
   throw Exception('Failed to load data');
 }
+
 
 
 
