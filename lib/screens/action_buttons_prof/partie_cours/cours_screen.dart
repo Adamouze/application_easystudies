@@ -21,6 +21,7 @@ class _CourseDialogState extends State<CourseDialog> with SingleTickerProviderSt
   final _formKey = GlobalKey<FormState>();
   String? _selectedLocation;
   DateTime _selectedDate = DateTime.now();
+
   final TextEditingController _dateController = TextEditingController();
 
   late final AnimationController _controller;
@@ -29,7 +30,7 @@ class _CourseDialogState extends State<CourseDialog> with SingleTickerProviderSt
   @override
   void initState() {
     super.initState();
-    _dateController.text = DateFormat('dd-MM-yyyy').format(_selectedDate);
+    _dateController.text = DateFormat('dd/MM/yyyy').format(_selectedDate);
     _controller = AnimationController(
       duration: const Duration(seconds: 1),
       vsync: this,
@@ -53,18 +54,20 @@ class _CourseDialogState extends State<CourseDialog> with SingleTickerProviderSt
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return SlideTransition(
       position: _offsetAnimation,
       child : Dialog(
         insetPadding: const EdgeInsets.all(20),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20.0),
-          side: const BorderSide(color: Colors.white, width: 8),
+          side: const BorderSide(color: orangePerso, width: 4),
         ),
         child: Container(
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
-            color: orangePerso,
+            color: theme.cardColor,
             borderRadius: BorderRadius.circular(20),
           ),
           child: Form(
@@ -73,16 +76,18 @@ class _CourseDialogState extends State<CourseDialog> with SingleTickerProviderSt
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                const Text(
+                Text(
                   'Ajout d\'un cours',
                   style: TextStyle(
                     fontFamily: 'NotoSans',
-                    color: Colors.white,
+                    color: theme.textTheme.bodyLarge?.color,
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
+
                 const SizedBox(height: 15),
+
                 FutureBuilder<List<String>>(
                   builder: (BuildContext context, AsyncSnapshot<List<String>> snapshot) {
                     if (snapshot.connectionState == ConnectionState.done) {
@@ -131,20 +136,22 @@ class _CourseDialogState extends State<CourseDialog> with SingleTickerProviderSt
                     }
                   },
                 ),
+
                 const SizedBox(height: 15),
+
                 TextFormField(
                   controller: _dateController,
-                  decoration: const InputDecoration(
-                    fillColor: Colors.white,
+                  decoration: InputDecoration(
+                    fillColor: theme.primaryColor,
                     filled: true,
                     labelText: 'Date',
                     labelStyle: TextStyle(
-                      color: orangePerso,
+                      color: theme.textTheme.bodyLarge?.color,
                       fontFamily: 'NotoSans',
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
                     ),
-                    prefixIcon: Icon(Icons.calendar_today, color: orangePerso),
+                    prefixIcon: Icon(Icons.calendar_today, color: theme.primaryIconTheme.color) ,
                   ),
                   readOnly: true,
                   onTap: () async {
@@ -157,7 +164,7 @@ class _CourseDialogState extends State<CourseDialog> with SingleTickerProviderSt
                     if (date != null) {
                       setState(() {
                         _selectedDate = date;
-                        _dateController.text = DateFormat('dd-MM-yyyy').format(date);
+                        _dateController.text = DateFormat('dd/MM/yyyy').format(date);
                       });
                     }
                   },
@@ -168,13 +175,15 @@ class _CourseDialogState extends State<CourseDialog> with SingleTickerProviderSt
                     return null;
                   },
                 ),
+
                 const SizedBox(height: 20.0),
+
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     TextButton(
                       style: TextButton.styleFrom(
-                        backgroundColor: Colors.white,
+                        backgroundColor: theme.primaryColor,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20),
                         ),
@@ -193,7 +202,7 @@ class _CourseDialogState extends State<CourseDialog> with SingleTickerProviderSt
                     const SizedBox(width: 10),
                     TextButton(
                       style: TextButton.styleFrom(
-                        backgroundColor: Colors.white,
+                        backgroundColor: theme.primaryColor,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20),
                         ),
@@ -288,6 +297,8 @@ class _CoursScreenState extends State<CoursScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Scaffold(
       body: FutureBuilder(
         future: _dataLoadFuture,
@@ -326,9 +337,9 @@ class _CoursScreenState extends State<CoursScreen> {
                             isExpanded: true,
                             dropdownColor: orangePerso,
                             value: _selectedLocation,
-                            icon: const Icon(Icons.arrow_downward, color: Colors.white),
-                            style: const TextStyle(
-                              color: Colors.white,
+                            icon: Icon(Icons.arrow_downward, color: theme.iconTheme.color),
+                            style: TextStyle(
+                              color: theme.primaryColor,
                               fontWeight: FontWeight.bold,
                               fontFamily: 'NotoSans',
                             ),
@@ -342,8 +353,8 @@ class _CoursScreenState extends State<CoursScreen> {
                                 value: value,
                                 child: Text(
                                   value,
-                                  style: const TextStyle(
-                                    color: Colors.white,
+                                  style: TextStyle(
+                                    color: theme.primaryColor,
                                     fontWeight: FontWeight.bold,
                                     fontFamily: 'NotoSans',
                                   ),
@@ -356,7 +367,6 @@ class _CoursScreenState extends State<CoursScreen> {
                       Expanded(
                         child: Container(
                           decoration: BoxDecoration(
-                            color: Colors.white,
                             borderRadius: const BorderRadius.vertical(
                               bottom: Radius.circular(10),
                             ),
@@ -370,17 +380,17 @@ class _CoursScreenState extends State<CoursScreen> {
                             itemBuilder: (context, index) {
                               Course currentCourse = _coursList[_selectedLocation]![index];
                               return Card(
-                                color: Colors.white,
+                                color: theme.cardColor,
                                 child: ListTile(
-                                  leading: const Icon(Icons.book, color: Colors.black),
+                                  leading: Icon(Icons.book, color: theme.primaryIconTheme.color),
                                   title: Text(
                                     'Cours du ${afficherDate(currentCourse.date)} - ${currentCourse.type}',
-                                    style: const TextStyle(
-                                      color: Colors.black,
+                                    style: TextStyle(
+                                      color: theme.textTheme.bodyLarge?.color,
                                       fontFamily: 'NotoSans',
                                     ),
                                   ),
-                                  trailing: const Icon(Icons.more_horiz, color: Colors.black),
+                                  trailing: Icon(Icons.more_horiz, color: theme.primaryIconTheme.color),
                                   onTap: () {
                                     Navigator.of(context).push(
                                       MaterialPageRoute(
@@ -407,7 +417,7 @@ class _CoursScreenState extends State<CoursScreen> {
                     padding: const EdgeInsets.all(20.0),
                     child: FloatingActionButton(
                       backgroundColor: orangePerso,
-                      child: const Icon(Icons.add, color: Colors.white),
+                      child: Icon(Icons.add, color: theme.iconTheme.color),
                       onPressed: () {
                         showDialog(
                           context: context,

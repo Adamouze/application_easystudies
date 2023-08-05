@@ -1,8 +1,9 @@
-import 'package:EasyStudies/screens/action_buttons_prof/partie_annuaire/add_directory/add_commentaire_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import 'add_directory/add_commentaire_screen.dart';
 import '../../../utilities/constantes.dart';
-
+import '../../../logs/auth_stat.dart';
 import '../../../utils.dart';
 
 
@@ -128,10 +129,26 @@ class CommentaireBlock extends StatelessWidget {
     );  }
 }
 
-class CommentaireScreen extends StatelessWidget {
+class CommentaireScreen extends StatefulWidget {
   final Eleve eleve;
 
   const CommentaireScreen({required this.eleve, Key? key}) : super(key: key);
+
+  @override
+  CommentaireScreenState createState() => CommentaireScreenState();
+}
+
+class CommentaireScreenState extends State<CommentaireScreen> {
+
+  void refreshComments() async {
+    final authState = Provider.of<AuthState>(context, listen: false);
+    final token = authState.token ?? "";
+    final login = authState.identifier ?? "";
+    final newEleve = await getCommentsEleve(token, login, widget.eleve);
+    setState(() {
+      widget.eleve.commentaires = newEleve.commentaires;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -155,7 +172,7 @@ class CommentaireScreen extends StatelessWidget {
           child: Column(
             children: [
               const SizedBox(height: 20),
-              CommentaireBlock(eleve: eleve),
+              CommentaireBlock(eleve: widget.eleve),
               const SizedBox(height: 120),
             ],
           ),
@@ -170,7 +187,7 @@ class CommentaireScreen extends StatelessWidget {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => AddCommentaire(eleve: eleve)),
+                MaterialPageRoute(builder: (context) => AddCommentaire(eleve: widget.eleve, onCommentAdded: refreshComments)),
               );
             },
             tooltip: "Ajout d'un commentaire",

@@ -174,6 +174,8 @@ class _WelcomeBannerState extends State<WelcomeBanner> with SingleTickerProvider
           child: Text(
             "Bienvenue ${widget.prenom} ${widget.nom}",
             textAlign: TextAlign.center,
+            overflow: TextOverflow.ellipsis, // Ajoutez cette ligne
+            maxLines: 1, // Assurez-vous que le texte ne s'enroule pas sur plusieurs lignes
             style: const TextStyle(
               fontSize: 17,
               fontWeight: FontWeight.bold,
@@ -306,7 +308,11 @@ class _CustomBodyState extends State<CustomBody> {
                               style: TextStyle(color: theme.textTheme.bodyLarge?.color),
                             );
                           } else {
-                            return const CircularProgressIndicator(color: orangePerso);
+                            return const Center(
+                              child: CircularProgressIndicator(
+                                valueColor: AlwaysStoppedAnimation<Color>(orangePerso),
+                              ),
+                            );
                           }
                         },
                       ),
@@ -483,7 +489,11 @@ class _CustomBodyState extends State<CustomBody> {
                           } else if (snapshot.hasError) {
                             return Text('Failed to fetch video details: ${snapshot.error}');
                           } else {
-                            return const CircularProgressIndicator(color: orangePerso);
+                            return const Center(
+                              child: CircularProgressIndicator(
+                                valueColor: AlwaysStoppedAnimation<Color>(orangePerso),
+                              ),
+                            );
                           }
                         },
                       ),

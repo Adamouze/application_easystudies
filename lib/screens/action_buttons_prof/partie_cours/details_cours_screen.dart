@@ -6,7 +6,6 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'scanner.dart';
 import 'package:EasyStudies/utils.dart';
-import 'package:EasyStudies/screens/action_buttons_prof/partie_annuaire/details_eleve_screen.dart';
 import 'package:EasyStudies/logs/auth_stat.dart';
 
 class DurationDialog extends StatefulWidget {
@@ -132,6 +131,7 @@ class _CoursDetailsScreenState extends State<CoursDetailsScreen> {
         final token = authState.token!;
         final login = authState.identifier!; // Assuming login is stored in identifier
         final idClass = widget.Cours.index;
+        print(idClass);
         const action = 'add';
         final String nbHours = defaultDuration.toString();
 
@@ -206,13 +206,7 @@ class _CoursDetailsScreenState extends State<CoursDetailsScreen> {
     }
   }
 
-
-
-
-
-
-
-@override
+  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
@@ -225,12 +219,12 @@ class _CoursDetailsScreenState extends State<CoursDetailsScreen> {
         backgroundColor: orangePerso,
         title: Row(
           children: [
-            const Icon(Icons.book, color: Colors.white),
+            Icon(Icons.book, color: theme.iconTheme.color),
             const SizedBox(width: 10.0),
             Text(
               widget.title,
-              style: const TextStyle(
-                color: Colors.white,
+              style: TextStyle(
+                color: theme.primaryColor,
                 fontWeight: FontWeight.bold,
                 fontFamily: 'NotoSans',
               ),
@@ -244,7 +238,11 @@ class _CoursDetailsScreenState extends State<CoursDetailsScreen> {
           future: presencesFuture,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator(color: orangePerso)); // Loading indicator
+              return const Center(
+                child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(orangePerso),
+                ),
+              );
             } else if (snapshot.hasError) {
               return Center(child: Text('Erreur: ${snapshot.error}')); // Error handling
             } else {
@@ -260,13 +258,13 @@ class _CoursDetailsScreenState extends State<CoursDetailsScreen> {
                         topRight: Radius.circular(10),
                       ),
                     ),
-                    child: const Center(
+                    child: Center(
                       child: Text(
                         "Liste de présence",
                         style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
-                          color: Colors.white,
+                          color: theme.primaryColor,
                           fontFamily: 'NotoSans',
                         ),
                       ),
@@ -282,18 +280,18 @@ class _CoursDetailsScreenState extends State<CoursDetailsScreen> {
                       children: [
                         Text(
                           formatStudentText(presences.map((presence) => presence.identifier).toList().length),
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 16,
-                            color: Colors.white,
+                            color: theme.primaryColor,
                             fontFamily: 'NotoSans',
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                         Text(
                           widget.location,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 16,
-                            color: Colors.white,
+                            color: theme.primaryColor,
                             fontFamily: 'NotoSans',
                             fontWeight: FontWeight.bold,
                           ),
@@ -307,7 +305,7 @@ class _CoursDetailsScreenState extends State<CoursDetailsScreen> {
                         var width = MediaQuery.of(context).orientation == Orientation.portrait ? constraints.maxWidth / 4.5 : constraints.maxWidth / 4;
                         return Container(
                           decoration: BoxDecoration(
-                            color: Colors.white,
+                            color: theme.cardColor,
                             borderRadius: const BorderRadius.vertical(
                               bottom: Radius.circular(10),
                             ),
@@ -323,19 +321,31 @@ class _CoursDetailsScreenState extends State<CoursDetailsScreen> {
                                 DataColumn(
                                   label: SizedBox(
                                     width: width,
-                                    child: const Text('Identifiant', textAlign: TextAlign.center),
+                                    child: Text(
+                                      'Identifiant',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(color: theme.textTheme.bodyLarge?.color),
+                                    ),
                                   ),
                                 ),
                                 DataColumn(
                                   label: SizedBox(
                                     width: 2 * width,
-                                    child: const Text('Nom/Prénom', textAlign: TextAlign.center),
+                                    child: Text(
+                                      'Nom/Prénom',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(color: theme.textTheme.bodyLarge?.color),
+                                    ),
                                   ),
                                 ),
                                 DataColumn(
                                   label: SizedBox(
                                     width: width,
-                                    child: const Text('Durée', textAlign: TextAlign.center),
+                                    child: Text(
+                                      'Durée',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(color: theme.textTheme.bodyLarge?.color),
+                                    ),
                                   ),
                                 ),
                               ],
@@ -343,11 +353,15 @@ class _CoursDetailsScreenState extends State<CoursDetailsScreen> {
                                 return DataRow(
                                   cells: [
                                     DataCell(
-                                        SizedBox(
-                                          width: width,
-                                          child: Text(presence.identifier, textAlign: TextAlign.center),
+                                      SizedBox(
+                                        width: width,
+                                        child: Text(
+                                          presence.identifier,
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(color: theme.textTheme.bodyLarge?.color),
                                         ),
                                       ),
+                                    ),
                                     DataCell(
                                       InkWell(
                                         onLongPress: () {
@@ -472,29 +486,32 @@ class _CoursDetailsScreenState extends State<CoursDetailsScreen> {
                                             textAlign: TextAlign.center,
                                             overflow: TextOverflow.ellipsis,
                                             maxLines: 2,
+                                            style: TextStyle(color: theme.textTheme.bodyLarge?.color),
                                           ),
                                         ),
                                       ),
                                     ),
-
-
-
                                     DataCell(
                                       SizedBox(
-                                          width: width,
-                                          child: Text(presence.nbHeures.toStringAsFixed(1), textAlign: TextAlign.center),
+                                        width: width,
+                                        child: Text(
+                                          presence.nbHeures.toStringAsFixed(1),
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(color: theme.textTheme.bodyLarge?.color),
                                         ),
                                       ),
+                                    ),
                                   ],
                                 );
                               }).toList(),
-
                             ),
                           ),
                         );
                       },
                     ),
                   ),
+                  const SizedBox(height: 10),
+
                   Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: Transform.scale(

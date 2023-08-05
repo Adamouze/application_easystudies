@@ -85,14 +85,10 @@ class NoteBlockState extends State<NoteBlock> {
                       context: context,
                       initialDate: _date,
                       firstDate: DateTime(2015),
-                      lastDate: DateTime.now(),
+                      lastDate: DateTime(2100),
                     );
-                    if (picked != null && picked != _date) {
-                      setState(() {
-                        _date = picked;
-                        widget.note.date = DateFormat('yyyy-MM-dd').format(picked);
-                      });
-                    }
+                    _date = picked ?? _date;
+                    widget.note.date = DateFormat('yyyy-MM-dd').format(_date);
                   },
                   child: TextField(
                     enabled: false,
@@ -266,10 +262,13 @@ class SoumettreButton extends StatelessWidget {
 }
 
 
+
+
 class AddNote extends StatefulWidget {
   final Eleve eleve;
+  final Function? onNoteAdded;
 
-  const AddNote({required this.eleve, Key? key}) : super(key: key);
+  const AddNote({required this.eleve, this.onNoteAdded, Key? key}) : super(key: key);
 
   @override
   AddNoteState createState() => AddNoteState();
@@ -277,16 +276,17 @@ class AddNote extends StatefulWidget {
 
 class AddNoteState extends State<AddNote> {
 
-  final Note note = Note("", "", "", "");
+  final Note note = Note("", "", "", "", "");
 
   void handleSubmitNote(String token, String login) async {
     try {
-      await addNoteToDatabase(token, login, widget.eleve, note);
+      await manageNote(token, login, widget.eleve, "add", note);
       print('Note ajoutée avec succès.');
 
-      // Appel à getCommentsEleve pour rafraîchir les notes
-      await getNotesEleve(token, login, widget.eleve);
-
+      // Appel au callback pour rafraîchir la liste des commentaires
+      if (widget.onNoteAdded != null) {
+        widget.onNoteAdded!();
+      }
     } catch (e) {
       print('Erreur lors de l\'ajout de la note : $e');
     }
@@ -306,6 +306,8 @@ class AddNoteState extends State<AddNote> {
     if (login == null) {
       return const Text("ERREUR de login dans la requête API");
     }
+
+    note.date == '' ? note.date = DateFormat('yyyy-MM-dd').format(DateTime.now()) : ();
 
     return Scaffold(
       appBar: AppBar(
