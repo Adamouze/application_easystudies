@@ -1,5 +1,6 @@
 // ignore_for_file: library_private_types_in_public_api, use_build_context_synchronously, deprecated_member_use, prefer_interpolation_to_compose_strings, non_constant_identifier_names
 
+import 'package:EasyStudies/screens/action_buttons_prof/partie_annuaire/details_eleve_screen.dart';
 import 'package:EasyStudies/utilities/constantes.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -131,7 +132,6 @@ class _CoursDetailsScreenState extends State<CoursDetailsScreen> {
         final token = authState.token!;
         final login = authState.identifier!; // Assuming login is stored in identifier
         final idClass = widget.Cours.index;
-        print(idClass);
         const action = 'add';
         final String nbHours = defaultDuration.toString();
 
