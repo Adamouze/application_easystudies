@@ -277,28 +277,6 @@ class Presence {
   }
 }
 
-Future<Eleve> getNomPrenomEleve(String token, String login, Eleve eleve) async {
-  final response = await http.get(Uri.parse('https://app.easystudies.fr/api/students_details.php?_token=$token&_login=$login&_studentLogin=${eleve.identifier}'));
-
-  if (response.statusCode != 200) {
-    throw Exception('Failed to load user details');
-  }
-
-  final jsonResponse = jsonDecode(response.body);
-
-  if (jsonResponse.isEmpty) {
-    throw Exception('No student details received');
-  }
-
-  Map<String, dynamic> details = jsonResponse[0];
-
-  Eleve newEleve = Eleve.fromEleve(eleve);
-  newEleve.nom = details["_nom"];
-  newEleve.prenom = details["_prenom"];
-
-  return newEleve;
-}
-
 Future<List<Eleve>> getListEleves(String token, String login) async {
   final response = await http.get(Uri.parse('https://app.easystudies.fr/api/students_list.php?_token=$token&_login=$login'));
 
@@ -347,7 +325,7 @@ Future<Eleve> getDetailsEleve(String token, String login, Eleve eleve) async {
   newEleve.solde = details["_solde"];
   newEleve.prev = details["_prev"];
 
-  newEleve.photo = details["_picture"];
+  newEleve.photo = details["_picture"].replaceFirst('admin', 'extranet').replaceFirst('jpg', '.jpg');
 
   return newEleve;
 }
@@ -564,7 +542,7 @@ Future<void> manageNote(String token, String login, Eleve eleve, String action, 
   }
 }
 
-Future<void> addBilanToDatabase(String token, String login, Eleve eleve, Bilan bilan) async {
+Future<void> manageBilan(String token, String login, Eleve eleve, Bilan bilan) async {
   final uri = Uri.parse('https://app.easystudies.fr/api/ajouter_bilan'); // TODO: à remplacer
   final response = await http.post(
     uri,

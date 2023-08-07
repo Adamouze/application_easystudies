@@ -460,7 +460,7 @@ class AddBilanState extends State<AddBilan> {
 
   void handleSubmitBilan(String token, String login) async {
     try {
-      await addBilanToDatabase(token, login, widget.eleve, bilan);
+      await manageBilan(token, login, widget.eleve, bilan);
       print('Bilan ajouté avec succès.');
 
       // Appel à getBilansEleve pour rafraîchir les bilans
