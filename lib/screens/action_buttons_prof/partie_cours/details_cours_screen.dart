@@ -104,7 +104,7 @@ class _CoursDetailsScreenState extends State<CoursDetailsScreen> {
     final authState = context.read<AuthState>(); // Get the instance of AuthState
     final token = authState.token; // Get token from AuthState
     final identifier = authState.identifier; // Get identifier from AuthState
-    presencesFuture = fetchClassPresences(widget.Cours.index.toString(), token!, identifier!);
+    presencesFuture = fetchClassPresences(token!, identifier!, widget.Cours.index.toString());
   }
 
   String formatStudentText(int studentCount) {
@@ -159,7 +159,7 @@ class _CoursDetailsScreenState extends State<CoursDetailsScreen> {
             duration: const Duration(seconds: 2),
           ));
           setState(() {
-            presencesFuture = fetchClassPresences(idClass.toString(), token, login);
+            presencesFuture = fetchClassPresences(token, login, idClass.toString());
           });
         }
         else if(comment=="already scanned") {
@@ -412,12 +412,13 @@ class _CoursDetailsScreenState extends State<CoursDetailsScreen> {
                                                     onPressed: () async { // Marquez cette méthode comme asynchrone
                                                       final authState = context.read<AuthState>();
                                                       final token = authState.token!;
-                                                      final login = authState.identifier!; // Assuming login is stored in identifier
-                                                      Eleve student = await getBasicEleveInfo(token,login,presence.identifier);
+                                                      final login = authState.identifier!;
+                                                      Eleve eleve0 = Eleve.basic(presence.identifier,"","","","","");
+                                                      Eleve eleve = await getAllEleve(token, login, eleve0);
                                                       Navigator.push(
                                                         context,
                                                         MaterialPageRoute(
-                                                          builder: (context) => DetailsEleve(eleve: student),
+                                                          builder: (context) => DetailsEleve(eleve: eleve),
                                                         ),
                                                       );
                                                     },
@@ -434,7 +435,7 @@ class _CoursDetailsScreenState extends State<CoursDetailsScreen> {
                                                       showDialog(
                                                         context: context,
                                                         builder: (context) => DurationDialog(
-                                                          initialDuration: presence.nbHeures,
+                                                          initialDuration: double.parse(presence.nbHeures),
                                                           onValidate: (selectedDuration) async {
                                                             final authState = context.read<AuthState>();
                                                             final token = authState.token!;
@@ -448,7 +449,7 @@ class _CoursDetailsScreenState extends State<CoursDetailsScreen> {
 
                                                             if (comment == "update success") {
                                                               setState(() {
-                                                                presencesFuture = fetchClassPresences(idClass.toString(), token, login);
+                                                                presencesFuture = fetchClassPresences(token, login, idClass.toString());
                                                               });
                                                             }
                                                           },
@@ -475,7 +476,7 @@ class _CoursDetailsScreenState extends State<CoursDetailsScreen> {
 
                                                       if (comment == "update success") {
                                                         setState(() {
-                                                          presencesFuture = fetchClassPresences(idClass, token, login);
+                                                          presencesFuture = fetchClassPresences(token, login, idClass);
                                                         });
                                                       }// Supprimer la donnée
                                                       Navigator.pop(context);
@@ -514,7 +515,7 @@ class _CoursDetailsScreenState extends State<CoursDetailsScreen> {
                                       SizedBox(
                                         width: width,
                                         child: Text(
-                                          presence.nbHeures.toStringAsFixed(1),
+                                          double.parse(presence.nbHeures).toStringAsFixed(1),
                                           textAlign: TextAlign.center,
                                           style: TextStyle(color: theme.textTheme.bodyLarge?.color),
                                         ),

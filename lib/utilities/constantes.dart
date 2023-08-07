@@ -34,6 +34,11 @@ const Image addBilan = Image(
   alignment: Alignment.center,
 );
 
+const Image historique = Image(
+  image: AssetImage('assets/divers/historique.png'),
+  alignment: Alignment.center,
+);
+
 const Image detailsBilan = Image(
   image: AssetImage('assets/divers/bilan.png'),
   alignment: Alignment.center,

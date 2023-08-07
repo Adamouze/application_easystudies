@@ -45,9 +45,9 @@ class Eleve {
   List<Commentaire> _commentaires = [];
   List<Note> _notes = [];
   List<Bilan> _bilans = [];
+  List<Presence> _presences = [];
 
   Eleve.basic(this._identifier, this._nom, this._prenom, this._classe, this._civilite, this._idFamille);
-
 
   // Un constructeur qui accepte un autre objet Eleve et copie ses champs
   Eleve.fromEleve(Eleve eleve) {
@@ -84,6 +84,8 @@ class Eleve {
   List<Commentaire> get commentaires => _commentaires;
   List<Note> get notes => _notes;
   List<Bilan> get bilans => _bilans;
+  List<Presence> get presences => _presences;
+
 
   set identifier(String value) {_identifier = value;}
   set nom(String value) {_nom = value;}
@@ -106,9 +108,11 @@ class Eleve {
 
   set photo(String value) {_photo = value;}
 
+  set devoirs(List<Devoir> value) {_devoirs = value;}
   set commentaires(List<Commentaire> value) {_commentaires = value;}
   set notes(List<Note> value) {_notes = value;}
   set bilans(List<Bilan> value) {_bilans = value;}
+  set presences(List<Presence> value) {_presences = value;}
 }
 
 class Devoir {
@@ -212,9 +216,9 @@ class Bilan {
 }
 
 class Centre {
-  final String index;
-  final String centre;
-  final String nomCentre;
+  String index = "";
+  String centre = "";
+  String nomCentre = "";
 
   Centre({required this.index, required this.centre, required this.nomCentre});
 
@@ -228,11 +232,11 @@ class Centre {
 }
 
 class Course {
-  final String index;
-  final String date;
-  final String type;
-  final String centre;
-  final String comment;
+  String index = "";
+  String date = "";
+  String type = "";
+  String centre = "";
+  String comment = "";
 
   Course({
     required this.index,
@@ -254,28 +258,32 @@ class Course {
 }
 
 class Presence {
-  final String identifier;
-  final String nom;
-  final String prenom;
-  final String classType;
-  final String idClass;
-  final double nbHeures;
-  final double prix;
+  String identifier = "";
+  String nom = "";
+  String prenom = "";
+  String classe = "";
+  String idClass = "";
+  String nbHeures = "";
+  String prix = "";
 
-  Presence({required this.identifier, required this.nom, required this.prenom, required this.classType, required this.idClass, required this.nbHeures, required this.prix});
+  Course cours = Course(index: "", date: "", type: "", centre: "", comment: "");
+
+  Presence({required this.identifier, required this.nom, required this.prenom, required this.classe, required this.idClass, required this.nbHeures, required this.prix});
 
   factory Presence.fromJson(Map<String, dynamic> json) {
     return Presence(
       identifier: json['_identifier'],
       nom: json['_nom'],
       prenom: json['_prenom'],
-      classType: json['_class'],
+      classe: json['_class'],
       idClass: json['_idClass'],
-      nbHeures: double.parse(json['_nbHeures']),
-      prix: double.parse(json['_prix']),
+      nbHeures: json['_nbHeures'],
+      prix: json['_prix'],
     );
   }
 }
+
+
 
 Future<List<Eleve>> getListEleves(String token, String login) async {
   final response = await http.get(Uri.parse('https://app.easystudies.fr/api/students_list.php?_token=$token&_login=$login'));
@@ -308,7 +316,7 @@ Future<Eleve> getDetailsEleve(String token, String login, Eleve eleve) async {
   final jsonResponse = jsonDecode(response.body);
   Map<String, dynamic> details = jsonResponse[0];
 
-  Eleve newEleve = Eleve.fromEleve(eleve);
+  Eleve newEleve = Eleve.basic(eleve.identifier, details["_nom"], details["_prenom"], details["_class"], details["_civilite"], details["_family"]);
 
   String dob = details["_dob"];
   dob = '${dob.substring(8,10)}/${dob.substring(5,7)}/${dob.substring(0,4)}';
@@ -391,49 +399,71 @@ Future<Eleve> getBilansEleve(String token, String login, Eleve eleve) async {
   return eleve;
 }
 
+Future<Eleve> getHistoryEleve(String token, String login, Eleve eleve) async {
+  final response = await http.get(Uri.parse('https://app.easystudies.fr/api/student_presences.php?_token=$token&_login=$login&_identifier=${eleve.identifier}&_action=list_presences'));
+
+  if (response.statusCode != 200) {
+    throw Exception('Failed to load student reports');
+  }
+
+  final jsonResponse = jsonDecode(response.body);
+
+  if (jsonResponse['_data'] == null || !jsonResponse['_data']["_result"]) {
+    throw Exception('Invalid data received');
+  }
+
+  Map<String, dynamic> dataMap = jsonResponse['_data'];
+  List<dynamic> data = dataMap.entries.where((entry) => entry.value is Map && entry.value.containsKey("_idClass")).map((entry) => entry.value).toList();
+
+  List<Presence> listPresences = [];
+
+  for (var u in data) {
+    Presence presence = Presence(
+        identifier: eleve.identifier,
+        nom: eleve.nom,
+        prenom: eleve.prenom,
+        classe: eleve.classe,
+        idClass: u["_idClass"],
+        nbHeures: u["_nbHeures"],
+        prix: u["_prix"]
+    );
+    presence.cours = Course(
+        index: u["_index"] ?? "0",  // Assuming default index is "0" if not provided
+        date: u["_date"],
+        type: u["_type"],
+        centre: u["_center"],
+        comment: u["_comment"]
+    );
+    listPresences.add(presence);
+  }
+
+  eleve.presences = listPresences;
+  return eleve;
+}
+
 Future<Eleve> getAllEleve(String token, String login, Eleve eleve) async {
   final detailsFuture = getDetailsEleve(token, login, eleve);
   final commentsFuture = getCommentsEleve(token, login, eleve);
   final notesFuture = getNotesEleve(token, login, eleve);
   final bilansFuture = getBilansEleve(token, login, eleve);
+  final presencesFuture = getHistoryEleve(token, login, eleve);
 
 
-  final responses = await Future.wait([detailsFuture, commentsFuture, notesFuture, bilansFuture]);
+  final responses = await Future.wait([detailsFuture, commentsFuture, notesFuture, bilansFuture, presencesFuture]);
 
   Eleve detailedEleve = responses[0];
   Eleve eleveWithComments = responses[1];
   Eleve eleveWithNotes = responses[2];
   Eleve eleveWithBilans = responses[3];
+  Eleve eleveWithPresences = responses[4];
 
   detailedEleve.commentaires = eleveWithComments.commentaires;
   detailedEleve.notes = eleveWithNotes.notes;
   detailedEleve.bilans = eleveWithBilans.bilans;
+  detailedEleve.presences = eleveWithPresences.presences;
 
   return detailedEleve;
 }
-
-Future<Eleve> getBasicEleveInfo(String token, String login, String identifier) async {
-  final response = await http.get(Uri.parse('https://app.easystudies.fr/api/students_list.php?_token=$token&_login=$login&_identifier=$identifier'));
-
-  if (response.statusCode != 200) {
-    throw Exception('Failed to load student');
-  }
-
-  final jsonResponse = jsonDecode(response.body);
-  Map<String, dynamic> details = jsonResponse[0];
-
-  String civilite = details["_civilite"];
-  String nom = details["_nom"];
-  String prenom = details["_prenom"];
-  String classe = details["_class"];
-  String family = details["_family"];
-
-  Eleve eleve = Eleve.basic(identifier, nom, prenom, classe, civilite, family);
-
-  return eleve;
-}
-
-
 
 
 
@@ -461,7 +491,7 @@ Future<List<Course>> fetchCourseList(String token, String identifier, String cen
   }
 }
 
-Future<List<Presence>> fetchClassPresences(String classID, String token, String identifier) async {
+Future<List<Presence>> fetchClassPresences(String token, String identifier, String classID) async {
   final response = await http.get(Uri.parse('https://app.easystudies.fr/api/class_presences.php?_token=$token&_login=$identifier&_classID=$classID'));
 
   if (response.statusCode == 200) {
@@ -476,7 +506,6 @@ Future<List<Presence>> fetchClassPresences(String classID, String token, String 
 
 Future<List<String>> updatePresence(String token, String login, String classID, String identifier, String action, String nbHours) async {
   final response = await http.get(Uri.parse('https://app.easystudies.fr/api/scan_presences.php?_token=$token&_login=$login&_idClass=$classID&_identifier=$identifier&_action=$action&_nbHours=$nbHours'));
-print(response.body);
   if (response.statusCode == 200) {
     final Map<String, dynamic> data = json.decode(response.body);
     if (data.containsKey('_data')) {
@@ -489,7 +518,6 @@ print(response.body);
   }
   throw Exception('Failed to load data');
 }
-
 
 
 Future<void> manageComment(String token, String login, Eleve eleve, String action, Commentaire commentaire) async {
@@ -508,8 +536,6 @@ Future<void> manageComment(String token, String login, Eleve eleve, String actio
   }
 
   final uri = Uri.https('app.easystudies.fr', '/api/comments.php', queryParams);
-
-  print(uri); // L'URL finale imprimée pour le débogage
 
   final response = await http.get(uri);
 
@@ -532,8 +558,6 @@ Future<void> manageNote(String token, String login, Eleve eleve, String action, 
   };
 
   final uri = Uri.https('app.easystudies.fr', '/api/grades.php', queryParams);
-
-  print(uri); // L'URL finale imprimée pour le débogage
 
   final response = await http.get(uri);
 

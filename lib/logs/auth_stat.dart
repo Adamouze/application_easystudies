@@ -45,6 +45,7 @@ class AuthState with ChangeNotifier {
     _userType = userType;
     _identifier = identifier;
     _token = token;
+    print(token);
     _prenom = prenom;
     _nom = nom;
     prefs.setBool('isAuthenticated', status);

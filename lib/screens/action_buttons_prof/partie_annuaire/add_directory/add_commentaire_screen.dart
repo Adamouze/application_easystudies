@@ -216,8 +216,8 @@ class AddCommentaire extends StatefulWidget {
 }
 
 class AddCommentaireState extends State<AddCommentaire> {
-  final GlobalKey<CommentaireBlockState> commentaireBlockKey = GlobalKey<CommentaireBlockState>();
 
+  final GlobalKey<CommentaireBlockState> commentaireBlockKey = GlobalKey<CommentaireBlockState>();
 
   final Commentaire commentaire = Commentaire("", "", "", "", "");
 

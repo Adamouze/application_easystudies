@@ -13,7 +13,7 @@ import 'commentaires_screen.dart';
 import 'notes_screen.dart';
 import 'bilans_screen.dart';
 import 'details_bilan.dart';
-import 'historique.dart';
+import 'historique_screen.dart';
 import 'add_directory/add_bilan_screen.dart';
 import 'add_directory/add_commentaire_screen.dart';
 import 'add_directory/add_devoir_screen.dart';
@@ -125,7 +125,7 @@ class EleveInfoBlock extends StatelessWidget {
 
                   // const Spacer(flex: 1),
 
-                  Expanded(
+                  Expanded( // Cette partie du code crée une exception dans la console, mais c'est NORMAL, RAS.
                     flex: 2,
                     child: Image.network(
                       eleve.photo,
@@ -1263,19 +1263,10 @@ class FancyFabState extends State<FancyFab> with SingleTickerProviderStateMixin 
     isOpened = !isOpened;
   }
 
-  Widget addButton(double buttonIndex, VoidCallback callback, String tooltip, String imageName, Color color) {
-    return FloatingActionButton(
-      backgroundColor: color,
-      heroTag: null,
-      onPressed: callback,
-      tooltip: tooltip,
-      child: Image.asset('assets/divers/$imageName'),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+
     return Column(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
@@ -1285,12 +1276,18 @@ class FancyFabState extends State<FancyFab> with SingleTickerProviderStateMixin 
             _translateButton.value * 5,
             0.0,
           ),
-          child: addButton(5.0, () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => AddDevoir(eleve: widget.eleve)),
-            );
-          }, 'Ajouter un devoir', 'add_devoirs.png', theme.cardColor),
+          child: FloatingActionButton(
+            backgroundColor: theme.primaryColor,
+            heroTag: null,
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => AddDevoir(eleve: widget.eleve)),
+              );
+            },
+            tooltip: 'Ajouter un devoir',
+            child: addDevoirs,
+          ),
         ),
         Transform(
           transform: Matrix4.translationValues(
@@ -1298,12 +1295,18 @@ class FancyFabState extends State<FancyFab> with SingleTickerProviderStateMixin 
             _translateButton.value * 4,
             0.0,
           ),
-          child: addButton(4.0, () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => AddCommentaire(eleve: widget.eleve)),
-            );
-          }, 'Ajouter un commentaire', 'add_comment.png', theme.cardColor),
+          child: FloatingActionButton(
+            backgroundColor: theme.primaryColor,
+            heroTag: null,
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => AddCommentaire(eleve: widget.eleve)),
+              );
+            },
+            tooltip: 'Ajouter un commentaire',
+            child: addComment,
+          ),
         ),
         Transform(
           transform: Matrix4.translationValues(
@@ -1311,12 +1314,18 @@ class FancyFabState extends State<FancyFab> with SingleTickerProviderStateMixin 
             _translateButton.value * 3,
             0.0,
           ),
-          child: addButton(3.0, () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => AddNote(eleve: widget.eleve)),
-            );
-          }, 'Ajouter une note', 'add_devoirs.png', theme.cardColor),  //TODO à changer
+          child: FloatingActionButton(
+            backgroundColor: theme.primaryColor,
+            heroTag: null,
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => AddNote(eleve: widget.eleve)),
+              );
+            },
+            tooltip: 'Ajouter une note',
+            child: addDevoirs,  // TODO: Changer l'image
+          ),
         ),
         Transform(
           transform: Matrix4.translationValues(
@@ -1324,12 +1333,18 @@ class FancyFabState extends State<FancyFab> with SingleTickerProviderStateMixin 
             _translateButton.value * 2,
             0.0,
           ),
-          child: addButton(2.0, () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => AddBilan(eleve: widget.eleve)),
-            );
-          }, 'Ajouter un bilan', 'add_bilan.png', theme.cardColor),
+          child: FloatingActionButton(
+            backgroundColor: theme.primaryColor,
+            heroTag: null,
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => AddBilan(eleve: widget.eleve)),
+              );
+            },
+            tooltip: 'Ajouter un bilan',
+            child: addBilan,
+          ),
         ),
         Transform(
           transform: Matrix4.translationValues(
@@ -1337,12 +1352,21 @@ class FancyFabState extends State<FancyFab> with SingleTickerProviderStateMixin 
             _translateButton.value * 1,
             0.0,
           ),
-          child: addButton(1.0, () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => Historique(eleve: widget.eleve)),
-            );
-          }, 'Historique de présence', 'historique.png', theme.cardColor),
+          child: FloatingActionButton(
+            backgroundColor: theme.primaryColor,
+            heroTag: null,
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => HistoryScreen(eleve: widget.eleve)),
+              );
+            },
+            tooltip: 'Historique de présence',
+            child: Image.asset(
+              'assets/divers/historique.png',
+              color: Colors.deepOrange, // Teinter l'image en blanc si en mode sombre
+            ),
+          ),
         ),
         toggle(),
       ],

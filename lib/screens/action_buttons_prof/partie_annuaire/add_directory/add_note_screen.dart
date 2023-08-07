@@ -25,6 +25,27 @@ class NoteBlockState extends State<NoteBlock> {
     borderSide: BorderSide(color: Colors.grey),
   );
 
+  final ValueNotifier<bool> isNoteValidNotifier = ValueNotifier<bool>(false);
+
+  void _checkNoteValidity() {
+    bool isNoteValid = _selectedType != null &&
+        widget.note.note.trim().isNotEmpty &&
+        double.tryParse(widget.note.note) != null &&
+        (double.parse(widget.note.note) >= 0 && double.parse(widget.note.note) <= 20);
+    isNoteValidNotifier.value = isNoteValid;
+  }
+
+  bool _isNoteValid() {
+    double? parsedNote = double.tryParse(widget.note.note);
+    return parsedNote != null && parsedNote >= 0 && parsedNote <= 20;
+  }
+
+
+  @override
+  void dispose() {
+    isNoteValidNotifier.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -156,6 +177,7 @@ class NoteBlockState extends State<NoteBlock> {
                               default:
                                 break;
                             }
+                          _checkNoteValidity();
                           });
                         },
                         onTap: () {
@@ -167,6 +189,14 @@ class NoteBlockState extends State<NoteBlock> {
                     ),
                   ),
                 ),
+                if (_selectedType == null)
+                  const Padding(
+                    padding: EdgeInsets.only(left: 0.0),
+                    child: Text(
+                      'Veuillez choisir un type.',
+                      style: TextStyle(color: Colors.red),
+                    ),
+                  ),
 
                 Padding(
                   padding: const EdgeInsets.all(10.0), // Ajout de marge extérieure
@@ -183,9 +213,29 @@ class NoteBlockState extends State<NoteBlock> {
                     style: const TextStyle(
                       color: Colors.black,
                     ),
-                    onChanged: (value) => widget.note.note = value,
+                      onChanged: (value) {
+                        widget.note.note = value;
+                        _checkNoteValidity();
+                        setState(() {}); // Cela permet de rafraîchir l'interface utilisateur
+                      }
                   ),
                 ),
+                if (widget.note.note.trim().isEmpty)
+                  const Padding(
+                    padding: EdgeInsets.only(left: 0.0),
+                    child: Text(
+                      'Veuillez entrer une note.',
+                      style: TextStyle(color: Colors.red),
+                    ),
+                  )
+                else if (!_isNoteValid())
+                  const Padding(
+                    padding: EdgeInsets.only(left: 0.0),
+                    child: Text(
+                      "La note n'est pas valide.",
+                      style: TextStyle(color: Colors.red),
+                    ),
+                  ),
 
                 Padding(
                   padding: const EdgeInsets.all(10.0), // Ajout de marge extérieure
@@ -202,7 +252,9 @@ class NoteBlockState extends State<NoteBlock> {
                     style: const TextStyle(
                       color: Colors.black,
                     ),
-                    onChanged: (value) => widget.note.commentaire = value,
+                    onChanged: (value) {
+                      widget.note.commentaire = value;
+                    }
                   ),
                 ),
 
@@ -216,17 +268,40 @@ class NoteBlockState extends State<NoteBlock> {
   }
 }
 
-class SoumettreButton extends StatelessWidget {
+class SoumettreButton extends StatefulWidget {
   final Eleve eleve;
   final Note note;
-  final VoidCallback onSubmit; // Rappel à appeler lors de la soumission
+  final VoidCallback onSubmit;
+  final ValueNotifier<bool> isNoteValidNotifier;
 
   const SoumettreButton({
     required this.eleve,
     required this.note,
-    required this.onSubmit, // Inclure le rappel dans le constructeur
+    required this.onSubmit,
+    required this.isNoteValidNotifier,
     Key? key,
   }) : super(key: key);
+
+  @override
+  SoumettreButtonState createState() => SoumettreButtonState();
+}
+
+class SoumettreButtonState extends State<SoumettreButton> {
+  @override
+  void initState() {
+    super.initState();
+    widget.isNoteValidNotifier.addListener(_rebuild);
+  }
+
+  @override
+  void dispose() {
+    widget.isNoteValidNotifier.removeListener(_rebuild);
+    super.dispose();
+  }
+
+  void _rebuild() {
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -244,10 +319,12 @@ class SoumettreButton extends StatelessWidget {
           ),
         ),
         ElevatedButton.icon(
-          onPressed: () {
-            onSubmit(); // Appelle le rappel lorsqu'il est pressé
-            Navigator.pop(context); // Optionnel : ferme la page actuelle
-          },
+          onPressed: widget.isNoteValidNotifier.value
+              ? () {
+            widget.onSubmit();
+            Navigator.pop(context);
+          }
+              : null,
           icon: const Icon(Icons.check),
           label: const Text('Ajouter'),
           style: ButtonStyle(
@@ -275,6 +352,8 @@ class AddNote extends StatefulWidget {
 }
 
 class AddNoteState extends State<AddNote> {
+
+  final GlobalKey<NoteBlockState> noteBlockKey = GlobalKey<NoteBlockState>();
 
   final Note note = Note("", "", "", "", "");
 
@@ -328,13 +407,25 @@ class AddNoteState extends State<AddNote> {
             child: Column(
               children: [
                 const SizedBox(height: 20),
-                NoteBlock(note: note),
-                const SizedBox(height: 20),
-                SoumettreButton(
-                  eleve: widget.eleve,
+
+                NoteBlock(
+                  key: noteBlockKey, // Passer la clé ici
                   note: note,
-                  onSubmit: () => handleSubmitNote(token, login),
                 ),
+
+                const SizedBox(height: 20),
+
+                Builder(
+                  builder: (BuildContext context) {
+                    return SoumettreButton(
+                      eleve: widget.eleve,
+                      note: note,
+                      isNoteValidNotifier: noteBlockKey.currentState!.isNoteValidNotifier, // Ici, ça devrait être OK
+                      onSubmit: () => handleSubmitNote(token, login),
+                    );
+                  },
+                ),
+
                 const SizedBox(height: 20),
               ],
             ),
