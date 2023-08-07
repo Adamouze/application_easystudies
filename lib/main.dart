@@ -68,7 +68,7 @@ class MyApp extends StatelessWidget {
               shadow: Colors.grey.withOpacity(0.5),
             ),
             primaryColor: Colors.white,  // Couleur secondaire du thème clair
-            cardColor: Colors.grey[100],  // Couleur des card du thèmse clair
+            cardColor: Colors.grey[100],  // Couleur des card du thème clair
             textTheme: TextTheme(
               bodyLarge: const TextStyle(
                 color: Colors.black,  // Couleur du texte pour le thème clair
