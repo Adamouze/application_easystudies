@@ -498,15 +498,15 @@ Future<List<Presence>> fetchClassPresences(String classID, String token, String 
 
 Future<List<String>> updatePresence(String token, String login, String classID, String identifier, String action, String nbHours) async {
   final response = await http.get(Uri.parse('https://app.easystudies.fr/api/scan_presences.php?_token=$token&_login=$login&_idClass=$classID&_identifier=$identifier&_action=$action&_nbHours=$nbHours'));
-  print(response.body);
+print(response.body);
   if (response.statusCode == 200) {
     final Map<String, dynamic> data = json.decode(response.body);
     if (data.containsKey('_data')) {
       String nom = data['_data']['_nom'] ?? "";
       String prenom = data['_data']['_prenom'] ?? "";
-      String result = data['_data']['_result'].toString();
+      String comment = data['_data']['_comment'].toString();
 
-      return [nom, prenom, result];
+      return [nom, prenom, comment];
     }
   }
   throw Exception('Failed to load data');

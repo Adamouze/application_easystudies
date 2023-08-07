@@ -138,9 +138,8 @@ class _CoursDetailsScreenState extends State<CoursDetailsScreen> {
         final update = await updatePresence(token, login, idClass, scanResult, action, nbHours);
         String nom = update[0];
         String prenom = update[1];
-        String result = update[2];
-        // Si le résultat est true, réactualiser la liste des présences
-        if (result=="true") {
+        String comment = update[2];
+        if (comment=="add success") {
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.only(
@@ -162,6 +161,26 @@ class _CoursDetailsScreenState extends State<CoursDetailsScreen> {
           setState(() {
             presencesFuture = fetchClassPresences(idClass.toString(), token, login);
           });
+        }
+        else if(comment=="already scanned") {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(10),
+                topRight: Radius.circular(10),
+              ),
+            ),
+            backgroundColor: Colors.yellow,
+            content: Text('Élève $prenom $nom déjà présent',
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 16,
+                fontFamily: 'NotoSans',
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            duration: const Duration(seconds: 2),
+          ));
         }
         else {
           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -425,9 +444,9 @@ class _CoursDetailsScreenState extends State<CoursDetailsScreen> {
                                                             final String nbHours = selectedDuration.toString();
 
                                                             final update = await updatePresence(token, login, idClass, presence.identifier, action, nbHours);
-                                                            String result = update[2];
+                                                            String comment = update[2];
 
-                                                            if (result == "true") {
+                                                            if (comment == "update success") {
                                                               setState(() {
                                                                 presencesFuture = fetchClassPresences(idClass.toString(), token, login);
                                                               });
@@ -452,9 +471,9 @@ class _CoursDetailsScreenState extends State<CoursDetailsScreen> {
                                                       final login = authState.identifier!;
                                                       final idClass = widget.Cours.index;
                                                       final update = await updatePresence(token, login, idClass, presence.identifier, 'update', '0');
-                                                      String result = update[2];
-                                                      // Si le résultat est true, réactualiser la liste des présences
-                                                      if (result=="true") {
+                                                      String comment = update[2];
+
+                                                      if (comment == "update success") {
                                                         setState(() {
                                                           presencesFuture = fetchClassPresences(idClass, token, login);
                                                         });
