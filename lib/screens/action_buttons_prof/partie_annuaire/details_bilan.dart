@@ -25,7 +25,7 @@ class BaseDeNotationBlock extends StatelessWidget {
         for (int value = 1; value <= 5; value++)
           Center(
             child: value == ratingInt
-                ? const Icon(Icons.check)
+                ? const Icon(Icons.check, color: Colors.black)
                 : Container(),
           ),
       ],
@@ -222,8 +222,10 @@ class BilanBlock extends StatelessWidget {
                       ],
                     ),
                   ),
+
                   const Divider(color: Colors.black,),
                   const SizedBox(height: 2),
+
                   RichText(
                     text: TextSpan(
                       children: <TextSpan>[

@@ -54,7 +54,12 @@ class NoteBlock extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 5),
-              Text(note.commentaire),
+              Text(
+                note.commentaire.isEmpty ? "non renseigné" : note.commentaire,
+                style: note.commentaire.isEmpty
+                    ? TextStyle(fontWeight: FontWeight.normal, fontStyle: FontStyle.italic, color: Colors.grey[700])
+                    : const TextStyle(fontStyle: FontStyle.normal, color: Colors.black),
+              ),
             ],
           ),
         ),

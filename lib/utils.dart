@@ -374,6 +374,8 @@ Future<Eleve> getNotesEleve(String token, String login, Eleve eleve) async {
   for (var u in gradesData) {
     Note note = Note(u["_index"], u["_date"], u["_type"], u["_grade"], u["_comment"]);
     notes.add(note);
+    print("Note du ${afficherDate(note.date)} : ${note.commentaire}");
+    print(note.commentaire.isEmpty);
   }
 
   eleve.notes = notes;

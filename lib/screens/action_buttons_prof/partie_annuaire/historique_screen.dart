@@ -64,12 +64,14 @@ class HistoryBlock extends StatelessWidget {
                 ],
               ),
 
-              const SizedBox(height: 5),
+              const Divider(color: Colors.black, thickness: 0.5, height: 10),
+              // const SizedBox(height: 5),
 
-              // Comment beneath the Row
               Text(
-                presence.cours.comment,
-                style: const TextStyle(color: Colors.black),
+                presence.cours.comment.isEmpty ? "non renseigné" : presence.cours.comment,
+                style: presence.cours.comment.isEmpty
+                    ? TextStyle(fontWeight: FontWeight.normal, fontStyle: FontStyle.italic, color: Colors.grey[700])
+                    : const TextStyle(fontStyle: FontStyle.normal, color: Colors.black),
               ),
             ],
           ),

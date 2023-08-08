@@ -56,7 +56,7 @@ class ProfScreenState extends State<ProfScreen> {
         ),
         bottomNavigationBar: Theme(
           data: Theme.of(context).copyWith(
-            splashColor: couleurSplashBottomBar,
+            splashColor: couleurSplashBottomBar.withOpacity(0.3),
           ),
           child: BottomNavigationBar(
             type: BottomNavigationBarType.fixed,
