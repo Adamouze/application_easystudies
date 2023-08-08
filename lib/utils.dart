@@ -1,3 +1,5 @@
+// ignore_for_file: non_constant_identifier_names
+
 /*
 import 'dart:convert';
 import 'dart:async';
@@ -481,7 +483,6 @@ Future<List<Centre>> fetchCenterList(String token, String identifier) async {
 
 Future<List<Course>> fetchCourseList(String token, String identifier, String centre) async {
   final response = await http.get(Uri.parse('https://app.easystudies.fr/api/classes.php?_token=$token&_login=$identifier&_action=list&_idClass=&_date=&_type=&_center=$centre&_comment='));
-
   if (response.statusCode == 200) {
     Map<String, dynamic> jsonResponse = jsonDecode(response.body);
     List<dynamic> data = jsonResponse['_data'];
@@ -519,6 +520,23 @@ Future<List<String>> updatePresence(String token, String login, String classID, 
   throw Exception('Failed to load data');
 }
 
+Future<bool> add_Course(String token, String identifier, String centre, String date, String type) async {
+  final response = await http.get(Uri.parse('https://app.easystudies.fr/api/classes.php?_token=$token&_login=$identifier&_action=add&_idClass=&_date=$date&_type=$type&_center=$centre&_comment='));
+
+  if (response.statusCode == 200) {
+    // Si le serveur renvoie une réponse OK, parsez le JSON.
+    Map<String, dynamic> jsonResponse = json.decode(response.body);
+
+    if (jsonResponse.containsKey('_result')) {
+      return jsonResponse['_result'];
+    } else {
+      throw Exception('The response does not contain a _result key.');
+    }
+  } else {
+    // Si le serveur ne renvoie pas une réponse OK, jetez une erreur.
+    throw Exception('Failed to add the course. StatusCode: ${response.statusCode}.');
+  }
+}
 
 Future<void> manageComment(String token, String login, Eleve eleve, String action, Commentaire commentaire) async {
   Map<String, dynamic> queryParams = {
