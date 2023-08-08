@@ -45,24 +45,25 @@ class QuitDialogState extends State<QuitDialog> with SingleTickerProviderStateMi
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return SlideTransition(
       position: _offsetAnimation,
       child: AlertDialog(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20.0),
-          side: const BorderSide(color: Colors.white, width: 8),
+          side: const BorderSide(color: orangePerso, width: 4),
         ),
-        backgroundColor: orangePerso,
-        title: const Text('Confirmation',
+        backgroundColor: theme.cardColor,
+        title: Text('Confirmation',
           style: TextStyle(
-            color: Colors.white,
+            color: theme.textTheme.bodyLarge?.color,
             fontWeight: FontWeight.bold,
             fontFamily: 'NotoSans',
           ),
         ),
-        content: const Text('Voulez-vous vraiment quitter l\'application ?',
+        content: Text('Voulez-vous vraiment quitter l\'application ?',
           style: TextStyle(
-            color: Colors.white,
+            color: theme.textTheme.bodyLarge?.color,
             fontWeight: FontWeight.bold,
             fontFamily: 'NotoSans',
           ),
@@ -70,7 +71,7 @@ class QuitDialogState extends State<QuitDialog> with SingleTickerProviderStateMi
         actions: <Widget>[
           Container(
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: theme.primaryColor,
               borderRadius: BorderRadius.circular(20.0),
             ),
             child: TextButton(
@@ -86,7 +87,7 @@ class QuitDialogState extends State<QuitDialog> with SingleTickerProviderStateMi
           ),
           Container(
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: theme.primaryColor,
               borderRadius: BorderRadius.circular(20.0),
             ),
             child: TextButton(

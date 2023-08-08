@@ -93,24 +93,25 @@ class LogoutDialogState extends State<LogoutDialog> with SingleTickerProviderSta
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return SlideTransition(
       position: _offsetAnimation,
       child: AlertDialog(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20.0),
-          side: const BorderSide(color: Colors.white, width: 8),
+          side: const BorderSide(color: orangePerso, width: 4), // Changed the width from 8 to 4
         ),
-        backgroundColor: orangePerso,
-        title: const Text('Confirmation',
+        backgroundColor: theme.cardColor, // Used theme's cardColor
+        title: Text('Confirmation',
           style: TextStyle(
-            color: Colors.white,
+            color: theme.textTheme.bodyLarge?.color, // Used theme's text color
             fontWeight: FontWeight.bold,
             fontFamily: 'NotoSans',
           ),
         ),
-        content: const Text('Voulez-vous vraiment vous déconnecter ?',
+        content: Text('Voulez-vous vraiment vous déconnecter ?',
           style: TextStyle(
-            color: Colors.white,
+            color: theme.textTheme.bodyLarge?.color, // Used theme's text color
             fontWeight: FontWeight.bold,
             fontFamily: 'NotoSans',
           ),
@@ -118,7 +119,7 @@ class LogoutDialogState extends State<LogoutDialog> with SingleTickerProviderSta
         actions: <Widget>[
           Container(
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: theme.primaryColor, // Used theme's primaryColor
               borderRadius: BorderRadius.circular(20.0),
             ),
             child: TextButton(
@@ -134,7 +135,7 @@ class LogoutDialogState extends State<LogoutDialog> with SingleTickerProviderSta
           ),
           Container(
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: theme.primaryColor, // Used theme's primaryColor
               borderRadius: BorderRadius.circular(20.0),
             ),
             child: TextButton(
