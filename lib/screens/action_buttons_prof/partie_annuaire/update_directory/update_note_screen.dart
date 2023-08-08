@@ -7,6 +7,9 @@ import '../../../../utils.dart';
 import '../../../../logs/auth_stat.dart';
 
 
+// TODO C'est la partie note qui déconne + texte en blanc maintenant
+
+
 class NoteBlock extends StatefulWidget {
   final Note note;
   const NoteBlock({required this.note ,Key? key}) : super(key: key);
@@ -17,22 +20,33 @@ class NoteBlock extends StatefulWidget {
 
 class NoteBlockState extends State<NoteBlock> {
 
-  DateTime _date = DateTime.now();
-  String? _selectedType;
+  String? selectedType;
   bool isDropDownOpened = false;
-
   final borderStyle = const OutlineInputBorder(
     borderSide: BorderSide(color: Colors.grey),
   );
-
-  final ValueNotifier<bool> isNoteValidNotifier = ValueNotifier<bool>(false);
+  final ValueNotifier<bool> isNoteValidNotifier = ValueNotifier<bool>(true);
+  final _noteController = TextEditingController();
+  final _commentController = TextEditingController();
 
   void _checkNoteValidity() {
-    bool isNoteValid = _selectedType != null &&
-        widget.note.note.trim().isNotEmpty &&
-        double.tryParse(widget.note.note) != null &&
-        (double.parse(widget.note.note) >= 0 && double.parse(widget.note.note) <= 20);
+    double? parsedNote = double.tryParse(widget.note.note);
+    bool noteNotEmpty = widget.note.note.trim().isNotEmpty;
+    bool isParsedNoteValid = parsedNote != null && parsedNote >= 0 && parsedNote <= 20;
+    bool isNoteValid = selectedType != null && noteNotEmpty && isParsedNoteValid;
+
     isNoteValidNotifier.value = isNoteValid;
+  }
+
+  _onNoteChanged() {
+    widget.note.note = _noteController.text;
+    _checkNoteValidity();
+    setState(() {});
+  }
+
+  _onCommentChanged() {
+    widget.note.commentaire = _commentController.text;
+    setState(() {});
   }
 
   bool _isNoteValid() {
@@ -40,15 +54,50 @@ class NoteBlockState extends State<NoteBlock> {
     return parsedNote != null && parsedNote >= 0 && parsedNote <= 20;
   }
 
+  String? mapNoteTypeToDropdownValue(String? type) {
+    switch (type) {
+      case "IRFC":
+        return "1";
+      case "STAGE":
+        return "2";
+      case "IS":
+        return "3";
+      default:
+        return null;
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Initialisation des contrôleurs avec les valeurs des widgets
+    _noteController.text = widget.note.note;
+    _commentController.text = widget.note.commentaire;
+
+    // Ajout des écouteurs pour chaque contrôleur
+    _noteController.addListener(_onNoteChanged);
+    _commentController.addListener(_onCommentChanged);
+  }
 
   @override
   void dispose() {
+    // Suppression des écouteurs et libération des ressources des contrôleurs
+    _noteController.removeListener(_onNoteChanged);
+    _noteController.dispose();
+
+    _commentController.removeListener(_onCommentChanged);
+    _commentController.dispose();
+
     isNoteValidNotifier.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    String? selectedType = mapNoteTypeToDropdownValue(widget.note.type);
+    DateTime date = widget.note.date.isEmpty ? DateTime.now() : DateTime.parse(widget.note.date);
+
     return FractionallySizedBox(
       widthFactor: 0.95,
       child: Column(
@@ -104,17 +153,17 @@ class NoteBlockState extends State<NoteBlock> {
                   onPressed: () async {
                     final DateTime? picked = await showDatePicker(
                       context: context,
-                      initialDate: _date,
+                      initialDate: date,
                       firstDate: DateTime(2015),
                       lastDate: DateTime(2100),
                     );
-                    _date = picked ?? _date;
-                    widget.note.date = DateFormat('yyyy-MM-dd').format(_date);
+                    date = picked ?? date;
+                    widget.note.date = DateFormat('yyyy-MM-dd').format(date);
                   },
                   child: TextField(
                     enabled: false,
                     decoration: InputDecoration(
-                      labelText: DateFormat('dd/MM/yyyy').format(_date),
+                      labelText: DateFormat('dd/MM/yyyy').format(date),
                       labelStyle: const TextStyle(color: Colors.black),
                       suffixIcon: const Icon(
                         Icons.calendar_month,
@@ -135,7 +184,7 @@ class NoteBlockState extends State<NoteBlock> {
                     ),
                     child: DropdownButtonHideUnderline(
                       child: DropdownButton<String>(
-                        value: _selectedType,
+                        value: selectedType,
                         isDense: true,
                         icon: Icon(
                           isDropDownOpened ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
@@ -162,9 +211,9 @@ class NoteBlockState extends State<NoteBlock> {
                         ],
                         onChanged: (String? newValue) {
                           setState(() {
-                            _selectedType = newValue!;
+                            selectedType = newValue!;
                             isDropDownOpened = !isDropDownOpened;
-                            switch (_selectedType) {
+                            switch (selectedType) {
                               case "1":
                                 widget.note.type = "IRFC";
                                 break;
@@ -189,7 +238,7 @@ class NoteBlockState extends State<NoteBlock> {
                     ),
                   ),
                 ),
-                if (_selectedType == null)
+                if (selectedType == null)
                   const Padding(
                     padding: EdgeInsets.only(left: 0.0),
                     child: Text(
@@ -201,23 +250,24 @@ class NoteBlockState extends State<NoteBlock> {
                 Padding(
                   padding: const EdgeInsets.all(10.0), // Ajout de marge extérieure
                   child: TextField(
-                      maxLines: null, // permet plusieurs lignes
-                      keyboardType: TextInputType.multiline,
-                      decoration: InputDecoration(
-                        hintText: 'Rentrez la note ici...',
-                        labelText: 'Note',
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
-                        border: borderStyle,
+                    controller: _noteController,
+                    maxLines: null, // permet plusieurs lignes
+                    keyboardType: TextInputType.multiline,
+                    decoration: InputDecoration(
+                      hintText: 'Rentrez la note ici...',
+                      labelText: 'Note',
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
+                      border: borderStyle,
 
-                      ),
-                      style: const TextStyle(
-                        color: Colors.black,
-                      ),
-                      onChanged: (value) {
-                        widget.note.note = value;
-                        _checkNoteValidity();
-                        setState(() {}); // Cela permet de rafraîchir l'interface utilisateur
-                      }
+                    ),
+                    style: const TextStyle(
+                      color: Colors.black,
+                    ),
+                    onChanged: (value) {
+                      widget.note.note = value;
+                      _checkNoteValidity();
+                      setState(() {}); // Cela permet de rafraîchir l'interface utilisateur
+                    }
                   ),
                 ),
                 if (widget.note.note.trim().isEmpty)
@@ -240,6 +290,7 @@ class NoteBlockState extends State<NoteBlock> {
                 Padding(
                   padding: const EdgeInsets.all(10.0), // Ajout de marge extérieure
                   child: TextField(
+                      controller: _commentController,
                       maxLines: null, // permet plusieurs lignes
                       keyboardType: TextInputType.multiline,
                       decoration: InputDecoration(
@@ -303,8 +354,12 @@ class SoumettreButtonState extends State<SoumettreButton> {
     setState(() {});
   }
 
+
   @override
   Widget build(BuildContext context) {
+    print("Is note valid: ${widget.isNoteValidNotifier.value}");
+
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween, // This centers the two buttons
       children: <Widget>[
@@ -341,32 +396,41 @@ class SoumettreButtonState extends State<SoumettreButton> {
 
 
 
-class AddNote extends StatefulWidget {
+class UpdateNote extends StatefulWidget {
   final Eleve eleve;
-  final Function? onNoteAdded;
+  final Note note;
+  final Function? onNoteUpdate;
 
-  const AddNote({required this.eleve, this.onNoteAdded, Key? key}) : super(key: key);
+  const UpdateNote({required this.eleve, required this.note, this.onNoteUpdate, Key? key}) : super(key: key);
 
   @override
-  AddNoteState createState() => AddNoteState();
+  UpdateNoteState createState() => UpdateNoteState();
 }
 
-class AddNoteState extends State<AddNote> {
+class UpdateNoteState extends State<UpdateNote> {
 
   final GlobalKey<NoteBlockState> noteBlockKey = GlobalKey<NoteBlockState>();
 
-  final Note note = Note("", "", "", "", "");
-
-  void handleSubmitNote(String token, String login) async {
+  void handleSubmitNote(String token, String login, String user, String prenom) async {
     try {
-      note.commentaire = note.commentaire.replaceAll('\n', '\r\n');
+      widget.note.commentaire = widget.note.commentaire.replaceAll('\n', '\r\n');
+      if (widget.note.commentaire.contains("Modifié par")) {
+        // Si "Modifié par" existe, on remplace la partie après cela
+        widget.note.commentaire = widget.note.commentaire.replaceAllMapped(
+            RegExp(r'Modifié par:.*'),
+                (match) => 'Modifié par: $user ($prenom)'
+        );
+      } else {
+        // Sinon, on ajoute simplement à la fin
+        widget.note.commentaire = '${widget.note.commentaire}\r\n\r\nModifié par: $user ($prenom)';
+      }
 
-      await manageNote(token, login, widget.eleve, "add", note);
+      await manageNote(token, login, widget.eleve, "update", widget.note);
       print('Note ajoutée avec succès.');
 
-      // Appel au callback pour rafraîchir la liste des commentaires
-      if (widget.onNoteAdded != null) {
-        widget.onNoteAdded!();
+// Appel au callback pour rafraîchir la liste des commentaires
+      if (widget.onNoteUpdate != null) {
+        widget.onNoteUpdate!();
       }
     } catch (e) {
       print('Erreur lors de l\'ajout de la note : $e');
@@ -388,7 +452,14 @@ class AddNoteState extends State<AddNote> {
       return const Text("ERREUR de login dans la requête API");
     }
 
-    note.date == '' ? note.date = DateFormat('yyyy-MM-dd').format(DateTime.now()) : ();
+    // Normalement, la ligne ne sera pas utile
+    // widget.note.date == '' ? widget.note.date = DateFormat('yyyy-MM-dd').format(DateTime.now()) : ();
+
+    String prenom = authState.prenom!;
+    String user = authState.userType!;
+    if (user == "prof") {
+      user = "PROF";
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -412,7 +483,7 @@ class AddNoteState extends State<AddNote> {
 
                 NoteBlock(
                   key: noteBlockKey, // Passer la clé ici
-                  note: note,
+                  note: widget.note,
                 ),
 
                 const SizedBox(height: 20),
@@ -421,9 +492,9 @@ class AddNoteState extends State<AddNote> {
                   builder: (BuildContext context) {
                     return SoumettreButton(
                       eleve: widget.eleve,
-                      note: note,
+                      note: widget.note,
                       isNoteValidNotifier: noteBlockKey.currentState!.isNoteValidNotifier, // Ici, ça devrait être OK
-                      onSubmit: () => handleSubmitNote(token, login),
+                      onSubmit: () => handleSubmitNote(token, login, user, prenom),
                     );
                   },
                 ),

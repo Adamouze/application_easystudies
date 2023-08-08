@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'add_directory/add_note_screen.dart';
+import 'update_directory/update_note_screen.dart';
 import '../../../utilities/constantes.dart';
 import '../../../logs/auth_stat.dart';
 import '../../../utils.dart';
@@ -9,58 +10,145 @@ import '../../../utils.dart';
 
 
 
-class NoteBlock extends StatelessWidget {
+class NoteBlock extends StatefulWidget {
   final Eleve eleve;
 
   const NoteBlock({required this.eleve, Key? key}) : super(key: key);
 
+  @override
+  NoteBlockState createState() => NoteBlockState();
+}
+
+class NoteBlockState extends State<NoteBlock> {
+
+  void refreshNotes() async {
+    final authState = Provider.of<AuthState>(context, listen: false);
+    final token = authState.token ?? "";
+    final login = authState.identifier ?? "";
+    final newEleve = await getNotesEleve(token, login, widget.eleve);
+    setState(() {
+      widget.eleve.notes = newEleve.notes;
+    });
+  }
+
+  Widget _buildNoteComment(String comment) {
+    // Remplacez tous les '\n' par '\r\n'
+    comment = comment.replaceAll('\n', '\r\n');
+
+    // Vérifiez si le commentaire est vide
+    if (comment.isEmpty) {
+      return Text(
+          "non renseigné",
+          style: TextStyle(fontWeight: FontWeight.normal, fontStyle: FontStyle.italic, color: Colors.grey[700])
+      );
+    }
+
+    int modifiedIndex = comment.indexOf('Modifié par:');
+    if (modifiedIndex == -1) {
+      return Text(comment, style: const TextStyle(fontStyle: FontStyle.normal, color: Colors.black));
+    }
+
+    String beforeModified = comment.substring(0, modifiedIndex);
+    String modifiedPart = comment.substring(modifiedIndex);
+
+    return RichText(
+      text: TextSpan(
+        text: beforeModified,
+        children: [
+          TextSpan(text: modifiedPart, style: const TextStyle(fontStyle: FontStyle.italic)),
+        ],
+      ),
+    );
+  }
+
   Widget buildNoteRow(Note note, int index, Color color) {
+    final theme = Theme.of(context);
     return SizedBox(
       width: double.infinity,
       child: Card(
         color: color,
         margin: const EdgeInsets.only(left: 8.0, right: 8.0, top: 8.0),
-        child: Padding(
-          padding: const EdgeInsets.all(5.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: RichText(
-                      text: TextSpan(
-                        text: "Date: ",
-                        style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
-                        children: <TextSpan>[
-                          TextSpan(
-                            text: afficherDate(note.date),
-                            style: afficherDate(note.date) == "non renseigné"
-                                ? TextStyle(fontWeight: FontWeight.normal, fontStyle: FontStyle.italic, color: Colors.grey[700])
-                                : const TextStyle(fontStyle: FontStyle.normal, color: Colors.black),
-                          ),
-                          TextSpan(
-                            text: "   Type: ${note.type}",
-                            style: const TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                        ],
-                      ),
+        child: InkWell(
+          onLongPress: () {
+            showDialog(
+              context: context,
+              builder: (context) => Theme(
+                data: ThemeData(
+                  dialogBackgroundColor: theme.primaryColor, // Couleur de fond du dialogue
+                ),
+                child: SimpleDialog(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20), // Bords arrondis
+                    side: const BorderSide(
+                      color: orangePerso, // Couleur de la bordure
+                      width: 3, // Largeur de la bordure
                     ),
                   ),
-                  Text(
-                    "Note: ${note.note}/20",
-                    style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
-                  ),
-                ],
+                  children: [
+                    Center( // Ajout du widget Center pour centrer le contenu
+                      child: SimpleDialogOption(
+                        onPressed: () {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => UpdateNote(eleve: widget.eleve, note: note, onNoteUpdate: refreshNotes),
+                            ),
+                          );
+                        },
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min, // Pour que la Row n'occupe que l'espace nécessaire
+                          children: [
+                            Icon(Icons.edit, color: theme.primaryIconTheme.color),
+                            const SizedBox(width: 10.0),
+                            Text("Modifier la note", style: TextStyle(color: theme.textTheme.bodyLarge?.color, fontFamily: 'NotoSans')),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-              const SizedBox(height: 5),
-              Text(
-                note.commentaire.isEmpty ? "non renseigné" : note.commentaire,
-                style: note.commentaire.isEmpty
-                    ? TextStyle(fontWeight: FontWeight.normal, fontStyle: FontStyle.italic, color: Colors.grey[700])
-                    : const TextStyle(fontStyle: FontStyle.normal, color: Colors.black),
-              ),
-            ],
+            );
+          },
+          splashColor: orangePerso,
+          child: Padding(
+            padding: const EdgeInsets.all(5.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: RichText(
+                        text: TextSpan(
+                          text: "Date: ",
+                          style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+                          children: <TextSpan>[
+                            TextSpan(
+                              text: afficherDate(note.date),
+                              style: afficherDate(note.date) == "non renseigné"
+                                  ? TextStyle(fontWeight: FontWeight.normal, fontStyle: FontStyle.italic, color: Colors.grey[700])
+                                  : const TextStyle(fontStyle: FontStyle.normal, color: Colors.black),
+                            ),
+                            TextSpan(
+                              text: "   Type: ${note.type}",
+                              style: const TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Text(
+                      "Note: ${note.note}/20",
+                      style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 5),
+
+                _buildNoteComment(note.commentaire),
+              ],
+            ),
           ),
         ),
       ),
@@ -88,7 +176,7 @@ class NoteBlock extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> noteRows = createNoteRows(eleve);
+    List<Widget> noteRows = createNoteRows(widget.eleve);
     return ClipRRect(
       borderRadius: BorderRadius.circular(arrondiBox),
       child: FractionallySizedBox(

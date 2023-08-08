@@ -21,11 +21,15 @@ class CommentaireBlockState extends State<CommentaireBlock> {
   @override
   void initState() {
     super.initState();
+
+    _controller.text = widget.commentaire.comment;  // Seule ligne à modifier par rapport à l'ajout
+
     _controller.addListener(() {
       widget.commentaire.comment = _controller.text;
       isCommentValidNotifier.value = _controller.text.trim().isNotEmpty;
     });
   }
+
 
   @override
   void dispose() {
@@ -186,9 +190,9 @@ class SoumettreButtonState extends State<SoumettreButton> {
         ElevatedButton.icon(
           onPressed: widget.isCommentValidNotifier.value
               ? () {
-                widget.onSubmit();
-                Navigator.pop(context);
-              }
+            widget.onSubmit();
+            Navigator.pop(context);
+          }
               : null,
           icon: const Icon(Icons.check),
           label: const Text('Ajouter'),
@@ -205,32 +209,41 @@ class SoumettreButtonState extends State<SoumettreButton> {
 }
 
 
-class AddCommentaire extends StatefulWidget {
+class UpdateCommentaire extends StatefulWidget {
   final Eleve eleve;
-  final Function? onCommentAdded;
+  final Commentaire commentaire;
+  final Function? onCommentUpdate;
 
-  const AddCommentaire({required this.eleve, this.onCommentAdded, Key? key}) : super(key: key);
+  const UpdateCommentaire({required this.eleve, required this.commentaire, this.onCommentUpdate, Key? key}) : super(key: key);
 
   @override
-  AddCommentaireState createState() => AddCommentaireState();
+  UpdateCommentaireState createState() => UpdateCommentaireState();
 }
 
-class AddCommentaireState extends State<AddCommentaire> {
+class UpdateCommentaireState extends State<UpdateCommentaire> {
 
   final GlobalKey<CommentaireBlockState> commentaireBlockKey = GlobalKey<CommentaireBlockState>();
 
-  final Commentaire commentaire = Commentaire("", "", "", "", "");
-
-  void handleSubmitCommentaire(String token, String login) async {
+  void handleSubmitCommentaire(String token, String login, String user, String prenom) async {
     try {
+      widget.commentaire.comment = widget.commentaire.comment.replaceAll('\n', '\r\n');
+      if (widget.commentaire.comment.contains("Modifié par")) {
+        // Si "Modifié par" existe, on remplace la partie après cela
+        widget.commentaire.comment = widget.commentaire.comment.replaceAllMapped(
+            RegExp(r'Modifié par:.*'),
+                (match) => 'Modifié par: $user ($prenom)'
+        );
+      } else {
+        // Sinon, on ajoute simplement à la fin
+        widget.commentaire.comment = '${widget.commentaire.comment}\r\n\r\nModifié par: $user ($prenom)';
+      }
 
-      commentaire.comment = commentaire.comment.replaceAll('\n', '\r\n');
-      await manageComment(token, login, widget.eleve, "add", commentaire);
+      await manageComment(token, login, widget.eleve, "update", widget.commentaire);
       print('Commentaire ajouté avec succès.');
 
       // Appel au callback pour rafraîchir la liste des commentaires
-      if (widget.onCommentAdded != null) {
-        widget.onCommentAdded!();
+      if (widget.onCommentUpdate != null) {
+        widget.onCommentUpdate!();
       }
     } catch (e) {
       print('Erreur lors de l\'ajout du commentaire: $e');
@@ -252,17 +265,17 @@ class AddCommentaireState extends State<AddCommentaire> {
       return const Text("ERREUR de login dans la requête API");
     }
 
-    String? user = authState.userType;
+    String prenom = authState.prenom!;
+    String user = authState.userType!;
     if (user == "prof") {
       user = "PROF";
     }
-    commentaire.from = '$user (${authState.prenom})';
 
     return Scaffold(
       appBar: AppBar(
         backgroundColor: orangePerso,
         title: Text(
-          'Nouveau comment. - ${widget.eleve.prenom}',
+          'Modification du comment.',
           style: TextStyle(
             fontWeight: FontWeight.bold,
             color: theme.primaryColor,
@@ -281,7 +294,7 @@ class AddCommentaireState extends State<AddCommentaire> {
 
                 CommentaireBlock(
                   key: commentaireBlockKey, // Passer la clé ici
-                  commentaire: commentaire,
+                  commentaire: widget.commentaire,
                 ),
 
                 const SizedBox(height: 20),
@@ -291,9 +304,9 @@ class AddCommentaireState extends State<AddCommentaire> {
                   builder: (BuildContext context) {
                     return SoumettreButton(
                       eleve: widget.eleve,
-                      commentaire: commentaire,
+                      commentaire: widget.commentaire,
                       isCommentValidNotifier: commentaireBlockKey.currentState!.isCommentValidNotifier, // Ici, ça devrait être OK
-                      onSubmit: () => handleSubmitCommentaire(token, login),
+                      onSubmit: () => handleSubmitCommentaire(token, login, user, prenom),
                     );
                   },
                 ),

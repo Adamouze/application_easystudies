@@ -36,7 +36,7 @@ class _DurationDialogState extends State<DurationDialog> {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),
         side: const BorderSide(
-          color: Colors.orangeAccent,
+          color: orangePerso,
           width: 3,
         ),
       ),
@@ -394,7 +394,7 @@ class _CoursDetailsScreenState extends State<CoursDetailsScreen> {
                                                 shape: RoundedRectangleBorder(
                                                   borderRadius: BorderRadius.circular(20), // Bords arrondis
                                                   side: const BorderSide(
-                                                    color: Colors.orangeAccent, // Couleur de la bordure
+                                                    color: orangePerso, // Couleur de la bordure
                                                     width: 3, // Largeur de la bordure
                                                   ),
                                                 ),
@@ -414,7 +414,7 @@ class _CoursDetailsScreenState extends State<CoursDetailsScreen> {
                                                       final token = authState.token!;
                                                       final login = authState.identifier!;
                                                       Eleve eleve0 = Eleve.basic(presence.identifier,"","","","","");
-                                                      Eleve eleve = await getAllEleve(token, login, eleve0);
+                                                      Eleve eleve = await getDetailsEleve(token, login, eleve0);
                                                       Navigator.push(
                                                         context,
                                                         MaterialPageRoute(
@@ -496,7 +496,7 @@ class _CoursDetailsScreenState extends State<CoursDetailsScreen> {
 
 
                                         },
-                                        splashColor: Colors.orangeAccent,
+                                        splashColor: orangePerso,
                                         onTap: () {},
                                         child: Container(
                                           width: 2 * width,

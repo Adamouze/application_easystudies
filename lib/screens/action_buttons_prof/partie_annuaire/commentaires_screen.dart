@@ -2,48 +2,135 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'add_directory/add_commentaire_screen.dart';
+import 'update_directory/update_commentaire_screen.dart';
 import '../../../utilities/constantes.dart';
 import '../../../logs/auth_stat.dart';
 import '../../../utils.dart';
 
 
-class CommentaireBlock extends StatelessWidget {
+class CommentaireBlock extends StatefulWidget {
   final Eleve eleve;
 
   const CommentaireBlock({required this.eleve, Key? key}) : super(key: key);
 
+  @override
+  CommentaireBlockState createState() => CommentaireBlockState();
+}
+
+class CommentaireBlockState extends State<CommentaireBlock> {
+
+  void refreshComments() async {
+    final authState = Provider.of<AuthState>(context, listen: false);
+    final token = authState.token ?? "";
+    final login = authState.identifier ?? "";
+    final newEleve = await getCommentsEleve(token, login, widget.eleve);
+    setState(() {
+      widget.eleve.commentaires = newEleve.commentaires;
+    });
+  }
+
+  Widget _buildCommentWithModification(String comment) {
+    // Remplacez tous les '\n' par '\r\n'
+    comment = comment.replaceAll('\n', '\r\n');
+
+    int modifiedIndex = comment.indexOf('Modifié par:');
+
+    if (modifiedIndex == -1) {
+      return Text(comment);
+    }
+
+    String beforeModified = comment.substring(0, modifiedIndex);
+    String modifiedPart = comment.substring(modifiedIndex);
+
+    return RichText(
+      text: TextSpan(
+        text: beforeModified,
+        style: DefaultTextStyle.of(context).style,
+        children: [
+          TextSpan(text: modifiedPart, style: const TextStyle(fontStyle: FontStyle.italic)),
+        ],
+      ),
+    );
+  }
+
   Widget buildCommentaireRow(Commentaire commentaire, int index, Color color) {
+    final theme = Theme.of(context);
     return SizedBox(
       width: double.infinity,
       child: Card(
         color: color,
         margin: const EdgeInsets.only(left: 8.0, right: 8.0, top: 8.0),
-        child: Padding(
-          padding: const EdgeInsets.all(5.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              RichText(
-                text: TextSpan(
-                  text: "Date: ",
-                  style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
-                  children: <TextSpan>[
-                    TextSpan(
-                      text: afficherDate(commentaire.date),
-                      style: afficherDate(commentaire.date) == "non renseigné"
-                          ? TextStyle(fontWeight: FontWeight.normal, fontStyle: FontStyle.italic, color: Colors.grey[700])
-                          : const TextStyle(fontStyle: FontStyle.normal, color: Colors.black),
+        child: InkWell(
+          onLongPress: () {
+            showDialog(
+              context: context,
+              builder: (context) => Theme(
+                data: ThemeData(
+                  dialogBackgroundColor: theme.primaryColor, // Couleur de fond du dialogue
+                ),
+                child: SimpleDialog(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20), // Bords arrondis
+                    side: const BorderSide(
+                      color: orangePerso, // Couleur de la bordure
+                      width: 3, // Largeur de la bordure
                     ),
-                    TextSpan(
-                      text: "   Par: ${commentaire.from}",
-                      style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  children: [
+                    Center( // Ajout du widget Center pour centrer le contenu
+                      child: SimpleDialogOption(
+                        onPressed: () {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => UpdateCommentaire(eleve: widget.eleve, commentaire: commentaire, onCommentUpdate: refreshComments),
+                            ),
+                          );
+                        },
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min, // Pour que la Row n'occupe que l'espace nécessaire
+                          children: [
+                            Icon(Icons.edit, color: theme.primaryIconTheme.color),
+                            const SizedBox(width: 10.0),
+                            Text("Modifier le commentaire", style: TextStyle(color: theme.textTheme.bodyLarge?.color, fontFamily: 'NotoSans')),
+                          ],
+                        ),
+                      ),
                     ),
                   ],
                 ),
               ),
-              const SizedBox(height: 5),
-              Text(commentaire.comment),
-            ],
+            );
+          },
+          splashColor: orangePerso,
+          child: Padding(
+            padding: const EdgeInsets.all(5.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                RichText(
+                  text: TextSpan(
+                    text: "Date: ",
+                    style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+                    children: <TextSpan>[
+                      TextSpan(
+                        text: afficherDate(commentaire.date),
+                        style: afficherDate(commentaire.date) == "non renseigné"
+                            ? TextStyle(fontWeight: FontWeight.normal, fontStyle: FontStyle.italic, color: Colors.grey[700])
+                            : const TextStyle(fontStyle: FontStyle.normal, color: Colors.black),
+                      ),
+                      TextSpan(
+                        text: "   Par: ${commentaire.from}",
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 5),
+
+                _buildCommentWithModification(commentaire.comment)
+              ],
+            ),
           ),
         ),
       ),
@@ -69,7 +156,7 @@ class CommentaireBlock extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> commentaireRows = createCommentaireRows(eleve);
+    List<Widget> commentaireRows = createCommentaireRows(widget.eleve);
     return ClipRRect(
       borderRadius: BorderRadius.circular(arrondiBox),
       child: FractionallySizedBox(

@@ -374,8 +374,6 @@ Future<Eleve> getNotesEleve(String token, String login, Eleve eleve) async {
   for (var u in gradesData) {
     Note note = Note(u["_index"], u["_date"], u["_type"], u["_grade"], u["_comment"]);
     notes.add(note);
-    print("Note du ${afficherDate(note.date)} : ${note.commentaire}");
-    print(note.commentaire.isEmpty);
   }
 
   eleve.notes = notes;
@@ -528,16 +526,13 @@ Future<void> manageComment(String token, String login, Eleve eleve, String actio
     '_login': login,
     '_identifier': eleve.identifier,
     '_action': action,
+    '_idComment': commentaire.index, // Vide pour "add", et rempli pour "update"
+    '_from': commentaire.from,
+    '_comment': commentaire.comment,
   };
 
-  // Ajoute les champs supplémentaires si l'action est "add" et le commentaire n'est pas nul
-  if (action == 'add') {
-    queryParams['_idComment'] = commentaire.index; // Utilisez l'index si disponible
-    queryParams['_from'] = commentaire.from;
-    queryParams['_comment'] = commentaire.comment;
-  }
-
   final uri = Uri.https('app.easystudies.fr', '/api/comments.php', queryParams);
+  print(uri);
 
   final response = await http.get(uri);
 

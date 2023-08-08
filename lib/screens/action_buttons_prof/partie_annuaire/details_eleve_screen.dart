@@ -653,20 +653,20 @@ class CommentaireBlock extends StatefulWidget {
 class CommentaireBlockState extends State<CommentaireBlock> {
 
   Widget buildCommentaireRow(Commentaire commentaire, int index, Color color) {
-    return InkWell(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => CommentaireScreen(eleve: widget.eleve),
-          ),
-        );
-      },
-      child: SizedBox(
-        width: double.infinity,
-        child: Card(
-          color: color,
-          margin: const EdgeInsets.only(left: 8.0, right: 8.0, top: 8.0),
+    return SizedBox(
+      width: double.infinity,
+      child: Card(
+        color: color,
+        margin: const EdgeInsets.only(left: 8.0, right: 8.0, top: 8.0),
+        child: InkWell(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => CommentaireScreen(eleve: widget.eleve),
+              ),
+            );
+          },
           child: Padding(
             padding: const EdgeInsets.all(5.0),
             child: Column(
@@ -823,20 +823,20 @@ class NoteBlock extends StatefulWidget {
 class NoteBlockState extends State<NoteBlock> {
 
   Widget buildNoteRow(Note note, int index, Color color) {
-    return InkWell(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => NoteScreen(eleve: widget.eleve),
-          ),
-        );
-      },
-      child: SizedBox(
-        width: double.infinity,
-        child: Card(
-          color: color,
-          margin: const EdgeInsets.only(left: 8.0, right: 8.0, top: 8.0),
+    return SizedBox(
+      width: double.infinity,
+      child: Card(
+        color: color,
+        margin: const EdgeInsets.only(left: 8.0, right: 8.0, top: 8.0),
+        child: InkWell(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => NoteScreen(eleve: widget.eleve),
+              ),
+            );
+          },
           child: Padding(
             padding: const EdgeInsets.all(5.0),
             child: Column(
