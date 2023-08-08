@@ -57,6 +57,17 @@ class MyApp extends StatelessWidget {
             scrollbarTheme: ScrollbarThemeData(
               thumbColor: MaterialStateProperty.all(Colors.blueAccent),
             ),
+            inputDecorationTheme: const InputDecorationTheme(
+            enabledBorder: UnderlineInputBorder(
+            borderSide: BorderSide(color: orangePerso),
+            ),
+          focusedBorder: UnderlineInputBorder(
+          borderSide: BorderSide(color: orangePerso),
+            ),
+              border: UnderlineInputBorder(
+                borderSide: BorderSide(color: orangePerso),
+              ),
+            ),
             dividerColor: orangePerso,
             textSelectionTheme: const TextSelectionThemeData(
               cursorColor: orangePerso,
