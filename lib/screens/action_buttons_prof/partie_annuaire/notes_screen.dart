@@ -43,20 +43,25 @@ class NoteBlockState extends State<NoteBlock> {
       );
     }
 
-    int modifiedIndex = comment.indexOf('Modifié par:');
-    if (modifiedIndex == -1) {
+    int italicIndex = comment.indexOf('Entrée par:');
+    if (italicIndex == -1) {
+      italicIndex = comment.indexOf('Modifiée par:');
+    }
+
+    if (italicIndex == -1) {
+      // Aucun des préfixes n'est présent
       return Text(comment, style: const TextStyle(fontStyle: FontStyle.normal, color: Colors.black));
     }
 
-    String beforeModified = comment.substring(0, modifiedIndex);
-    String modifiedPart = comment.substring(modifiedIndex);
+    String normalText = comment.substring(0, italicIndex);
+    String italicText = comment.substring(italicIndex);
 
     return RichText(
       text: TextSpan(
-        text: beforeModified,
+        text: normalText,
         style: const TextStyle(color: Colors.black),
         children: [
-          TextSpan(text: modifiedPart, style: const TextStyle(fontStyle: FontStyle.italic, color: Colors.black)),
+          TextSpan(text: italicText, style: const TextStyle(fontStyle: FontStyle.italic, color: Colors.black)),
         ],
       ),
     );

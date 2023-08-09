@@ -10,6 +10,42 @@ class NoteBlock extends StatelessWidget {
 
   const NoteBlock({required this.eleve, Key? key}) : super(key: key);
 
+  Widget _buildNoteComment(String comment) {
+    // Remplacez tous les '\n' par '\r\n'
+    comment = comment.replaceAll('\n', '\r\n');
+
+    // Vérifiez si le commentaire est vide
+    if (comment.isEmpty) {
+      return Text(
+          "non renseigné",
+          style: TextStyle(fontWeight: FontWeight.normal, fontStyle: FontStyle.italic, color: Colors.grey[700])
+      );
+    }
+
+    int italicIndex = comment.indexOf('Entrée par:');
+    if (italicIndex == -1) {
+      italicIndex = comment.indexOf('Modifiée par:');
+    }
+
+    if (italicIndex == -1) {
+      // Aucun des préfixes n'est présent
+      return Text(comment, style: const TextStyle(fontStyle: FontStyle.normal, color: Colors.black));
+    }
+
+    String normalText = comment.substring(0, italicIndex);
+    String italicText = comment.substring(italicIndex);
+
+    return RichText(
+      text: TextSpan(
+        text: normalText,
+        style: const TextStyle(color: Colors.black),
+        children: [
+          TextSpan(text: italicText, style: const TextStyle(fontStyle: FontStyle.italic, color: Colors.black)),
+        ],
+      ),
+    );
+  }
+
   Widget buildNoteRow(Note note, int index, Color color) {
     return SizedBox(
       width: double.infinity,
@@ -50,7 +86,8 @@ class NoteBlock extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 5),
-              Text(note.commentaire),
+              
+              _buildNoteComment(note.commentaire),
             ],
           ),
         ),

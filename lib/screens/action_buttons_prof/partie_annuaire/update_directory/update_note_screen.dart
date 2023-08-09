@@ -6,10 +6,6 @@ import '../../../../utilities/constantes.dart';
 import '../../../../utils.dart';
 import '../../../../logs/auth_stat.dart';
 
-
-// TODO C'est la partie note qui déconne + texte en blanc maintenant
-
-
 class NoteBlock extends StatefulWidget {
   final Note note;
   const NoteBlock({required this.note ,Key? key}) : super(key: key);
@@ -419,17 +415,21 @@ class UpdateNoteState extends State<UpdateNote> {
       widget.note.commentaire = widget.note.commentaire.replaceAll('\n', '\r\n');
       if (widget.note.commentaire.trim().isEmpty) {
         // Si le commentaire est vide, assignez seulement "Modifié par: $user ($prenom)"
-        widget.note.commentaire = 'Modifié par: $user ($prenom)';
-      } else if (widget.note.commentaire.contains("Modifié par")) {
+        widget.note.commentaire = 'Modifiée par: $user ($prenom)';
+      } else if (widget.note.commentaire.contains("Modifiée par")) {
         // Si "Modifié par" existe, remplacez la partie après cela
         widget.note.commentaire = widget.note.commentaire.replaceAllMapped(
-            RegExp(r'Modifié par:.*'),
-                (match) => 'Modifié par: $user ($prenom)'
+            RegExp(r'Modifiée par:.*'),
+                (match) => 'Modifiée par: $user ($prenom)'
         );
+      } else if (widget.note.commentaire.contains("Entrée par")) {
+        // Si "Entrée par" existe, ajoutez "Modifié par: $user ($prenom)" après une nouvelle ligne
+        widget.note.commentaire = '${widget.note.commentaire}\r\nModifiée par: $user ($prenom)';
       } else {
         // Sinon, ajoutez simplement à la fin
-        widget.note.commentaire = '${widget.note.commentaire}\r\n\r\nModifié par: $user ($prenom)';
+        widget.note.commentaire = '${widget.note.commentaire}\r\n\r\nModifiée par: $user ($prenom)';
       }
+
 
 
       await manageNote(token, login, widget.eleve, "update", widget.note);

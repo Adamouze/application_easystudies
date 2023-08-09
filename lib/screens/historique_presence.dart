@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 
-import '../../../utilities/constantes.dart';
+import '../utilities/constantes.dart';
 
-import '../../../utils.dart';
+import '../utils.dart';
 
 
-class HistoryBlock extends StatelessWidget {
+class HistoryPresenceBlock extends StatelessWidget {
   final Eleve eleve;
 
-  const HistoryBlock({required this.eleve, Key? key}) : super(key: key);
+  const HistoryPresenceBlock({required this.eleve, Key? key}) : super(key: key);
 
   Widget buildHistoryRow(Presence presence, int index, Color color) {
     return SizedBox(
@@ -159,16 +159,16 @@ class HistoryBlock extends StatelessWidget {
     );  }
 }
 
-class HistoryScreen extends StatefulWidget {
+class HistoryPresenceScreen extends StatefulWidget {
   final Eleve eleve;
 
-  const HistoryScreen({required this.eleve, Key? key}) : super(key: key);
+  const HistoryPresenceScreen({required this.eleve, Key? key}) : super(key: key);
 
   @override
-  HystoryScreenState createState() => HystoryScreenState();
+  HistoryPresenceScreenState createState() => HistoryPresenceScreenState();
 }
 
-class HystoryScreenState extends State<HistoryScreen> {
+class HistoryPresenceScreenState extends State<HistoryPresenceScreen> {
 
   @override
   Widget build(BuildContext context) {
@@ -192,7 +192,7 @@ class HystoryScreenState extends State<HistoryScreen> {
             child: Column(
               children: [
                 const SizedBox(height: 20),
-                HistoryBlock(eleve: widget.eleve),
+                HistoryPresenceBlock(eleve: widget.eleve),
                 const SizedBox(height: 120),
               ],
             ),

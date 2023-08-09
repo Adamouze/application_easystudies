@@ -9,7 +9,7 @@ import '../utils.dart';
 import 'app_bar.dart';
 import 'body.dart';
 
-import 'action_buttons_eleve/attendance_history_screen.dart';
+import 'historique_presence.dart';
 import 'action_buttons_eleve/bilans_screen.dart';
 import 'action_buttons_eleve/commentaires_screen.dart';
 import 'action_buttons_eleve/notes_screen.dart';
@@ -57,7 +57,7 @@ class EleveScreenState extends State<EleveScreen> {
       case 3:
         return CommentaireBlock(eleve: eleve);
       case 4:
-        return const HistoryScreen();
+        return HistoryPresenceScreen(eleve: eleve);
       default:
         return const HomeContent();
     }
@@ -90,11 +90,11 @@ class EleveScreenState extends State<EleveScreen> {
           return WillPopScope(
             onWillPop: _onWillPop,
             child: Scaffold(
-              appBar: CustomAppBar(context: context),
+              appBar: CustomAppBar(context: context, eleve: eleve),
               body: getScreen(_selectedIndex, eleve),
               bottomNavigationBar: Theme(
                 data: theme.copyWith(
-                  splashColor: couleurSplashBottomBar,
+                  splashColor: couleurSplashBottomBar.withOpacity(0.3),
                 ),
                 child: BottomNavigationBar(
                   type: BottomNavigationBarType.fixed,

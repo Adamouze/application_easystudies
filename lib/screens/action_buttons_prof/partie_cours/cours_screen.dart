@@ -73,15 +73,14 @@ class _CourseDialogState extends State<CourseDialog> with SingleTickerProviderSt
         future: _centresFuture,
         builder: (BuildContext context, AsyncSnapshot<List<Centre>> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const
-            Center(
-               child : SizedBox(
-              width: 30.0,
-              height: 30.0,
-              child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.orangeAccent),
-              ),
+            return const Center(
+              child : SizedBox(
+                width: 30.0,
+                height: 30.0,
+                child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(orangePerso),
                 ),
+              ),
             );
 
           } else if (snapshot.hasError) {

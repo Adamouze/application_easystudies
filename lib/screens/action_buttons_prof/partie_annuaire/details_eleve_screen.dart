@@ -13,7 +13,7 @@ import 'commentaires_screen.dart';
 import 'notes_screen.dart';
 import 'bilans_screen.dart';
 import 'details_bilan.dart';
-import 'historique_screen.dart';
+import '../../historique_presence.dart';
 import 'add_directory/add_bilan_screen.dart';
 import 'add_directory/add_commentaire_screen.dart';
 import 'add_directory/add_devoir_screen.dart';
@@ -822,6 +822,51 @@ class NoteBlock extends StatefulWidget {
 
 class NoteBlockState extends State<NoteBlock> {
 
+  Widget _buildNoteComment(String comment) {
+    // Remplacez tous les '\n' par '\r\n'
+    comment = comment.replaceAll('\n', '\r\n');
+
+    // Vérifiez si le commentaire est vide
+    if (comment.isEmpty) {
+      return Text(
+          "non renseigné",
+          style: TextStyle(fontWeight: FontWeight.normal, fontStyle: FontStyle.italic, color: Colors.grey[700]),
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis
+      );
+    }
+
+    int italicIndex = comment.indexOf('Entrée par:');
+    if (italicIndex == -1) {
+      italicIndex = comment.indexOf('Modifiée par:');
+    }
+
+    if (italicIndex == -1) {
+      // Aucun des préfixes n'est présent
+      return Text(
+          comment,
+          style: const TextStyle(fontStyle: FontStyle.normal, color: Colors.black),
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis
+      );
+    }
+
+    String normalText = comment.substring(0, italicIndex);
+    String italicText = comment.substring(italicIndex);
+
+    return Text.rich(
+      TextSpan(
+        text: normalText,
+        style: const TextStyle(color: Colors.black),
+        children: [
+          TextSpan(text: italicText, style: const TextStyle(fontStyle: FontStyle.italic, color: Colors.black)),
+        ],
+      ),
+      maxLines: 2,
+      overflow: TextOverflow.ellipsis,
+    );
+  }
+
   Widget buildNoteRow(Note note, int index, Color color) {
     return SizedBox(
       width: double.infinity,
@@ -871,14 +916,7 @@ class NoteBlockState extends State<NoteBlock> {
                   ],
                 ),
                 const SizedBox(height: 5),
-                Text(
-                  note.commentaire.isEmpty ? "non renseigné" : note.commentaire,
-                  maxLines: 2, // Limite à deux lignes
-                  overflow: TextOverflow.ellipsis, // Ajoute des ellipses à la fin si le texte est trop long
-                  style: note.commentaire.isEmpty
-                      ? TextStyle(fontWeight: FontWeight.normal, fontStyle: FontStyle.italic, color: Colors.grey[700])
-                      : const TextStyle(fontStyle: FontStyle.normal, color: Colors.black),
-                ),
+                _buildNoteComment(note.commentaire),
               ],
             ),
           ),
@@ -886,6 +924,7 @@ class NoteBlockState extends State<NoteBlock> {
       ),
     );
   }
+
 
   List<Widget> noteRows = [];
 
@@ -1364,7 +1403,7 @@ class FancyFabState extends State<FancyFab> with SingleTickerProviderStateMixin 
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => HistoryScreen(eleve: widget.eleve)),
+                MaterialPageRoute(builder: (context) => HistoryPresenceScreen(eleve: widget.eleve)),
               );
             },
             tooltip: 'Historique de présence',

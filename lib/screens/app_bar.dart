@@ -1,10 +1,14 @@
-import 'package:EasyStudies/screens/login_screen.dart';
-import 'package:EasyStudies/utilities/constantes.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../logs/auth_stat.dart';
+import '../utilities/constantes.dart';
 import '../utilities/theme_provider.dart';
+import 'historique_paiement.dart';
+import 'historique_presence.dart';
+import 'login_screen.dart';
+import 'profil_screen.dart';
+import '../utils.dart';
 
 class AnimatedDialog extends StatefulWidget {
   const AnimatedDialog({Key? key}) : super(key: key);
@@ -183,8 +187,10 @@ class LogoutDialogState extends State<LogoutDialog> with SingleTickerProviderSta
 
 class CustomAppBar extends PreferredSize {
   final BuildContext context;
+  final Eleve? eleve;
 
-  CustomAppBar({Key? key, required this.context}) : super(
+
+  CustomAppBar({Key? key, this.eleve, required this.context}) : super(
     key: key,
     preferredSize: const Size.fromHeight(80.0),
     child: AppBar(
@@ -233,16 +239,16 @@ class CustomAppBar extends PreferredSize {
 
           const Spacer(),
 
-          const Expanded(
+          Expanded(
             flex: 5,
             child: Align(
               alignment: Alignment.center,
               child: Text(
                 'EasyStudies',
                 style: TextStyle(
-                  color: Colors.white,
+                  color: Theme.of(context).primaryColor,
                   fontFamily: 'Noto Sans',
-                  fontSize: 20,
+                  fontSize: 25,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -257,6 +263,33 @@ class CustomAppBar extends PreferredSize {
                 return PopupMenuButton<int>(
                   color: orangePerso,
                   itemBuilder: (context) => [
+                    // 1er bouton : Redirection vers page "profil"
+                    PopupMenuItem(
+                      value: 1,
+                      child: Builder(
+                        builder: (newContext) {
+                          final themeProvider = Provider.of<ThemeProvider>(newContext, listen: false);
+                          return Row(
+                            children: [
+                              IconTheme(
+                                data: IconThemeData(
+                                    color: themeProvider.isDarkTheme ? Colors.black : Colors.white),
+                                child: const Icon(Icons.person),
+                              ),
+                              Text(
+                                'Profil',
+                                style: TextStyle(
+                                  color: themeProvider.isDarkTheme ? Colors.black : Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: 'NotoSans',
+                                ),
+                              ),
+                            ],
+                          );
+                        },
+                      ),
+                    ),
+
                     PopupMenuItem(
                       value: 1,
                       child: Builder(
@@ -291,8 +324,61 @@ class CustomAppBar extends PreferredSize {
                       ),
                     ),
 
+                    // 3e bouton : Redirection vers la page "historique de présence"
                     PopupMenuItem(
-                      value: 2,
+                      value: 3,
+                      child: Builder(
+                        builder: (newContext) {
+                          final themeProvider = Provider.of<ThemeProvider>(newContext, listen: false);
+                          return Row(
+                            children: [
+                              IconTheme(
+                                data: IconThemeData(
+                                    color: themeProvider.isDarkTheme ? Colors.black : Colors.white),
+                                child: const Icon(Icons.history),
+                              ),
+                              Text(
+                                'Historique de présence',
+                                style: TextStyle(
+                                  color: themeProvider.isDarkTheme ? Colors.black : Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: 'NotoSans',
+                                ),
+                              ),
+                            ],
+                          );
+                        },
+                      ),
+                    ),
+                    // 4e bouton : Redirection vers la page "historique de paiement"
+                    PopupMenuItem(
+                      value: 4,
+                      child: Builder(
+                        builder: (newContext) {
+                          final themeProvider = Provider.of<ThemeProvider>(newContext, listen: false);
+                          return Row(
+                            children: [
+                              IconTheme(
+                                data: IconThemeData(
+                                    color: themeProvider.isDarkTheme ? Colors.black : Colors.white),
+                                child: const Icon(Icons.payment),
+                              ),
+                              Text(
+                                'Historique de paiement',
+                                style: TextStyle(
+                                  color: themeProvider.isDarkTheme ? Colors.black : Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: 'NotoSans',
+                                ),
+                              ),
+                            ],
+                          );
+                        },
+                      ),
+                    ),
+
+                    PopupMenuItem(
+                      value: 5,
                       child: Builder(
                         builder: (newContext) {
                           final themeProvider = Provider.of<ThemeProvider>(newContext, listen: false);
@@ -316,18 +402,45 @@ class CustomAppBar extends PreferredSize {
                         },
                       ),
                     ),
-
                   ],
+
                   onSelected: (value) {
-                    if (value == 2) { // si l'utilisateur a cliqué sur le bouton de déconnexion
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return const LogoutDialog();
-                        },
-                      );
+                    switch (value) {
+                      case 1:
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ProfilScreen(eleve: eleve ?? Eleve.basic("","","","","","")),
+                          ),
+                        );
+                        break;
+                      case 3:
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => HistoryPresenceScreen(eleve: eleve ?? Eleve.basic("","","","","","")),
+                          ),
+                        );
+                        break;
+                      case 4:
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => HistoryPaiementScreen(eleve: eleve ?? Eleve.basic("","","","","","")),
+                          ),
+                        );
+                        break;
+                      case 5:
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return const LogoutDialog();
+                          },
+                        );
+                        break;
                     }
                   },
+
                   child: Card(
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30),
@@ -348,7 +461,6 @@ class CustomAppBar extends PreferredSize {
                     ),
                   ),
                 );
-
 
 
               }
@@ -379,8 +491,6 @@ class CustomAppBar extends PreferredSize {
                     ),
                   ),
                 );
-
-
               }
             },
           ),

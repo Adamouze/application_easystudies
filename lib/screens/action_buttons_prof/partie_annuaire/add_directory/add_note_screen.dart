@@ -361,9 +361,22 @@ class AddNoteState extends State<AddNote> {
 
   final Note note = Note("", "", "", "", "");
 
-  void handleSubmitNote(String token, String login) async {
+  void handleSubmitNote(String token, String login, String user, String prenom) async {
     try {
       note.commentaire = note.commentaire.replaceAll('\n', '\r\n');
+      if (note.commentaire.trim().isEmpty) {
+        // Si le commentaire est vide, assignez seulement "Entrée par: $user ($prenom)"
+        note.commentaire = 'Entrée par: $user ($prenom)';
+      } else if (note.commentaire.contains("Entrée par")) {
+        // Si "Entrée par" existe, remplacez la partie après cela
+        note.commentaire = note.commentaire.replaceAllMapped(
+            RegExp(r'Entrée par:.*'),
+                (match) => 'Entrée par: $user ($prenom)'
+        );
+      } else {
+        // Sinon, ajoutez simplement à la fin
+        note.commentaire = '${note.commentaire}\r\n\r\nEntrée par: $user ($prenom)';
+      }
 
       await manageNote(token, login, widget.eleve, "add", note);
       print('Note ajoutée avec succès.');
@@ -393,6 +406,12 @@ class AddNoteState extends State<AddNote> {
     }
 
     note.date == '' ? note.date = DateFormat('yyyy-MM-dd').format(DateTime.now()) : ();
+
+    String prenom = authState.prenom!;
+    String user = authState.userType!;
+    if (user == "prof") {
+      user = "PROF";
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -427,7 +446,7 @@ class AddNoteState extends State<AddNote> {
                       eleve: widget.eleve,
                       note: note,
                       isNoteValidNotifier: noteBlockKey.currentState!.isNoteValidNotifier, // Ici, ça devrait être OK
-                      onSubmit: () => handleSubmitNote(token, login),
+                      onSubmit: () => handleSubmitNote(token, login, user, prenom),
                     );
                   },
                 ),
