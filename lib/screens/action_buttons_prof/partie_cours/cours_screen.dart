@@ -1,4 +1,4 @@
-// ignore_for_file: library_private_types_in_public_api
+// ignore_for_file: library_private_types_in_public_api, use_build_context_synchronously
 
 import 'package:EasyStudies/logs/auth_stat.dart';
 import 'package:EasyStudies/utilities/constantes.dart';
@@ -9,9 +9,8 @@ import 'package:EasyStudies/screens/action_buttons_prof/partie_cours/details_cou
 import 'package:EasyStudies/utils.dart';
 
 class CourseDialog extends StatefulWidget {
-  final Function(String, DateTime) addCourse;
 
-  const CourseDialog({Key? key, required this.addCourse}) : super(key: key);
+  const CourseDialog({Key? key}) : super(key: key);
 
   @override
   _CourseDialogState createState() => _CourseDialogState();
@@ -19,8 +18,15 @@ class CourseDialog extends StatefulWidget {
 
 class _CourseDialogState extends State<CourseDialog> with SingleTickerProviderStateMixin {
   final _formKey = GlobalKey<FormState>();
-  String? _selectedLocation;
-  DateTime _selectedDate = DateTime.now();
+  Centre? _selectedCentre;
+  String? _selectedType;
+  DateTime _selectedDate;
+  _CourseDialogState() : _selectedDate = DateTime.now() {
+    _selectedDate = DateTime(_selectedDate.year, _selectedDate.month, _selectedDate.day);
+  }
+
+  Future<List<Centre>>? _centresFuture;
+
 
   final TextEditingController _dateController = TextEditingController();
 
@@ -30,7 +36,12 @@ class _CourseDialogState extends State<CourseDialog> with SingleTickerProviderSt
   @override
   void initState() {
     super.initState();
-    _dateController.text = DateFormat('dd/MM/yyyy').format(_selectedDate);
+
+    final authState = context.read<AuthState>(); // Récupérer l'instance de AuthState ici pour éviter des problèmes de contexte dans initState
+    final token = authState.token; // Récupérer le token de AuthState
+    final identifier = authState.identifier; // Récupérer l'identifiant de AuthState
+    _centresFuture = fetchCenterList(token!, identifier!);
+    _dateController.text = afficherDate(DateFormat('yyyy-MM-dd').format(_selectedDate));
     _controller = AnimationController(
       duration: const Duration(seconds: 1),
       vsync: this,
@@ -55,179 +66,235 @@ class _CourseDialogState extends State<CourseDialog> with SingleTickerProviderSt
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-
-    return SlideTransition(
-      position: _offsetAnimation,
-      child : Dialog(
-        insetPadding: const EdgeInsets.all(20),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20.0),
-          side: const BorderSide(color: orangePerso, width: 4),
-        ),
-        child: Container(
-          padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            color: theme.cardColor,
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text(
-                  'Ajout d\'un cours',
-                  style: TextStyle(
-                    fontFamily: 'NotoSans',
-                    color: theme.textTheme.bodyLarge?.color,
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                  ),
+    final authState = context.read<AuthState>(); // Récupérer l'instance de AuthState ici pour éviter des problèmes de contexte dans initState
+    final token = authState.token; // Récupérer le token de AuthState
+    final identifier = authState.identifier; // Récupérer l'identifiant de AuthState
+    return FutureBuilder<List<Centre>>(
+        future: _centresFuture,
+        builder: (BuildContext context, AsyncSnapshot<List<Centre>> snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const
+            Center(
+               child : SizedBox(
+              width: 30.0,
+              height: 30.0,
+              child: CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.orangeAccent),
+              ),
                 ),
+            );
 
-                const SizedBox(height: 15),
+          } else if (snapshot.hasError) {
+            return Text('Erreur: ${snapshot.error}'); // Gérer les erreurs comme vous le souhaitez
+          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return const Text('Aucun centre trouvé.');
+          } else {
+            List<Centre> centres = snapshot.data!;
+            return SlideTransition(
+              position: _offsetAnimation,
+              child: Dialog(
+                insetPadding: const EdgeInsets.all(20),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20.0),
+                  side: const BorderSide(color: orangePerso, width: 4),
+                ),
+                child: Container(
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: theme.cardColor,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text(
+                          'Ajout d\'un cours',
+                          style: TextStyle(
+                            fontFamily: 'NotoSans',
+                            color: theme.textTheme.bodyLarge?.color,
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
 
-                FutureBuilder<List<String>>(
-                  builder: (BuildContext context, AsyncSnapshot<List<String>> snapshot) {
-                    if (snapshot.connectionState == ConnectionState.done) {
-                      if (snapshot.hasError) {
-                        return const Text("Erreur");
-                      } else {
-                        return DropdownButtonFormField<String>(
-                          value: _selectedLocation,
-                          decoration: const InputDecoration(
-                            fillColor: Colors.white,
+                        const SizedBox(height: 15),
+
+                        DropdownButtonFormField<Centre>(
+                          value: _selectedCentre,
+                          decoration: InputDecoration(
+                            fillColor: theme.primaryColor,
                             filled: true,
                             labelText: 'Lieu',
                             labelStyle: TextStyle(
-                              color: orangePerso,
+                              color: theme.textTheme.bodyLarge?.color,
                               fontFamily: 'NotoSans',
                               fontWeight: FontWeight.bold,
                               fontSize: 16,
                             ),
-                            prefixIcon: Icon(Icons.location_on, color: orangePerso),
+                            prefixIcon: Icon(
+                                Icons.location_on, color: theme.primaryIconTheme.color),
                           ),
-                          items: snapshot.data!.map((String value) {
-                            return DropdownMenuItem<String>(
-                              value: value,
-                              child: Text(value, style: const TextStyle(fontWeight: FontWeight.normal)),
-                            );
-                          }).toList(),
-                          onChanged: (String? newValue) {
-                            setState(() {
-                              _selectedLocation = newValue;
-                            });
-                          },
+                            items: centres.map((Centre centre) {
+                              return DropdownMenuItem<Centre>(
+                                value: centre,
+                                child: Text(centre.nomCentre, style: const TextStyle(fontWeight: FontWeight.normal)),
+                              );
+                            }).toList(),
+                            onChanged: (Centre? newValue) {
+                              setState(() {
+                                _selectedCentre = newValue;
+                              });
+                            },
                           validator: (value) {
-                            if (value == null || value.isEmpty) {
+                            if (value == null) {
                               return 'Veuillez sélectionner un lieu';
                             }
                             return null;
                           },
-                        );
-                      }
-                    } else {
-                      return const Center(
-                        child: CircularProgressIndicator(
-                          valueColor: AlwaysStoppedAnimation<Color>(orangePerso),
                         ),
-                      );
-                    }
-                  },
-                ),
 
-                const SizedBox(height: 15),
+                        const SizedBox(height: 15),
 
-                TextFormField(
-                  controller: _dateController,
-                  decoration: InputDecoration(
-                    fillColor: theme.primaryColor,
-                    filled: true,
-                    labelText: 'Date',
-                    labelStyle: TextStyle(
-                      color: theme.textTheme.bodyLarge?.color,
-                      fontFamily: 'NotoSans',
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
+                        DropdownButtonFormField<String>(
+                          value: _selectedType,
+                          decoration:  InputDecoration(
+                            fillColor: theme.primaryColor,
+                            filled: true,
+                            labelText: 'Type',
+                            labelStyle: TextStyle(
+                              color: theme.textTheme.bodyLarge?.color,
+                              fontFamily: 'NotoSans',
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                            prefixIcon: Icon(
+                                Icons.category, color: theme.primaryIconTheme.color),
+                          ),
+                          items: ["REG", "PART","GROUPE", "STAGE", "ONLINE"].map((
+                              String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(value, style: const TextStyle(
+                                  fontWeight: FontWeight.normal)),
+                            );
+                          }).toList(),
+                          onChanged: (String? newValue) {
+                            setState(() {
+                              _selectedType = newValue;
+                            });
+                          },
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Veuillez sélectionner un type';
+                            }
+                            return null;
+                          },
+                        ),
+
+                        const SizedBox(height: 15),
+
+                        TextFormField(
+                          controller: _dateController,
+                          decoration: InputDecoration(
+                            fillColor: theme.primaryColor,
+                            filled: true,
+                            labelText: 'Date',
+                            labelStyle: TextStyle(
+                              color: theme.textTheme.bodyLarge?.color,
+                              fontFamily: 'NotoSans',
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                            prefixIcon: Icon(Icons.calendar_today,
+                                color: theme.primaryIconTheme.color),
+                          ),
+                          readOnly: true,
+                          onTap: () async {
+                            final date = await showDatePicker(
+                              context: context,
+                              initialDate: DateTime.now(),
+                              firstDate: DateTime(2000),
+                              lastDate: DateTime(2100),
+                            );
+                            if (date != null) {
+                              setState(() {
+                                _selectedDate = DateTime(date.year, date.month, date.day); // Cette ligne assure que vous obtenez une date sans heure/minute/seconde
+                                _dateController.text =
+                                    afficherDate(DateFormat('yyyy-MM-dd').format(date));
+                              });
+                            }
+                          },
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Veuillez entrer une date';
+                            }
+                            return null;
+                          },
+                        ),
+
+                        const SizedBox(height: 20.0),
+
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            TextButton(
+                              style: TextButton.styleFrom(
+                                backgroundColor: theme.primaryColor,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                              ),
+                              child: const Text('Annuler',
+                                style: TextStyle(
+                                  fontFamily: 'NotoSans',
+                                  color: orangePerso,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                            ),
+                            const SizedBox(width: 10),
+                            TextButton(
+                              style: TextButton.styleFrom(
+                                backgroundColor: theme.primaryColor,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                              ),
+                              child: const Text('Ajouter',
+                                style: TextStyle(
+                                  fontFamily: 'NotoSans',
+                                  color: orangePerso,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              onPressed: () async {
+                                if (_formKey.currentState!.validate()) {
+                                  bool result = await add_Course(token!, identifier!, _selectedCentre!.centre, DateFormat('yyyy-MM-dd').format(_selectedDate), _selectedType!);
+                                  Navigator.of(context).pop({
+                                    'type': _selectedType,
+                                    'date': afficherDate(DateFormat('yyyy-MM-dd').format(_selectedDate)),
+                                    'isCourseAdded': result
+                                  });
+                                }
+                              },
+
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
-                    prefixIcon: Icon(Icons.calendar_today, color: theme.primaryIconTheme.color) ,
                   ),
-                  readOnly: true,
-                  onTap: () async {
-                    final date = await showDatePicker(
-                      context: context,
-                      initialDate: DateTime.now(),
-                      firstDate: DateTime(2000),
-                      lastDate: DateTime(2100),
-                    );
-                    if (date != null) {
-                      setState(() {
-                        _selectedDate = date;
-                        _dateController.text = DateFormat('dd/MM/yyyy').format(date);
-                      });
-                    }
-                  },
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Veuillez entrer une date';
-                    }
-                    return null;
-                  },
                 ),
-
-                const SizedBox(height: 20.0),
-
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    TextButton(
-                      style: TextButton.styleFrom(
-                        backgroundColor: theme.primaryColor,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                      ),
-                      child: const Text('Annuler',
-                        style: TextStyle(
-                          fontFamily: 'NotoSans',
-                          color: orangePerso,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                    ),
-                    const SizedBox(width: 10),
-                    TextButton(
-                      style: TextButton.styleFrom(
-                        backgroundColor: theme.primaryColor,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                      ),
-                      child: const Text('Ajouter',
-                        style: TextStyle(
-                          fontFamily: 'NotoSans',
-                          color: orangePerso,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      onPressed: () {
-                        if (_formKey.currentState!.validate()) {
-                          widget.addCourse(_selectedLocation!, _selectedDate);
-                          Navigator.of(context).pop();
-                        }
-                      },
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
+              ),
+            );
+          }
+        }
     );
   }
 }
@@ -276,22 +343,6 @@ class _CoursScreenState extends State<CoursScreen> {
         _coursList[centre.nomCentre] = courses;
       });
     }
-  }
-
-
-  void _addCourse(String location, DateTime date) {
-    setState(() {
-      _coursList.putIfAbsent(location, () => []);
-      _coursList[location]!.add(
-        Course(
-          index: "Un index unique ici", // à définir
-          date: DateFormat('dd-MM-yyyy').format(date),
-          type: "Un type ici", // à définir
-          centre: location,
-          comment: "Un commentaire ici", // à définir
-        ),
-      );
-    });
   }
 
 
@@ -418,11 +469,39 @@ class _CoursScreenState extends State<CoursScreen> {
                     child: FloatingActionButton(
                       backgroundColor: orangePerso,
                       child: Icon(Icons.add, color: theme.iconTheme.color),
-                      onPressed: () {
-                        showDialog(
+                      onPressed: () async {
+                        final result = await showDialog<Map<String, dynamic>>(
                           context: context,
-                          builder: (context) => CourseDialog(addCourse: _addCourse),
+                          builder: (context) => const CourseDialog(),
                         );
+                        // Vérifiez si le résultat de la fenêtre de dialogue indique qu'une action a été effectuée (par exemple, si un cours a été ajouté)
+                        if (result?['isCourseAdded'] == true) {
+                          final authState = context.read<AuthState>(); // Get the instance of AuthState
+                          final token = authState.token; // Get token from AuthState
+                          final identifier = authState.identifier; // Get identifier from AuthState
+
+                          setState(() {
+                            _dataLoadFuture = _loadData(token!, identifier!);
+                          });
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(10),
+                                topRight: Radius.circular(10),
+                              ),
+                            ),
+                            backgroundColor: Colors.green,
+                            content: Text('Cours du ${result?['date']} - ${result?['type']} ajouté avec succès',
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontFamily: 'NotoSans',
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            duration: const Duration(seconds: 2),
+                          ));
+                        }
                       },
                     ),
                   ),
