@@ -54,8 +54,9 @@ class NoteBlockState extends State<NoteBlock> {
     return RichText(
       text: TextSpan(
         text: beforeModified,
+        style: const TextStyle(color: Colors.black),
         children: [
-          TextSpan(text: modifiedPart, style: const TextStyle(fontStyle: FontStyle.italic)),
+          TextSpan(text: modifiedPart, style: const TextStyle(fontStyle: FontStyle.italic, color: Colors.black)),
         ],
       ),
     );

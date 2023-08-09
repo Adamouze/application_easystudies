@@ -171,6 +171,7 @@ class SoumettreButtonState extends State<SoumettreButton> {
 
   @override
   Widget build(BuildContext context) {
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween, // This centers the two buttons
       children: <Widget>[

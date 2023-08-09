@@ -25,9 +25,27 @@ class NoteBlockState extends State<NoteBlock> {
   final borderStyle = const OutlineInputBorder(
     borderSide: BorderSide(color: Colors.grey),
   );
+  String? mapNoteTypeToDropdownValue(String? type) {
+    switch (type) {
+      case "IRFC":
+        return "1";
+      case "STAGE":
+        return "2";
+      case "IS":
+        return "3";
+      default:
+        return null;
+    }
+  }
+
   final ValueNotifier<bool> isNoteValidNotifier = ValueNotifier<bool>(true);
   final _noteController = TextEditingController();
   final _commentController = TextEditingController();
+
+  bool _isNoteValid() {
+    double? parsedNote = double.tryParse(widget.note.note);
+    return parsedNote != null && parsedNote >= 0 && parsedNote <= 20;
+  }
 
   void _checkNoteValidity() {
     double? parsedNote = double.tryParse(widget.note.note);
@@ -49,27 +67,12 @@ class NoteBlockState extends State<NoteBlock> {
     setState(() {});
   }
 
-  bool _isNoteValid() {
-    double? parsedNote = double.tryParse(widget.note.note);
-    return parsedNote != null && parsedNote >= 0 && parsedNote <= 20;
-  }
-
-  String? mapNoteTypeToDropdownValue(String? type) {
-    switch (type) {
-      case "IRFC":
-        return "1";
-      case "STAGE":
-        return "2";
-      case "IS":
-        return "3";
-      default:
-        return null;
-    }
-  }
-
   @override
   void initState() {
     super.initState();
+
+    // Initialisation de la variable qui gère le type de note
+    selectedType = mapNoteTypeToDropdownValue(widget.note.type);
 
     // Initialisation des contrôleurs avec les valeurs des widgets
     _noteController.text = widget.note.note;
@@ -93,9 +96,9 @@ class NoteBlockState extends State<NoteBlock> {
     super.dispose();
   }
 
+
   @override
   Widget build(BuildContext context) {
-    String? selectedType = mapNoteTypeToDropdownValue(widget.note.type);
     DateTime date = widget.note.date.isEmpty ? DateTime.now() : DateTime.parse(widget.note.date);
 
     return FractionallySizedBox(
@@ -157,8 +160,12 @@ class NoteBlockState extends State<NoteBlock> {
                       firstDate: DateTime(2015),
                       lastDate: DateTime(2100),
                     );
-                    date = picked ?? date;
-                    widget.note.date = DateFormat('yyyy-MM-dd').format(date);
+                    if (picked != null && picked != date) { // Ajout d'une vérification pour éviter des reconstructions inutiles
+                      setState(() { // Encadrer les modifications d'état avec setState()
+                        date = picked;
+                        widget.note.date = DateFormat('yyyy-MM-dd').format(date);
+                      });
+                    }
                   },
                   child: TextField(
                     enabled: false,
@@ -226,7 +233,6 @@ class NoteBlockState extends State<NoteBlock> {
                               default:
                                 break;
                             }
-                            _checkNoteValidity();
                           });
                         },
                         onTap: () {
@@ -265,7 +271,6 @@ class NoteBlockState extends State<NoteBlock> {
                     ),
                     onChanged: (value) {
                       widget.note.note = value;
-                      _checkNoteValidity();
                       setState(() {}); // Cela permet de rafraîchir l'interface utilisateur
                     }
                   ),
@@ -357,8 +362,6 @@ class SoumettreButtonState extends State<SoumettreButton> {
 
   @override
   Widget build(BuildContext context) {
-    print("Is note valid: ${widget.isNoteValidNotifier.value}");
-
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween, // This centers the two buttons
@@ -414,16 +417,20 @@ class UpdateNoteState extends State<UpdateNote> {
   void handleSubmitNote(String token, String login, String user, String prenom) async {
     try {
       widget.note.commentaire = widget.note.commentaire.replaceAll('\n', '\r\n');
-      if (widget.note.commentaire.contains("Modifié par")) {
-        // Si "Modifié par" existe, on remplace la partie après cela
+      if (widget.note.commentaire.trim().isEmpty) {
+        // Si le commentaire est vide, assignez seulement "Modifié par: $user ($prenom)"
+        widget.note.commentaire = 'Modifié par: $user ($prenom)';
+      } else if (widget.note.commentaire.contains("Modifié par")) {
+        // Si "Modifié par" existe, remplacez la partie après cela
         widget.note.commentaire = widget.note.commentaire.replaceAllMapped(
             RegExp(r'Modifié par:.*'),
                 (match) => 'Modifié par: $user ($prenom)'
         );
       } else {
-        // Sinon, on ajoute simplement à la fin
+        // Sinon, ajoutez simplement à la fin
         widget.note.commentaire = '${widget.note.commentaire}\r\n\r\nModifié par: $user ($prenom)';
       }
+
 
       await manageNote(token, login, widget.eleve, "update", widget.note);
       print('Note ajoutée avec succès.');

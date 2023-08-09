@@ -108,8 +108,12 @@ class NoteBlockState extends State<NoteBlock> {
                       firstDate: DateTime(2015),
                       lastDate: DateTime(2100),
                     );
-                    _date = picked ?? _date;
-                    widget.note.date = DateFormat('yyyy-MM-dd').format(_date);
+                    if (picked != null && picked != _date) { // Ajout d'une vérification pour éviter des reconstructions inutiles
+                      setState(() { // Encadrer les modifications d'état avec setState()
+                        _date = picked;
+                        widget.note.date = DateFormat('yyyy-MM-dd').format(_date);
+                      });
+                    }
                   },
                   child: TextField(
                     enabled: false,
