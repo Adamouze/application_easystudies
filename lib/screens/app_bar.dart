@@ -262,147 +262,158 @@ class CustomAppBar extends PreferredSize {
               if (authState.isAuthenticated) {
                 return PopupMenuButton<int>(
                   color: orangePerso,
-                  itemBuilder: (context) => [
-                    // 1er bouton : Redirection vers page "profil"
-                    PopupMenuItem(
-                      value: 1,
-                      child: Builder(
-                        builder: (newContext) {
-                          final themeProvider = Provider.of<ThemeProvider>(newContext, listen: false);
-                          return Row(
-                            children: [
-                              IconTheme(
-                                data: IconThemeData(
-                                    color: themeProvider.isDarkTheme ? Colors.black : Colors.white),
-                                child: const Icon(Icons.person),
-                              ),
-                              Text(
-                                'Profil',
-                                style: TextStyle(
-                                  color: themeProvider.isDarkTheme ? Colors.black : Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontFamily: 'NotoSans',
-                                ),
-                              ),
-                            ],
-                          );
-                        },
-                      ),
-                    ),
+                  itemBuilder: (context) {
+                    final authState = Provider.of<AuthState>(context, listen: false);
 
-                    PopupMenuItem(
-                      value: 1,
-                      child: Builder(
-                        builder: (newContext) {
-                          final themeProvider = Provider.of<ThemeProvider>(newContext, listen: false);
-                          return GestureDetector(
-                            onTap: () {
-                              themeProvider.toggleTheme();
-                              Navigator.pop(context);
-                            },
-                            child: Row(
+                    List<PopupMenuItem<int>> items = [
+                      PopupMenuItem(
+                        value: 1,
+                        child: Builder(
+                          builder: (newContext) {
+                            final themeProvider = Provider.of<ThemeProvider>(newContext, listen: false);
+                            return Row(
                               children: [
                                 IconTheme(
                                   data: IconThemeData(
                                       color: themeProvider.isDarkTheme ? Colors.black : Colors.white),
-                                  child: Icon(
-                                    themeProvider.isDarkTheme ? Icons.brightness_7_sharp : Icons.brightness_3_rounded,
-                                  ),
+                                  child: const Icon(Icons.person),
                                 ),
-                                DefaultTextStyle(
+                                Text(
+                                  'Profil',
                                   style: TextStyle(
                                     color: themeProvider.isDarkTheme ? Colors.black : Colors.white,
                                     fontWeight: FontWeight.bold,
                                     fontFamily: 'NotoSans',
                                   ),
-                                  child: Text(themeProvider.isDarkTheme ? 'Mode Clair' : 'Mode Sombre'),
                                 ),
                               ],
-                            ),
-                          );
-                        },
+                            );
+                          },
+                        ),
                       ),
-                    ),
 
-                    // 3e bouton : Redirection vers la page "historique de présence"
-                    PopupMenuItem(
-                      value: 3,
-                      child: Builder(
-                        builder: (newContext) {
-                          final themeProvider = Provider.of<ThemeProvider>(newContext, listen: false);
-                          return Row(
-                            children: [
-                              IconTheme(
-                                data: IconThemeData(
-                                    color: themeProvider.isDarkTheme ? Colors.black : Colors.white),
-                                child: const Icon(Icons.history),
+                      PopupMenuItem(
+                        value: 2,
+                        child: Builder(
+                          builder: (newContext) {
+                            final themeProvider = Provider.of<ThemeProvider>(newContext, listen: false);
+                            return GestureDetector(
+                              onTap: () {
+                                themeProvider.toggleTheme();
+                                Navigator.pop(context);
+                              },
+                              child: Row(
+                                children: [
+                                  IconTheme(
+                                    data: IconThemeData(
+                                        color: themeProvider.isDarkTheme ? Colors.black : Colors.white),
+                                    child: Icon(
+                                      themeProvider.isDarkTheme ? Icons.brightness_7_sharp : Icons.brightness_3_rounded,
+                                    ),
+                                  ),
+                                  DefaultTextStyle(
+                                    style: TextStyle(
+                                      color: themeProvider.isDarkTheme ? Colors.black : Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: 'NotoSans',
+                                    ),
+                                    child: Text(themeProvider.isDarkTheme ? 'Mode Clair' : 'Mode Sombre'),
+                                  ),
+                                ],
                               ),
-                              Text(
-                                'Historique de présence',
-                                style: TextStyle(
-                                  color: themeProvider.isDarkTheme ? Colors.black : Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontFamily: 'NotoSans',
-                                ),
-                              ),
-                            ],
-                          );
-                        },
+                            );
+                          },
+                        ),
                       ),
-                    ),
-                    // 4e bouton : Redirection vers la page "historique de paiement"
-                    PopupMenuItem(
-                      value: 4,
-                      child: Builder(
-                        builder: (newContext) {
-                          final themeProvider = Provider.of<ThemeProvider>(newContext, listen: false);
-                          return Row(
-                            children: [
-                              IconTheme(
-                                data: IconThemeData(
-                                    color: themeProvider.isDarkTheme ? Colors.black : Colors.white),
-                                child: const Icon(Icons.payment),
-                              ),
-                              Text(
-                                'Historique de paiement',
-                                style: TextStyle(
-                                  color: themeProvider.isDarkTheme ? Colors.black : Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontFamily: 'NotoSans',
-                                ),
-                              ),
-                            ],
-                          );
-                        },
-                      ),
-                    ),
+                    ];
 
-                    PopupMenuItem(
-                      value: 5,
-                      child: Builder(
-                        builder: (newContext) {
-                          final themeProvider = Provider.of<ThemeProvider>(newContext, listen: false);
-                          return Row(
-                            children: [
-                              IconTheme(
-                                data: IconThemeData(
-                                    color: themeProvider.isDarkTheme ? Colors.black : Colors.white),
-                                child: const Icon(Icons.logout), // Icone pour le logout
-                              ),
-                              Text(
-                                'Déconnexion',
-                                style: TextStyle(
-                                  color: themeProvider.isDarkTheme ? Colors.black : Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontFamily: 'NotoSans',
+                    if(authState.userType == "eleve") {
+                      items.addAll([
+                        // 3e bouton : Redirection vers la page "historique de présence"
+                        PopupMenuItem(
+                          value: 3,
+                          child: Builder(
+                            builder: (newContext) {
+                              final themeProvider = Provider.of<ThemeProvider>(newContext, listen: false);
+                              return Row(
+                                children: [
+                                  IconTheme(
+                                    data: IconThemeData(
+                                        color: themeProvider.isDarkTheme ? Colors.black : Colors.white),
+                                    child: const Icon(Icons.history),
+                                  ),
+                                  Text(
+                                    'Historique de présence',
+                                    style: TextStyle(
+                                      color: themeProvider.isDarkTheme ? Colors.black : Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: 'NotoSans',
+                                    ),
+                                  ),
+                                ],
+                              );
+                            },
+                          ),
+                        ),
+                        // 4e bouton : Redirection vers la page "historique de paiement"
+                        PopupMenuItem(
+                          value: 4,
+                          child: Builder(
+                            builder: (newContext) {
+                              final themeProvider = Provider.of<ThemeProvider>(newContext, listen: false);
+                              return Row(
+                                children: [
+                                  IconTheme(
+                                    data: IconThemeData(
+                                        color: themeProvider.isDarkTheme ? Colors.black : Colors.white),
+                                    child: const Icon(Icons.payment),
+                                  ),
+                                  Text(
+                                    'Historique de paiement',
+                                    style: TextStyle(
+                                      color: themeProvider.isDarkTheme ? Colors.black : Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: 'NotoSans',
+                                    ),
+                                  ),
+                                ],
+                              );
+                            },
+                          ),
+                        ),
+                      ]);
+                    }
+
+                    items.add(
+                      PopupMenuItem(
+                        value: 5,
+                        child: Builder(
+                          builder: (newContext) {
+                            final themeProvider = Provider.of<ThemeProvider>(newContext, listen: false);
+                            return Row(
+                              children: [
+                                IconTheme(
+                                  data: IconThemeData(
+                                      color: themeProvider.isDarkTheme ? Colors.black : Colors.white),
+                                  child: const Icon(Icons.logout), // Icone pour le logout
                                 ),
-                              ),
-                            ],
-                          );
-                        },
+                                Text(
+                                  'Déconnexion',
+                                  style: TextStyle(
+                                    color: themeProvider.isDarkTheme ? Colors.black : Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: 'NotoSans',
+                                  ),
+                                ),
+                              ],
+                            );
+                          },
+                        ),
                       ),
-                    ),
-                  ],
+                    );
+
+                    return items;
+                  },
 
                   onSelected: (value) {
                     switch (value) {
@@ -461,11 +472,7 @@ class CustomAppBar extends PreferredSize {
                     ),
                   ),
                 );
-
-
               }
-
-
               else {
                 return SizedBox(
                   child: ElevatedButton(

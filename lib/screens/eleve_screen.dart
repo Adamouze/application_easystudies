@@ -14,7 +14,6 @@ import 'action_buttons_eleve/bilans_screen.dart';
 import 'action_buttons_eleve/commentaires_screen.dart';
 import 'action_buttons_eleve/notes_screen.dart';
 
-
 class HomeContent extends StatelessWidget {
   const HomeContent({Key? key}) : super(key: key);
 

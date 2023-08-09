@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:expandable/expandable.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'dart:math' as math;
 
 import '../utilities/constantes.dart';
 
 import '../utils.dart';
+import '../logs/auth_stat.dart';
+
 
 
 class EleveInfoBlock extends StatelessWidget {
@@ -102,8 +105,19 @@ class EleveInfoBlock extends StatelessWidget {
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
-                        Text(eleve.dob),
-                        Text(eleve.classe),
+                        Text(
+                          eleve.dob.isNotEmpty ? eleve.dob : "non renseigné",
+                          style: eleve.dob.isEmpty
+                              ? TextStyle(fontWeight: FontWeight.normal, fontStyle: FontStyle.italic, color: Colors.grey[700])
+                              : null,
+                        ),
+                        Text(
+                          eleve.classe.isNotEmpty ? eleve.classe : "non renseigné",
+                          style: eleve.classe.isEmpty
+                              ? TextStyle(fontWeight: FontWeight.normal, fontStyle: FontStyle.italic, color: Colors.grey[700])
+                              : null,
+                        )
+
                       ],
                     ),
                   ),
@@ -159,6 +173,18 @@ class EleveContactBlock extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final authState = Provider.of<AuthState>(context, listen: false);
+
+    if (authState.userType == "eleve") {
+      return _buildEleveLayout(theme, context);
+    } else if (authState.userType == "prof") {
+      return _buildProfLayout(theme, context);
+    } else {
+      return Container(); // Retourner un widget vide ou une vue d'erreur si le type d'utilisateur n'est pas reconnu.
+    }
+  }
+
+  Widget _buildEleveLayout(ThemeData theme, BuildContext context) {
     return FractionallySizedBox(
       widthFactor: 0.95,
       child: Column(
@@ -281,8 +307,18 @@ class EleveContactBlock extends StatelessWidget {
                                             overflow: TextOverflow.ellipsis,
                                           ),
                                         ),
-                                        Text(eleve.adresse),
-                                        Text(eleve.ville),
+                                        Text(
+                                          eleve.adresse.isNotEmpty ? eleve.adresse : "non renseigné",
+                                          style: eleve.adresse.isEmpty
+                                              ? TextStyle(fontWeight: FontWeight.normal, fontStyle: FontStyle.italic, color: Colors.grey[700])
+                                              : null,
+                                        ),
+                                        Text(
+                                          eleve.ville.isNotEmpty ? eleve.ville : "non renseigné",
+                                          style: eleve.classe.isEmpty
+                                              ? TextStyle(fontWeight: FontWeight.normal, fontStyle: FontStyle.italic, color: Colors.grey[700])
+                                              : null,
+                                        ),
                                       ],
                                     ),
                                   ),
@@ -333,7 +369,133 @@ class EleveContactBlock extends StatelessWidget {
                         ),
                       ),
                     ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
+  Widget _buildProfLayout(ThemeData theme, BuildContext context) {
+    return FractionallySizedBox(
+      widthFactor: 0.95,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          ExpandableNotifier(
+            child: ScrollOnExpand(
+              scrollOnExpand: false,
+              scrollOnCollapse: true,
+              child: Column(
+                children: <Widget>[
+                  ExpandablePanel(
+                    theme: const ExpandableThemeData(
+                      headerAlignment: ExpandablePanelHeaderAlignment.center,
+                      tapBodyToCollapse: true,
+                      hasIcon: false, // This disables the default icon
+                    ),
+                    header: Container(
+                      decoration: BoxDecoration(
+                        color: orangePerso,
+                        borderRadius: BorderRadius.circular(arrondiBox),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.2),
+                            spreadRadius: 1,
+                            blurRadius: 2,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Text(
+                            '${'Contacts -'} ${eleve.prenom}',
+                            style: TextStyle(
+                              color: Theme.of(context).primaryColor,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: 'NotoSans',
+                            ),
+                          ),
+                          ExpandableIcon(  // use this instead of Icon
+                            theme: ExpandableThemeData(
+                              expandIcon: Icons.keyboard_arrow_down,
+                              collapseIcon: Icons.keyboard_arrow_up,
+                              iconColor: theme.iconTheme.color,
+                              iconSize: 28.0,
+                              iconRotationAngle: - math.pi,
+                              iconPadding: const EdgeInsets.only(right: 5),
+                              hasIcon: false,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    collapsed: Container(),
+                    expanded: Padding(
+                      padding: const EdgeInsets.only(top: 2),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.grey[200],
+                          borderRadius: BorderRadius.circular(arrondiBox),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.2),
+                              spreadRadius: 1,
+                              blurRadius: 2,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              // Ici les informations
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Expanded(
+                                    flex: 2,
+                                    child: ListView(
+                                      shrinkWrap: true,
+                                      physics: const NeverScrollableScrollPhysics(),
+                                      children: const <Widget>[
+                                        Text("Mobile : "),
+                                        Text("Email : "),
+                                      ],
+                                    ),
+                                  ),
+                                  Expanded(
+                                    flex: 3,
+                                    child: ListView(
+                                      shrinkWrap: true,
+                                      physics: const NeverScrollableScrollPhysics(),
+                                      children: <Widget>[
+                                        Text(eleve.numMobileEleve),
+                                        Tooltip(
+                                          message: eleve.emailEleve,
+                                          child: Text(
+                                            eleve.emailEleve,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
                   ),
                 ],
               ),
@@ -344,6 +506,9 @@ class EleveContactBlock extends StatelessWidget {
     );
   }
 }
+
+
+
 
 class EleveComptabiliteBlock extends StatelessWidget {
   final Eleve eleve;
@@ -471,11 +636,12 @@ class ProfilScreenState extends State<ProfilScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final authState = Provider.of<AuthState>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: orangePerso,
         title:Text(
-          'Historique de présence',
+          'Profil - ${widget.eleve.prenom}',
           style: TextStyle(
             fontWeight: FontWeight.bold,
             color: theme.primaryColor,
@@ -494,7 +660,8 @@ class ProfilScreenState extends State<ProfilScreen> {
                 const SizedBox(height: 20),
                 EleveContactBlock(eleve: widget.eleve),
                 const SizedBox(height: 20),
-                EleveComptabiliteBlock(eleve: widget.eleve),
+                if (authState.userType == "eleve")
+                  EleveComptabiliteBlock(eleve: widget.eleve),
                 const SizedBox(height: 120),
               ],
             ),

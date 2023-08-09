@@ -58,7 +58,7 @@ class HistoryPresenceBlock extends StatelessWidget {
 
                   // Number of hours to the right side of the Row
                   Text(
-                    '${presence.nbHeures} h.',
+                    '${presence.nbHeures} h',
                     style: const TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold, color: Colors.black),
                   ),
                 ],

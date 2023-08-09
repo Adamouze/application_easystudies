@@ -467,7 +467,23 @@ Future<Eleve> getAllEleve(String token, String login, Eleve eleve) async {
   return detailedEleve;
 }
 
+Future<Eleve> getAllProf(String token, String login, Eleve eleve) async {
+  final response = await http.get(Uri.parse('https://app.easystudies.fr/api/login.php?_token=$token&_login=$login&_pwd='));
 
+  if (response.statusCode != 200) {
+    throw Exception('Failed to load details student');
+  }
+
+  final jsonResponse = jsonDecode(response.body);
+  Map<String, dynamic> details = jsonResponse;
+
+  Eleve prof = Eleve.basic(eleve.identifier, details["_nom"] ?? "", details["_prenom"] ?? "", "", details["_civilite"] ?? "", ""); // TODO à changer
+
+  prof.numMobileEleve = details["_mobile"] ?? ""; // TODO à changer
+  prof.emailEleve = details["_emailProf"] ?? ""; // TODO à changer
+
+  return prof;
+}
 
 
 Future<List<Centre>> fetchCenterList(String token, String identifier) async {
@@ -550,7 +566,6 @@ Future<void> manageComment(String token, String login, Eleve eleve, String actio
   };
 
   final uri = Uri.https('app.easystudies.fr', '/api/comments.php', queryParams);
-  print(uri);
 
   final response = await http.get(uri);
 
