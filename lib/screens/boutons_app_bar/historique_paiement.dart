@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../utilities/constantes.dart';
+import '../../utilities/constantes.dart';
 
-import '../utils.dart';
+import '../../utils.dart';
 
 
 class HistoryPaiementBlock extends StatelessWidget {

@@ -4,10 +4,10 @@ import 'package:provider/provider.dart';
 import '../logs/auth_stat.dart';
 import '../utilities/constantes.dart';
 import '../utilities/theme_provider.dart';
-import 'historique_paiement.dart';
-import 'historique_presence.dart';
+import 'boutons_app_bar/historique_paiement.dart';
+import 'boutons_app_bar/historique_presence.dart';
 import 'login_screen.dart';
-import 'profil_screen.dart';
+import 'boutons_app_bar/profil_screen.dart';
 import '../utils.dart';
 
 class AnimatedDialog extends StatefulWidget {

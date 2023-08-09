@@ -4,10 +4,10 @@ import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'dart:math' as math;
 
-import '../utilities/constantes.dart';
+import '../../utilities/constantes.dart';
 
-import '../utils.dart';
-import '../logs/auth_stat.dart';
+import '../../utils.dart';
+import '../../logs/auth_stat.dart';
 
 
 
