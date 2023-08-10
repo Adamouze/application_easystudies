@@ -46,6 +46,8 @@ class BaseDeNotationBlock extends StatefulWidget {
 
 class BaseDeNotationBlockState extends State<BaseDeNotationBlock> {
 
+  ValueNotifier<bool> isBilanValidNotifier = ValueNotifier<bool>(true);
+
   int _groupValue1 = 0;
   int _groupValue2 = 0;
   int _groupValue3 = 0;
@@ -185,6 +187,8 @@ class BilanBlock extends StatefulWidget {
 }
 
 class BilanBlockState extends State<BilanBlock> {
+
+  ValueNotifier<bool> isBilanValidNotifier = ValueNotifier<bool>(true);
 
   DateTime _date = DateTime.now();
 
@@ -400,17 +404,40 @@ class BilanBlockState extends State<BilanBlock> {
 }
 
 
-class SoumettreButton extends StatelessWidget {
+class SoumettreButton extends StatefulWidget {
   final Eleve eleve;
   final Bilan bilan;
-  final VoidCallback onSubmit; // Rappel à appeler lors de la soumission
+  final VoidCallback onSubmit;
+  final ValueNotifier<bool> isBilanValidNotifier;
 
   const SoumettreButton({
     required this.eleve,
     required this.bilan,
-    required this.onSubmit, // Inclure le rappel dans le constructeur
+    required this.onSubmit,
+    required this.isBilanValidNotifier,
     Key? key,
   }) : super(key: key);
+
+  @override
+  SoumettreButtonState createState() => SoumettreButtonState();
+}
+
+class SoumettreButtonState extends State<SoumettreButton> {
+  @override
+  void initState() {
+    super.initState();
+    widget.isBilanValidNotifier.addListener(_rebuild);
+  }
+
+  @override
+  void dispose() {
+    widget.isBilanValidNotifier.removeListener(_rebuild);
+    super.dispose();
+  }
+
+  void _rebuild() {
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -428,10 +455,12 @@ class SoumettreButton extends StatelessWidget {
           ),
         ),
         ElevatedButton.icon(
-          onPressed: () {
-            onSubmit(); // Appelle le rappel lorsqu'il est pressé
-            Navigator.pop(context); // Optionnel : ferme la page actuelle
-          },
+          onPressed: widget.isBilanValidNotifier.value
+              ? () {
+            widget.onSubmit();
+            Navigator.pop(context);
+          }
+              : null,
           icon: const Icon(Icons.check),
           label: const Text('Ajouter'),
           style: ButtonStyle(
@@ -448,7 +477,9 @@ class SoumettreButton extends StatelessWidget {
 
 class AddBilan extends StatefulWidget {
   final Eleve eleve;
-  const AddBilan({required this.eleve, Key? key}) : super(key: key);
+  final Function? onBilanAdded;
+
+  const AddBilan({required this.eleve, this.onBilanAdded, Key? key}) : super(key: key);
 
   @override
   AddBilanState createState() => AddBilanState();
@@ -457,24 +488,75 @@ class AddBilan extends StatefulWidget {
 class AddBilanState extends State<AddBilan> {
 
   final Bilan bilan = Bilan("", "", "", "", "", "", "", "", "", "");
+  ValueNotifier<bool> combinedValidNotifier = ValueNotifier<bool>(true);
 
-  void handleSubmitBilan(String token, String login) async {
+  final GlobalKey<BaseDeNotationBlockState> baseDeNotationBlockKey = GlobalKey<BaseDeNotationBlockState>();
+  final GlobalKey<BilanBlockState> bilanBlockKey = GlobalKey<BilanBlockState>();
+
+
+  void handleSubmitBilan(String token, String login, String user, String prenom) async {
     try {
-      await manageBilan(token, login, widget.eleve, bilan);
+
+      bilan.toImprove = bilan.toImprove.replaceAll('\n', '\r\n');
+      bilan.good = bilan.good.replaceAll('\n', '\r\n');
+      bilan.comment = bilan.comment.replaceAll('\n', '\r\n');
+
+      if (bilan.comment.trim().isEmpty) {
+        // Si le commentaire est vide, assignez seulement "Entré par: $user ($prenom)"
+        bilan.comment = 'Entré par: $user ($prenom)';
+      } else if (bilan.comment.contains("Entré par")) {
+        // Si "Entré par" existe, remplacez la partie après cela
+        bilan.comment = bilan.comment.replaceAllMapped(
+            RegExp(r'Entré par:.*'),
+                (match) => 'Entré par: $user ($prenom)'
+        );
+      } else {
+        // Sinon, ajoutez simplement à la fin
+        bilan.comment = '${bilan.comment}\r\n\r\nEntré par: $user ($prenom)';
+      }
+
+      print("Je suis passé par là !");
+      print('Global: ${bilan.global}');
+      print('Comp: ${bilan.comp}');
+      print('Assidu: ${bilan.assidu}');
+      print('DM: ${bilan.dm}');
+
+
+      await manageBilan(token, login, widget.eleve, "add", bilan);
       print('Bilan ajouté avec succès.');
 
-      // Appel à getBilansEleve pour rafraîchir les bilans
-      await getBilansEleve(token, login, widget.eleve);
+      // Appel au callback pour rafraîchir la liste des commentaires
+      if (widget.onBilanAdded != null) {
+        widget.onBilanAdded!();
+      }
 
     } catch (e) {
       print('Erreur lors de l\'ajout du bilan: $e');
     }
   }
 
+  @override
+  void initState() {
+    super.initState();
 
+    combinedValidNotifier.addListener(_updateCombinedValidity);
+  }
+
+  @override
+  void dispose() {
+    combinedValidNotifier.removeListener(_updateCombinedValidity);
+    super.dispose();
+  }
+
+  void _updateCombinedValidity() {
+    if (baseDeNotationBlockKey.currentState != null && bilanBlockKey.currentState != null) {
+      combinedValidNotifier.value = baseDeNotationBlockKey.currentState!.isBilanValidNotifier.value && bilanBlockKey.currentState!.isBilanValidNotifier.value;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+
     final theme = Theme.of(context);
 
     final authState = Provider.of<AuthState>(context, listen: false);
@@ -486,6 +568,15 @@ class AddBilanState extends State<AddBilan> {
     }
     if (login == null) {
       return const Text("ERREUR de login dans la requête API");
+    }
+
+    bilan.date == '' ? bilan.date = DateFormat('yyyy-MM-dd').format(DateTime.now()) : ();
+
+
+    String prenom = authState.prenom!;
+    String user = authState.userType!;
+    if (user == "prof") {
+      user = "PROF";
     }
 
     return Scaffold(
@@ -504,15 +595,26 @@ class AddBilanState extends State<AddBilan> {
           child: Column(
             children: [
               const SizedBox(height: 20),
-              BaseDeNotationBlock(bilan: bilan),
+
+              BaseDeNotationBlock(key:baseDeNotationBlockKey, bilan: bilan),
+
               const SizedBox(height: 20),
-              BilanBlock(bilan: bilan),
+
+              BilanBlock(key: bilanBlockKey, bilan: bilan),
+
               const SizedBox(height: 20),
-              SoumettreButton(
-                eleve: widget.eleve,
-                bilan: bilan,
-                onSubmit: () => handleSubmitBilan(token, login),
+
+              Builder(
+                builder: (BuildContext context) {
+                  return SoumettreButton(
+                    eleve: widget.eleve,
+                    bilan: bilan,
+                    isBilanValidNotifier: combinedValidNotifier,
+                    onSubmit: () => handleSubmitBilan(token, login, user, prenom),
+                  );
+                },
               ),
+
               const SizedBox(height: 100),
             ],
           ),

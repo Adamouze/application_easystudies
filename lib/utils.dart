@@ -571,7 +571,7 @@ Future<void> manageComment(String token, String login, Eleve eleve, String actio
     '_login': login,
     '_identifier': eleve.identifier,
     '_action': action,
-    '_idComment': commentaire.index, // Vide pour "add", et rempli pour "update"
+    '_idComment': commentaire.index,
     '_from': commentaire.from,
     '_comment': commentaire.comment,
   };
@@ -603,27 +603,37 @@ Future<void> manageNote(String token, String login, Eleve eleve, String action, 
   final response = await http.get(uri);
 
   if (response.statusCode != 200) {
-    throw Exception('Failed to add note');
+    throw Exception('Failed to manage note');
   }
 }
 
-Future<void> manageBilan(String token, String login, Eleve eleve, Bilan bilan) async {
-  final uri = Uri.parse('https://app.easystudies.fr/api/ajouter_bilan'); // TODO: à remplacer
-  final response = await http.post(
-    uri,
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer $token', // si l'authentification est nécessaire
-    },
-    body: jsonEncode({
-      '_login': login,
-      '_studentLogin': eleve.identifier,
-      // Autres attributs du bilan
-    }),
-  );
+Future<void> manageBilan(String token, String login, Eleve eleve, String action, Bilan bilan) async {
+
+  Map<String, dynamic> queryParams = {
+    '_token': token,
+    '_login': login,
+    '_action': action,
+    '_idBilan': bilan.index,
+    '_identifier': eleve.identifier,
+    '_date': bilan.date,
+    '_global': bilan.global,
+    '_comp': bilan.comp,
+    '_assidu': bilan.assidu,
+    '_dm': bilan.dm,
+    '_subjects': bilan.subjects,
+    '_toImprove': bilan.toImprove,
+    '_good': bilan.good,
+    '_comment': bilan.comment,
+  };
+
+  final uri = Uri.https('app.easystudies.fr', '/api/bilans.php', queryParams);
+
+  print(uri);
+
+  final response = await http.get(uri);
 
   if (response.statusCode != 200) {
-    throw Exception('Failed to add bilan');
+    throw Exception('Failed to manage bilan');
   }
 }
 
@@ -725,11 +735,6 @@ Widget getSmiley(String rating) {
       return Container();
   }
 }
-
-
-
-
-
 
 class MyCustomScrollBehavior extends MaterialScrollBehavior {
   @override

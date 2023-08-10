@@ -1043,7 +1043,6 @@ class BilanBlock extends StatefulWidget {
 }
 
 class BilanBlockState extends State<BilanBlock> {
-  int tailleNumero = 1;
   int tailleDate = 4;
   int tailleGlobal = 2;
   int tailleComportement = 2;
@@ -1069,7 +1068,6 @@ class BilanBlockState extends State<BilanBlock> {
           return i % 2 == 0 ? Colors.grey[300] : Colors.grey[400];
         }),
         cells: <DataCell>[
-          DataCell(Center(child: Text((i+1).toString()))), // centrage du contenu
           DataCell(Center(
               child: RichText(
                 text: TextSpan(
@@ -1090,7 +1088,7 @@ class BilanBlockState extends State<BilanBlock> {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => DetailsBilanContent(eleve: eleve, bilan: bilan)),
+                    MaterialPageRoute(builder: (context) => DetailsBilanContent(bilan: bilan)),
                   );
                 },
                 child: detailsBilan,
@@ -1140,7 +1138,6 @@ class BilanBlockState extends State<BilanBlock> {
     return Flex(
       direction: Axis.horizontal,
       children: <Widget>[
-        Expanded(flex: tailleNumero, child: const Center(child: Text('N°', style: TextStyle(fontWeight: FontWeight.bold)))),
         Expanded(flex: tailleDate, child: const Center(child: Text('Date', style: TextStyle(fontWeight: FontWeight.bold)))),
         Expanded(flex: tailleGlobal, child: const Center(child: Text('Global', style: TextStyle(fontWeight: FontWeight.bold)))),
         Expanded(flex: tailleComportement, child: const Center(child: Text('Comp.', style: TextStyle(fontWeight: FontWeight.bold)))),
@@ -1158,7 +1155,6 @@ class BilanBlockState extends State<BilanBlock> {
 
     List<DataRow> bilanRowsList = bilanRows[widget.eleve.identifier]!;
     List<int> flexValues = [
-      tailleNumero,
       tailleDate,
       tailleGlobal,
       tailleComportement,

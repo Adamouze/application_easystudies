@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+
 import 'dart:convert';
 
 import '../../../utilities/constantes.dart';
-
 import '../../../../utils.dart';
 
 
@@ -204,7 +204,7 @@ class BilanBlock extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "Date: ${bilan.date.substring(8,10)}/${bilan.date.substring(5,7)}/${bilan.date.substring(0,4)}",
+                    "Date: ${afficherDate(bilan.date)}",
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 2),
@@ -282,10 +282,9 @@ class BilanBlock extends StatelessWidget {
 
 
 class DetailsBilanContent extends StatelessWidget {
-  final Eleve eleve;
   final Bilan bilan;
 
-  const DetailsBilanContent({required this.eleve, required this.bilan, Key? key}) : super(key: key);
+  const DetailsBilanContent({required this.bilan, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

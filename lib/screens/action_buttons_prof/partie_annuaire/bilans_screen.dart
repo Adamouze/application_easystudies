@@ -1,25 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
 
 import '../../../utilities/constantes.dart';
 import 'details_bilan.dart';
 import 'add_directory/add_bilan_screen.dart';
-
+import '../../../logs/auth_stat.dart';
 import '../../../../utils.dart';
 
 
-class BilanBlock extends StatelessWidget {
+class BilanBlock extends StatefulWidget {
   final Eleve eleve;
 
-  final int tailleNumero = 1;
+  const BilanBlock({required this.eleve, Key? key}) : super(key: key);
+
+  @override
+  BilanBlockState createState() => BilanBlockState();
+}
+
+class BilanBlockState extends State<BilanBlock> {
+
   final int tailleDate = 4;
   final int tailleGlobal = 2;
   final int tailleComportement = 2;
   final int tailleAssidu = 2;
   final int tailleDM = 2;
   final int tailleDetails = 2;
-
-  const BilanBlock({required this.eleve, Key? key}) : super(key: key);
-
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +43,6 @@ class BilanBlock extends StatelessWidget {
             return i % 2 == 0 ? Colors.grey[300] : Colors.grey[400];
           }),
           cells: <DataCell>[
-            DataCell(Center(child: Text((i+1).toString()))), // centrage du contenu
             DataCell(Center(
                 child: RichText(
                   text: TextSpan(
@@ -58,7 +63,7 @@ class BilanBlock extends StatelessWidget {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => DetailsBilanContent(eleve: eleve, bilan: bilan)),
+                      MaterialPageRoute(builder: (context) => DetailsBilanContent(bilan: bilan)),
                     );
                   },
                   child: detailsBilan,
@@ -73,11 +78,11 @@ class BilanBlock extends StatelessWidget {
       return bilanRows;
     }
 
-    Map<String, List<DataRow>> bilanRows = createBilanRows(eleve);
+    Map<String, List<DataRow>> bilanRows = createBilanRows(widget.eleve);
 
     Widget buildHeaderRow() {
       final theme = Theme.of(context);
-      if (bilanRows[eleve.identifier] == null || bilanRows[eleve.identifier]!.isEmpty) {
+      if (bilanRows[widget.eleve.identifier] == null || bilanRows[widget.eleve.identifier]!.isEmpty) {
         return Container(
           decoration: BoxDecoration(
             border: Border.all(
@@ -104,7 +109,6 @@ class BilanBlock extends StatelessWidget {
       return Flex(
         direction: Axis.horizontal,
         children: <Widget>[
-          Expanded(flex: tailleNumero, child: const Center(child: Text('N°', style: TextStyle(fontWeight: FontWeight.bold)))),
           Expanded(flex: tailleDate, child: const Center(child: Text('Date', style: TextStyle(fontWeight: FontWeight.bold)))),
           Expanded(flex: tailleGlobal, child: const Center(child: Text('Global', style: TextStyle(fontWeight: FontWeight.bold)))),
           Expanded(flex: tailleComportement, child: const Center(child: Text('Comp.', style: TextStyle(fontWeight: FontWeight.bold)))),
@@ -116,13 +120,12 @@ class BilanBlock extends StatelessWidget {
     }
 
     List<Widget> buildBilanRows() {
-      if (bilanRows[eleve.identifier] == null || bilanRows[eleve.identifier]!.isEmpty) {
+      if (bilanRows[widget.eleve.identifier] == null || bilanRows[widget.eleve.identifier]!.isEmpty) {
         return [];
       }
 
-      List<DataRow> bilanRowsList = bilanRows[eleve.identifier]!;
+      List<DataRow> bilanRowsList = bilanRows[widget.eleve.identifier]!;
       List<int> flexValues = [
-        tailleNumero,
         tailleDate,
         tailleGlobal,
         tailleComportement,
@@ -218,10 +221,26 @@ class BilanBlock extends StatelessWidget {
   }
 }
 
-class BilanScreen extends StatelessWidget {
+class BilanScreen extends StatefulWidget {
   final Eleve eleve;
 
   const BilanScreen({required this.eleve, Key? key}) : super(key: key);
+
+  @override
+  BilanScreenState createState() => BilanScreenState();
+}
+
+class BilanScreenState extends State<BilanScreen> {
+
+  void refreshBilans() async {
+    final authState = Provider.of<AuthState>(context, listen: false);
+    final token = authState.token ?? "";
+    final login = authState.identifier ?? "";
+    final newEleve = await getBilansEleve(token, login, widget.eleve);
+    setState(() {
+      widget.eleve.bilans = newEleve.bilans;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -245,7 +264,7 @@ class BilanScreen extends StatelessWidget {
             child: Column(
               children: [
                 const SizedBox(height: 20),
-                BilanBlock(eleve: eleve),
+                BilanBlock(eleve: widget.eleve),
                 const SizedBox(height: 120)
               ],
             ),
@@ -260,7 +279,7 @@ class BilanScreen extends StatelessWidget {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => AddBilan(eleve: eleve)),
+                MaterialPageRoute(builder: (context) => AddBilan(eleve: widget.eleve, onBilanAdded: refreshBilans)),
               );
             },
             tooltip: "Ajout d'un bilan",

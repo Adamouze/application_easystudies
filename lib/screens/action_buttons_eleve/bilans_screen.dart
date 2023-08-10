@@ -9,7 +9,6 @@ import '../../../../utils.dart';
 class BilanBlock extends StatelessWidget {
   final Eleve eleve;
 
-  final int tailleNumero = 1;
   final int tailleDate = 4;
   final int tailleGlobal = 2;
   final int tailleComportement = 2;
@@ -36,7 +35,6 @@ class BilanBlock extends StatelessWidget {
             return i % 2 == 0 ? Colors.grey[300] : Colors.grey[400];
           }),
           cells: <DataCell>[
-            DataCell(Center(child: Text((i+1).toString()))), // centrage du contenu
             DataCell(Center(
               child: RichText(
                 text: TextSpan(
@@ -57,7 +55,7 @@ class BilanBlock extends StatelessWidget {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => DetailsBilanContent(eleve: eleve, bilan: bilan)),
+                      MaterialPageRoute(builder: (context) => DetailsBilanContent(bilan: bilan)),
                     );
                   },
                   child: detailsBilan,
@@ -103,7 +101,6 @@ class BilanBlock extends StatelessWidget {
       return Flex(
         direction: Axis.horizontal,
         children: <Widget>[
-          Expanded(flex: tailleNumero, child: const Center(child: Text('N°', style: TextStyle(fontWeight: FontWeight.bold)))),
           Expanded(flex: tailleDate, child: const Center(child: Text('Date', style: TextStyle(fontWeight: FontWeight.bold)))),
           Expanded(flex: tailleGlobal, child: const Center(child: Text('Global', style: TextStyle(fontWeight: FontWeight.bold)))),
           Expanded(flex: tailleComportement, child: const Center(child: Text('Comp.', style: TextStyle(fontWeight: FontWeight.bold)))),
@@ -121,7 +118,6 @@ class BilanBlock extends StatelessWidget {
 
       List<DataRow> bilanRowsList = bilanRows[eleve.identifier]!;
       List<int> flexValues = [
-        tailleNumero,
         tailleDate,
         tailleGlobal,
         tailleComportement,
