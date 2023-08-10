@@ -223,7 +223,7 @@ class BilanBlock extends StatelessWidget {
                     ),
                   ),
 
-                  const Divider(color: Colors.black,),
+                  const Divider(color: Colors.black),
                   const SizedBox(height: 2),
 
                   RichText(

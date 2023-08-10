@@ -18,6 +18,7 @@ class EleveInfoBlock extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final authState = Provider.of<AuthState>(context, listen: false);
     return FractionallySizedBox(
       widthFactor: 0.95,
       child: Column(
@@ -42,7 +43,7 @@ class EleveInfoBlock extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text(
-                '${'Éleve -'} ${eleve.identifier}',
+                '${authState.userType == "eleve" ? 'Élève' : 'Prof'} - ${eleve.identifier}',
                 style: TextStyle(
                   color: Theme.of(context).primaryColor,
                   fontWeight: FontWeight.bold,
@@ -473,7 +474,7 @@ class EleveContactBlock extends StatelessWidget {
                                     ),
                                   ),
                                   Expanded(
-                                    flex: 3,
+                                    flex: 5,
                                     child: ListView(
                                       shrinkWrap: true,
                                       physics: const NeverScrollableScrollPhysics(),
@@ -506,9 +507,6 @@ class EleveContactBlock extends StatelessWidget {
     );
   }
 }
-
-
-
 
 class EleveComptabiliteBlock extends StatelessWidget {
   final Eleve eleve;
@@ -621,6 +619,7 @@ class EleveComptabiliteBlock extends StatelessWidget {
     );
   }
 }
+
 
 class ProfilScreen extends StatefulWidget {
   final Eleve eleve;
