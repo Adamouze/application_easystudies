@@ -37,8 +37,14 @@ class RatingCellState extends State<RatingCell> {
 }
 
 class BaseDeNotationBlock extends StatefulWidget {
-  final Bilan bilan;
-  const BaseDeNotationBlock({required this.bilan, Key? key}) : super(key: key);
+  final ValueNotifier<Bilan> bilanNotifier;
+  final ValueNotifier<bool> combinedValidNotifier;
+
+  const BaseDeNotationBlock({
+    required this.bilanNotifier,
+    required this.combinedValidNotifier,
+    Key? key,
+  }) : super(key: key);
 
   @override
   BaseDeNotationBlockState createState() => BaseDeNotationBlockState();
@@ -46,14 +52,17 @@ class BaseDeNotationBlock extends StatefulWidget {
 
 class BaseDeNotationBlockState extends State<BaseDeNotationBlock> {
 
-  ValueNotifier<bool> isBilanValidNotifier = ValueNotifier<bool>(true);
+  ValueNotifier<bool> isBaseDeNotationValidNotifier = ValueNotifier<bool>(false);
 
-  int _groupValue1 = 0;
-  int _groupValue2 = 0;
-  int _groupValue3 = 0;
-  int _groupValue4 = 0;
+  final List<int> _groupValues = [0, 0, 0, 0];
 
-  TableRow _createRatingRow(String title, int groupValue, ValueChanged<int?> onChanged) {
+  void _checkBilanValidity() {
+    bool isBilanValid = _groupValues.every((value) => value != 0);
+    isBaseDeNotationValidNotifier.value = isBilanValid;
+  }
+
+
+  TableRow _createRatingRow(String title, int groupIndex, ValueChanged<int?> onChanged) {
     return TableRow(
       children: [
         Align(
@@ -64,20 +73,24 @@ class BaseDeNotationBlockState extends State<BaseDeNotationBlock> {
           ),
         ),
         for (int value = 1; value <= 5; value++)
-          RatingCell(value: value, groupValue: groupValue, onChanged: (value) {
-            onChanged(value);
-            switch (groupValue) {
+          RatingCell(value: value, groupValue: _groupValues[groupIndex], onChanged: (selectedValue) {
+            onChanged(selectedValue);
+            setState(() {
+              _groupValues[groupIndex] = selectedValue!;
+              _checkBilanValidity();
+            });
+            switch (groupIndex) {
+              case 0:
+                widget.bilanNotifier.value.global = selectedValue.toString();
+                break;
               case 1:
-                widget.bilan.global = value.toString();
+                widget.bilanNotifier.value.comp = selectedValue.toString();
                 break;
               case 2:
-                widget.bilan.comp = value.toString();
+                widget.bilanNotifier.value.assidu = selectedValue.toString();
                 break;
               case 3:
-                widget.bilan.assidu = value.toString();
-                break;
-              case 4:
-                widget.bilan.dm = value.toString();
+                widget.bilanNotifier.value.dm = selectedValue.toString();
                 break;
               default:
                 break;
@@ -86,6 +99,28 @@ class BaseDeNotationBlockState extends State<BaseDeNotationBlock> {
       ],
     );
   }
+
+  @override
+  void initState() {
+    super.initState();
+    _checkBilanValidity();
+    isBaseDeNotationValidNotifier.addListener(_updateCombinedValidity);
+  }
+
+  @override
+  void dispose() {
+    isBaseDeNotationValidNotifier.removeListener(_updateCombinedValidity);
+    super.dispose();
+  }
+
+  void _updateCombinedValidity() {
+    if (isBaseDeNotationValidNotifier.value) {
+      widget.combinedValidNotifier.value = true; // Vous pouvez aussi avoir une logique plus complexe si nécessaire
+    } else {
+      widget.combinedValidNotifier.value = false;
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -165,30 +200,67 @@ class BaseDeNotationBlockState extends State<BaseDeNotationBlock> {
                   ],
                 ),
 
-                _createRatingRow('Note globale', _groupValue1, (value) { setState(() { _groupValue1 = value ?? _groupValue1; }); }),
-                _createRatingRow('Note comportement', _groupValue2, (value) { setState(() { _groupValue2 = value ?? _groupValue2; }); }),
-                _createRatingRow('Note assiduité', _groupValue3, (value) { setState(() { _groupValue3 = value ?? _groupValue3; }); }),
-                _createRatingRow('Devoirs / DM faits', _groupValue4, (value) { setState(() { _groupValue4 = value ?? _groupValue4; }); }),
+                _createRatingRow('Note globale', 0, (value) {
+                  setState(() { _groupValues[0] = value ?? _groupValues[0]; });
+                }),
+                _createRatingRow('Note comportement', 1, (value) {
+                  setState(() { _groupValues[1] = value ?? _groupValues[1]; });
+                }),
+                _createRatingRow('Note assiduité', 2, (value) {
+                  setState(() { _groupValues[2] = value ?? _groupValues[2]; });
+                }),
+                _createRatingRow('Devoirs / DM faits', 3, (value) {
+                  setState(() { _groupValues[3] = value ?? _groupValues[3]; });
+                }),
+
               ],
             ),
           ),
+          ValueListenableBuilder<bool>(
+            valueListenable: isBaseDeNotationValidNotifier,
+            builder: (context, isBilanValid, child) {
+              if (!isBilanValid) {
+                return const Center(
+                  child: Padding(
+                    padding: EdgeInsets.only(top: 8.0, left: 8.0),
+                    child: Text(
+                      'Veuillez remplir le bilan en entier.',
+                      style: TextStyle(color: Colors.red),
+                    ),
+                  ),
+                );
+              }
+              return Container(); // retournez un container vide si tout est valide
+            },
+          )
         ],
       ),
     );
   }
 }
 
-class BilanBlock extends StatefulWidget {
-  final Bilan bilan;
-  const BilanBlock({required this.bilan ,Key? key}) : super(key: key);
 
+class BilanBlock extends StatefulWidget {
+  final ValueNotifier<Bilan> bilanNotifier;
+  final ValueNotifier<bool> combinedValidNotifier;
+
+  const BilanBlock({
+    required this.bilanNotifier,
+    required this.combinedValidNotifier,
+    Key? key,
+  }) : super(key: key);
   @override
   BilanBlockState createState() => BilanBlockState();
 }
 
 class BilanBlockState extends State<BilanBlock> {
 
-  ValueNotifier<bool> isBilanValidNotifier = ValueNotifier<bool>(true);
+  ValueNotifier<bool> isBilanBlockValidNotifier = ValueNotifier<bool>(true);
+
+  void _checkMatieresValidity() {
+    bool isAtLeastOneMatiereSelected = matieres.values.any((value) => value);
+    isBilanBlockValidNotifier.value = isAtLeastOneMatiereSelected;
+  }
 
   DateTime _date = DateTime.now();
 
@@ -204,9 +276,31 @@ class BilanBlockState extends State<BilanBlock> {
   };
 
   void updateSubjects() {
-    widget.bilan.subjects = matieres.keys
+    widget.bilanNotifier.value.subjects = matieres.keys
         .where((key) => matieres[key] == true) // Filtrer les matières sélectionnées
         .join('\\r\\n'); // Joindre avec le séparateur
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _checkMatieresValidity();
+    isBilanBlockValidNotifier.addListener(_updateCombinedValidity);
+  }
+
+
+  @override
+  void dispose() {
+    isBilanBlockValidNotifier.removeListener(_updateCombinedValidity);
+    super.dispose();
+  }
+
+  void _updateCombinedValidity() {
+    if (isBilanBlockValidNotifier.value) {
+      widget.combinedValidNotifier.value = true; // Vous pouvez aussi avoir une logique plus complexe si nécessaire
+    } else {
+      widget.combinedValidNotifier.value = false;
+    }
   }
 
   @override
@@ -269,12 +363,12 @@ class BilanBlockState extends State<BilanBlock> {
                       context: context,
                       initialDate: _date,
                       firstDate: DateTime(2015),
-                      lastDate: DateTime.now(),
+                      lastDate: DateTime(2100),
                     );
                     if (picked != null && picked != _date) {
                       setState(() {
                         _date = picked;
-                        widget.bilan.date = DateFormat('yyyy-MM-dd').format(picked);
+                        widget.bilanNotifier.value.date = DateFormat('yyyy-MM-dd').format(picked);
                       });
                     }
                   },
@@ -321,6 +415,7 @@ class BilanBlockState extends State<BilanBlock> {
                                   setState(() {
                                     matieres[key] = value ?? false;
                                     updateSubjects();
+                                    _checkMatieresValidity();  // Ajouté cette ligne
                                   });
                                 },
                               ),
@@ -334,6 +429,26 @@ class BilanBlockState extends State<BilanBlock> {
                       }).toList(),
                     ),
                   ),
+                ),
+
+                ValueListenableBuilder<bool>(
+                  valueListenable: isBilanBlockValidNotifier,
+                  builder: (context, isMatiereSelected, child) {
+                    if (!isMatiereSelected) {
+                      return const Column(
+                        children: [
+                          Center(
+                            child: Text(
+                              'Veuillez sélectionner au moins une matière.',
+                              style: TextStyle(color: Colors.red),
+                            ),
+                          ),
+                          SizedBox(height: 6),
+                        ],
+                      );
+                    }
+                    return Container(); // retournez un container vide si une matière est sélectionnée
+                  },
                 ),
 
                 Padding(
@@ -351,7 +466,7 @@ class BilanBlockState extends State<BilanBlock> {
                     style: const TextStyle(
                       color: Colors.black,
                     ),
-                    onChanged: (value) => widget.bilan.toImprove = value,
+                    onChanged: (value) => widget.bilanNotifier.value.toImprove = value,
                   ),
                 ),
 
@@ -370,7 +485,7 @@ class BilanBlockState extends State<BilanBlock> {
                     style: const TextStyle(
                       color: Colors.black,
                     ),
-                    onChanged: (value) => widget.bilan.good = value,
+                    onChanged: (value) => widget.bilanNotifier.value.good = value,
                   ),
                 ),
 
@@ -389,7 +504,7 @@ class BilanBlockState extends State<BilanBlock> {
                     style: const TextStyle(
                       color: Colors.black,
                     ),
-                    onChanged: (value) => widget.bilan.comment = value,
+                    onChanged: (value) => widget.bilanNotifier.value.comment = value,
                   ),
                 ),
 
@@ -423,6 +538,7 @@ class SoumettreButton extends StatefulWidget {
 }
 
 class SoumettreButtonState extends State<SoumettreButton> {
+
   @override
   void initState() {
     super.initState();
@@ -441,35 +557,40 @@ class SoumettreButtonState extends State<SoumettreButton> {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween, // This centers the two buttons
-      children: <Widget>[
-        const SizedBox(),
-        ElevatedButton.icon(
-          onPressed: () => Navigator.pop(context),
-          icon: const Icon(Icons.arrow_back),
-          label: const Text('Retour'),
-          style: ButtonStyle(
-            backgroundColor: MaterialStateProperty.all<Color>(orangePerso),
-            foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
-          ),
-        ),
-        ElevatedButton.icon(
-          onPressed: widget.isBilanValidNotifier.value
-              ? () {
-            widget.onSubmit();
-            Navigator.pop(context);
-          }
-              : null,
-          icon: const Icon(Icons.check),
-          label: const Text('Ajouter'),
-          style: ButtonStyle(
-            backgroundColor: MaterialStateProperty.all<Color>(Colors.blue),
-            foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
-          ),
-        ),
-        const SizedBox(),
-      ],
+    return ValueListenableBuilder<bool>(
+      valueListenable: widget.isBilanValidNotifier,
+      builder: (context, isValid, child) {
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween, // This centers the two buttons
+          children: <Widget>[
+            const SizedBox(),
+            ElevatedButton.icon(
+              onPressed: () => Navigator.pop(context),
+              icon: const Icon(Icons.arrow_back),
+              label: const Text('Retour'),
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all<Color>(orangePerso),
+                foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+              ),
+            ),
+            ElevatedButton.icon(
+              onPressed: isValid
+                  ? () {
+                widget.onSubmit();
+                Navigator.pop(context);
+              }
+                  : null,
+              icon: const Icon(Icons.check),
+              label: const Text('Ajouter'),
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all<Color>(Colors.blue),
+                foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+              ),
+            ),
+            const SizedBox(),
+          ],
+        );
+      },
     );
   }
 }
@@ -487,8 +608,8 @@ class AddBilan extends StatefulWidget {
 
 class AddBilanState extends State<AddBilan> {
 
-  final Bilan bilan = Bilan("", "", "", "", "", "", "", "", "", "");
-  ValueNotifier<bool> combinedValidNotifier = ValueNotifier<bool>(true);
+  final ValueNotifier<Bilan> bilanNotifier = ValueNotifier<Bilan>(Bilan("", "", "", "", "", "", "", "", "", ""));
+  ValueNotifier<bool> combinedValidNotifier = ValueNotifier<bool>(false);
 
   final GlobalKey<BaseDeNotationBlockState> baseDeNotationBlockKey = GlobalKey<BaseDeNotationBlockState>();
   final GlobalKey<BilanBlockState> bilanBlockKey = GlobalKey<BilanBlockState>();
@@ -497,32 +618,25 @@ class AddBilanState extends State<AddBilan> {
   void handleSubmitBilan(String token, String login, String user, String prenom) async {
     try {
 
-      bilan.toImprove = bilan.toImprove.replaceAll('\n', '\r\n');
-      bilan.good = bilan.good.replaceAll('\n', '\r\n');
-      bilan.comment = bilan.comment.replaceAll('\n', '\r\n');
+      bilanNotifier.value.toImprove = bilanNotifier.value.toImprove.replaceAll('\n', '\r\n');
+      bilanNotifier.value.good = bilanNotifier.value.good.replaceAll('\n', '\r\n');
+      bilanNotifier.value.comment = bilanNotifier.value.comment.replaceAll('\n', '\r\n');
 
-      if (bilan.comment.trim().isEmpty) {
+      if (bilanNotifier.value.comment.trim().isEmpty) {
         // Si le commentaire est vide, assignez seulement "Entré par: $user ($prenom)"
-        bilan.comment = 'Entré par: $user ($prenom)';
-      } else if (bilan.comment.contains("Entré par")) {
+        bilanNotifier.value.comment = 'Entré par: $user ($prenom)';
+      } else if (bilanNotifier.value.comment.contains("Entré par")) {
         // Si "Entré par" existe, remplacez la partie après cela
-        bilan.comment = bilan.comment.replaceAllMapped(
+        bilanNotifier.value.comment = bilanNotifier.value.comment.replaceAllMapped(
             RegExp(r'Entré par:.*'),
                 (match) => 'Entré par: $user ($prenom)'
         );
       } else {
         // Sinon, ajoutez simplement à la fin
-        bilan.comment = '${bilan.comment}\r\n\r\nEntré par: $user ($prenom)';
+        bilanNotifier.value.comment = '${bilanNotifier.value.comment}\r\n\r\nEntré par: $user ($prenom)';
       }
 
-      print("Je suis passé par là !");
-      print('Global: ${bilan.global}');
-      print('Comp: ${bilan.comp}');
-      print('Assidu: ${bilan.assidu}');
-      print('DM: ${bilan.dm}');
-
-
-      await manageBilan(token, login, widget.eleve, "add", bilan);
+      await manageBilan(token, login, widget.eleve, "add", bilanNotifier.value);
       print('Bilan ajouté avec succès.');
 
       // Appel au callback pour rafraîchir la liste des commentaires
@@ -538,21 +652,26 @@ class AddBilanState extends State<AddBilan> {
   @override
   void initState() {
     super.initState();
-
     combinedValidNotifier.addListener(_updateCombinedValidity);
   }
 
   @override
   void dispose() {
+    // Il est aussi important de retirer les écouteurs lorsque le widget est disposé
+    baseDeNotationBlockKey.currentState?.isBaseDeNotationValidNotifier.removeListener(_updateCombinedValidity);
+    bilanBlockKey.currentState?.isBilanBlockValidNotifier.removeListener(_updateCombinedValidity);
     combinedValidNotifier.removeListener(_updateCombinedValidity);
     super.dispose();
   }
 
   void _updateCombinedValidity() {
-    if (baseDeNotationBlockKey.currentState != null && bilanBlockKey.currentState != null) {
-      combinedValidNotifier.value = baseDeNotationBlockKey.currentState!.isBilanValidNotifier.value && bilanBlockKey.currentState!.isBilanValidNotifier.value;
-    }
+    bool isBaseValid = baseDeNotationBlockKey.currentState?.isBaseDeNotationValidNotifier.value ?? false;
+    bool isBilanValid = bilanBlockKey.currentState?.isBilanBlockValidNotifier.value ?? false;
+    bool newValue = isBaseValid && isBilanValid;
+    combinedValidNotifier.value = newValue;
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -570,7 +689,7 @@ class AddBilanState extends State<AddBilan> {
       return const Text("ERREUR de login dans la requête API");
     }
 
-    bilan.date == '' ? bilan.date = DateFormat('yyyy-MM-dd').format(DateTime.now()) : ();
+    bilanNotifier.value.date == '' ? bilanNotifier.value.date = DateFormat('yyyy-MM-dd').format(DateTime.now()) : ();
 
 
     String prenom = authState.prenom!;
@@ -596,11 +715,11 @@ class AddBilanState extends State<AddBilan> {
             children: [
               const SizedBox(height: 20),
 
-              BaseDeNotationBlock(key:baseDeNotationBlockKey, bilan: bilan),
+              BaseDeNotationBlock(key:baseDeNotationBlockKey, bilanNotifier: bilanNotifier, combinedValidNotifier: combinedValidNotifier),
 
               const SizedBox(height: 20),
 
-              BilanBlock(key: bilanBlockKey, bilan: bilan),
+              BilanBlock(key: bilanBlockKey, bilanNotifier: bilanNotifier, combinedValidNotifier: combinedValidNotifier),
 
               const SizedBox(height: 20),
 
@@ -608,7 +727,7 @@ class AddBilanState extends State<AddBilan> {
                 builder: (BuildContext context) {
                   return SoumettreButton(
                     eleve: widget.eleve,
-                    bilan: bilan,
+                    bilan: bilanNotifier.value,
                     isBilanValidNotifier: combinedValidNotifier,
                     onSubmit: () => handleSubmitBilan(token, login, user, prenom),
                   );

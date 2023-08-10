@@ -147,7 +147,60 @@ class BilanBlock extends StatelessWidget {
       return replaced;
     }
 
+    Widget buildBilanEntry(String title, String content) {
+      if (content.isEmpty) {
+        return RichText(
+          text: TextSpan(
+            children: <TextSpan>[
+              TextSpan(
+                text: '$title: \n',
+                style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+              ),
+              TextSpan(
+                text: "non renseigné",
+                style: TextStyle(fontWeight: FontWeight.normal, fontStyle: FontStyle.italic, color: Colors.grey[700]),
+              ),
+            ],
+          ),
+        );
+      }
 
+      int italicIndex = content.indexOf('Entré par:');
+      if (italicIndex == -1) {
+        italicIndex = content.indexOf('Modifié par:');
+      }
+
+      if (italicIndex == -1) {
+        return RichText(
+          text: TextSpan(
+            children: <TextSpan>[
+              TextSpan(
+                text: '$title: \n',
+                style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+              ),
+              TextSpan(
+                text: content,
+                style: DefaultTextStyle.of(context).style,
+              ),
+            ],
+          ),
+        );
+      }
+
+      String normalText = content.substring(0, italicIndex);
+      String italicText = content.substring(italicIndex);
+
+      return RichText(
+        text: TextSpan(
+          text: '$title: \n',
+          style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+          children: [
+            TextSpan(text: normalText, style: DefaultTextStyle.of(context).style),
+            TextSpan(text: italicText, style: const TextStyle(fontWeight: FontWeight.normal, fontStyle: FontStyle.italic, color: Colors.black)),
+          ],
+        ),
+      );
+    }
 
     return FractionallySizedBox(
       widthFactor: 0.95,
@@ -226,50 +279,11 @@ class BilanBlock extends StatelessWidget {
                   const Divider(color: Colors.black),
                   const SizedBox(height: 2),
 
-                  RichText(
-                    text: TextSpan(
-                      children: <TextSpan>[
-                        const TextSpan(
-                          text: 'Axes d\'amélioration: ',
-                          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
-                        ),
-                        TextSpan(
-                          text: bilan.toImprove,
-                          style: DefaultTextStyle.of(context).style,
-                        ),
-                      ],
-                    ),
-                  ),
+                  buildBilanEntry('Axes d\'amélioration', bilan.toImprove),
                   const SizedBox(height: 8),
-                  RichText(
-                    text: TextSpan(
-                      children: <TextSpan>[
-                        const TextSpan(
-                          text: 'Points forts: ',
-                          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
-                        ),
-                        TextSpan(
-                          text: bilan.good,
-                          style: DefaultTextStyle.of(context).style,
-                        ),
-                      ],
-                    ),
-                  ),
+                  buildBilanEntry('Points forts', bilan.good),
                   const SizedBox(height: 8),
-                  RichText(
-                    text: TextSpan(
-                      children: <TextSpan>[
-                        const TextSpan(
-                          text: 'Commentaires: ',
-                          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
-                        ),
-                        TextSpan(
-                          text: bilan.comment,
-                          style: DefaultTextStyle.of(context).style,
-                        ),
-                      ],
-                    ),
-                  ),
+                  buildBilanEntry('Commentaires', bilan.comment),
                 ],
               ),
             ),
