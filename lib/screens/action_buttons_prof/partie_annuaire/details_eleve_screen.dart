@@ -1,3 +1,4 @@
+import 'package:EasyStudies/screens/boutons_app_bar/historique_paiement.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:expandable/expandable.dart';
@@ -1339,6 +1340,25 @@ class FancyFabState extends State<FancyFab> with SingleTickerProviderStateMixin 
         Transform(
           transform: Matrix4.translationValues(
             0.0,
+            _translateButton.value * 6,
+            0.0,
+          ),
+          child: FloatingActionButton(
+            backgroundColor: theme.primaryColor,
+            heroTag: null,
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => AddBilan(eleve: widget.eleve)),
+              );
+            },
+            tooltip: 'Ajouter un bilan',
+            child: addBilan,
+          ),
+        ),
+        Transform(
+          transform: Matrix4.translationValues(
+            0.0,
             _translateButton.value * 5,
             0.0,
           ),
@@ -1348,11 +1368,11 @@ class FancyFabState extends State<FancyFab> with SingleTickerProviderStateMixin 
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => AddDevoir(eleve: widget.eleve)),
+                MaterialPageRoute(builder: (context) => AddNote(eleve: widget.eleve)),
               );
             },
-            tooltip: 'Ajouter un devoir',
-            child: addDevoirs,
+            tooltip: 'Ajouter une note',
+            child: addNote,
           ),
         ),
         Transform(
@@ -1386,11 +1406,11 @@ class FancyFabState extends State<FancyFab> with SingleTickerProviderStateMixin 
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => AddNote(eleve: widget.eleve)),
+                MaterialPageRoute(builder: (context) => AddDevoir(eleve: widget.eleve)),
               );
             },
-            tooltip: 'Ajouter une note',
-            child: addDevoirs,  // TODO: Changer l'image
+            tooltip: 'Ajouter un devoir',
+            child: addDevoirs,
           ),
         ),
         Transform(
@@ -1405,11 +1425,14 @@ class FancyFabState extends State<FancyFab> with SingleTickerProviderStateMixin 
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => AddBilan(eleve: widget.eleve)),
+                MaterialPageRoute(builder: (context) => HistoryPaiementScreen(eleve: widget.eleve)),
               );
             },
-            tooltip: 'Ajouter un bilan',
-            child: addBilan,
+            tooltip: 'Historique de paiement',
+            child: const Padding(
+              padding: EdgeInsets.all(8.0),
+              child: historiquePaiement,
+            ),
           ),
         ),
         Transform(

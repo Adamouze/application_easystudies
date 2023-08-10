@@ -29,9 +29,23 @@ const Image addDevoirs = Image(
   alignment: Alignment.center,
 );
 
+const Image addNote = Image(
+  image: AssetImage('assets/divers/add_note.png'),
+  alignment: Alignment.center,
+  color: Colors.deepOrange,
+  colorBlendMode: BlendMode.srcIn,
+);
+
 const Image addBilan = Image(
   image: AssetImage('assets/divers/add_bilan.png'),
   alignment: Alignment.center,
+);
+
+const Image historiquePaiement = Image(
+  image: AssetImage('assets/divers/payment_history.png'),
+  alignment: Alignment.center,
+  color: Colors.deepOrange,
+  colorBlendMode: BlendMode.srcIn,
 );
 
 const Image historique = Image(

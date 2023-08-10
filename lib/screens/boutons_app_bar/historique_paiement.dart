@@ -10,7 +10,7 @@ class HistoryPaiementBlock extends StatelessWidget {
 
   const HistoryPaiementBlock({required this.eleve, Key? key}) : super(key: key);
 
-  Widget buildHistoryRow(Presence presence, int index, Color color) {
+  Widget buildHistoryRow(Paiement paiement, int index, Color color) {
     return SizedBox(
       width: double.infinity,
       child: Card(
@@ -34,13 +34,13 @@ class HistoryPaiementBlock extends StatelessWidget {
                             style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
                             children: <TextSpan>[
                               TextSpan(
-                                text: afficherDate(presence.cours.date),
-                                style: afficherDate(presence.cours.date) == "non renseigné"
+                                text: afficherDate(paiement.date),
+                                style: afficherDate(paiement.date) == "non renseigné"
                                     ? TextStyle(fontWeight: FontWeight.normal, fontStyle: FontStyle.italic, color: Colors.grey[700])
                                     : const TextStyle(fontStyle: FontStyle.normal, color: Colors.black),
                               ),
                               TextSpan(
-                                text: "   Type: ${presence.cours.type}",
+                                text: "   Type: ${paiement.type}",
                                 style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
                               ),
                             ],
@@ -48,7 +48,7 @@ class HistoryPaiementBlock extends StatelessWidget {
                         ),
                         RichText(
                           text: TextSpan(
-                            text: "Centre: ${presence.cours.centre}",
+                            text: "Libellé: ${paiement.libelle}",
                             style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
                           ),
                         ),
@@ -58,7 +58,7 @@ class HistoryPaiementBlock extends StatelessWidget {
 
                   // Number of hours to the right side of the Row
                   Text(
-                    '${presence.nbHeures} h.',
+                    '${paiement.montant} €',
                     style: const TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold, color: Colors.black),
                   ),
                 ],
@@ -68,8 +68,8 @@ class HistoryPaiementBlock extends StatelessWidget {
               // const SizedBox(height: 5),
 
               Text(
-                presence.cours.comment.isEmpty ? "non renseigné" : presence.cours.comment,
-                style: presence.cours.comment.isEmpty
+                paiement.comment.isEmpty ? "non renseigné" : paiement.comment,
+                style: paiement.comment.isEmpty
                     ? TextStyle(fontWeight: FontWeight.normal, fontStyle: FontStyle.italic, color: Colors.grey[700])
                     : const TextStyle(fontStyle: FontStyle.normal, color: Colors.black),
               ),
@@ -83,10 +83,10 @@ class HistoryPaiementBlock extends StatelessWidget {
   List<Widget> createHistoryRows(Eleve eleve) {
     List<Widget> rows = [];
 
-    for (int i = 0; i < eleve.presences.length; i++) {
-      Presence presence = eleve.presences[i];
+    for (int i = 0; i < eleve.paiements.length; i++) {
+      Paiement paiement = eleve.paiements[i];
       Color color = (i % 2 == 0 ? Colors.grey[300] : Colors.grey[400]) ?? Colors.grey;
-      rows.add(buildHistoryRow(presence, i, color));
+      rows.add(buildHistoryRow(paiement, i, color));
     }
 
     // Ajoutez une marge en bas du dernier élément

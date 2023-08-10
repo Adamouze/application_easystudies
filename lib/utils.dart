@@ -48,6 +48,8 @@ class Eleve {
   List<Note> _notes = [];
   List<Bilan> _bilans = [];
   List<Presence> _presences = [];
+  List<Paiement> _paiements = [];
+
 
   Eleve.basic(this._identifier, this._nom, this._prenom, this._classe, this._civilite, this._idFamille);
 
@@ -87,6 +89,7 @@ class Eleve {
   List<Note> get notes => _notes;
   List<Bilan> get bilans => _bilans;
   List<Presence> get presences => _presences;
+  List<Paiement> get paiements => _paiements;
 
 
   set identifier(String value) {_identifier = value;}
@@ -115,6 +118,7 @@ class Eleve {
   set notes(List<Note> value) {_notes = value;}
   set bilans(List<Bilan> value) {_bilans = value;}
   set presences(List<Presence> value) {_presences = value;}
+  set paiements(List<Paiement> value) {_paiements = value;}
 }
 
 class Devoir {
@@ -285,6 +289,43 @@ class Presence {
   }
 }
 
+class Paiement {
+  String _identifier;
+  String _date;
+  String _libelle;
+  String _montant;
+  String _type;
+  String _idFacture;
+  String _comment;
+
+  Paiement(
+      this._identifier,
+      this._date,
+      this._libelle,
+      this._montant,
+      this._type,
+      this._idFacture,
+      this._comment,
+      );
+
+  String get identifier => _identifier;
+  String get date => _date;
+  String get libelle => _libelle;
+  String get montant => _montant;
+  String get type => _type;
+  String get idFacture => _idFacture;
+  String get comment => _comment;
+
+  set identifier(String value) { _identifier = value; }
+  set date(String value) { _date = value; }
+  set libelle(String value) { _libelle = value; }
+  set montant(String value) { _montant = value; }
+  set type(String value) { _type = value; }
+  set idFacture(String value) { _idFacture = value; }
+  set comment(String value) { _comment = value; }
+}
+
+
 
 
 Future<List<Eleve>> getListEleves(String token, String login) async {
@@ -401,7 +442,7 @@ Future<Eleve> getBilansEleve(String token, String login, Eleve eleve) async {
   return eleve;
 }
 
-Future<Eleve> getHistoryEleve(String token, String login, Eleve eleve) async {
+Future<Eleve> getHistoryPresenceEleve(String token, String login, Eleve eleve) async {
   final response = await http.get(Uri.parse('https://app.easystudies.fr/api/student_presences.php?_token=$token&_login=$login&_identifier=${eleve.identifier}&_action=list_presences'));
 
   if (response.statusCode != 200) {
@@ -443,26 +484,64 @@ Future<Eleve> getHistoryEleve(String token, String login, Eleve eleve) async {
   return eleve;
 }
 
+Future<Eleve> getHistoryPaiementsEleve(String token, String login, Eleve eleve) async {
+  final response = await http.get(Uri.parse('https://app.easystudies.fr/api/students_payments.php?_token=$token&_login=$login&_action=list_payments&_identifier=${eleve.identifier}'));
+
+  if (response.statusCode != 200) {
+    throw Exception('Failed to load student payments');
+  }
+
+  final jsonResponse = jsonDecode(response.body);
+
+  if (jsonResponse['_data'] == null || !jsonResponse['_data']["_result"]) {
+    throw Exception('Invalid data received');
+  }
+
+  Map<String, dynamic> dataMap = jsonResponse['_data'];
+  List<dynamic> data = dataMap.entries.where((entry) => entry.value is Map && entry.value.containsKey("_identifier")).map((entry) => entry.value).toList();
+
+  List<Paiement> listPaiements = [];
+
+  for (var u in data) {
+    Paiement paiement = Paiement(
+        u["_identifier"],
+        u["_date"],
+        u["_libelle"],
+        u["_montant"],
+        u["_type"],
+        u["_idFacture"],
+        u["_comment"]
+    );
+    listPaiements.add(paiement);
+  }
+
+  eleve.paiements = listPaiements;
+  return eleve;
+}
+
 Future<Eleve> getAllEleve(String token, String login, Eleve eleve) async {
   final detailsFuture = getDetailsEleve(token, login, eleve);
   final commentsFuture = getCommentsEleve(token, login, eleve);
   final notesFuture = getNotesEleve(token, login, eleve);
   final bilansFuture = getBilansEleve(token, login, eleve);
-  final presencesFuture = getHistoryEleve(token, login, eleve);
+  final presencesFuture = getHistoryPresenceEleve(token, login, eleve);
+  final paiementsFuture = getHistoryPaiementsEleve(token, login, eleve);
 
 
-  final responses = await Future.wait([detailsFuture, commentsFuture, notesFuture, bilansFuture, presencesFuture]);
+  final responses = await Future.wait([detailsFuture, commentsFuture, notesFuture, bilansFuture, presencesFuture, paiementsFuture]);
 
   Eleve detailedEleve = responses[0];
   Eleve eleveWithComments = responses[1];
   Eleve eleveWithNotes = responses[2];
   Eleve eleveWithBilans = responses[3];
   Eleve eleveWithPresences = responses[4];
+  Eleve eleveWithPaiements = responses[5];
 
   detailedEleve.commentaires = eleveWithComments.commentaires;
   detailedEleve.notes = eleveWithNotes.notes;
   detailedEleve.bilans = eleveWithBilans.bilans;
   detailedEleve.presences = eleveWithPresences.presences;
+  detailedEleve.paiements = eleveWithPaiements.paiements;
 
   return detailedEleve;
 }
@@ -479,11 +558,75 @@ Future<Eleve> getAllProf(String token, String login, Eleve eleve) async {
 
   Eleve prof = Eleve.basic(eleve.identifier, details["_nom"] ?? "", details["_prenom"] ?? "", "", details["_civilite"] ?? "", ""); // TODO à changer
 
-  prof.numMobileEleve = details["_mobile"] ?? ""; // TODO à changer
-  prof.emailEleve = details["_emailProf"] ?? ""; // TODO à changer
+  prof.numMobileEleve = details["_mobile"] ?? "";
+  prof.emailEleve = details["_emailProf"] ?? "";
 
   return prof;
 }
+
+
+Future<void> manageComment(String token, String login, Eleve eleve, String action, Commentaire commentaire) async {
+  Map<String, dynamic> queryParams = {
+    '_token': token,
+    '_login': login,
+    '_identifier': eleve.identifier,
+    '_action': action,
+    '_idComment': commentaire.index, // Vide pour "add", et rempli pour "update"
+    '_from': commentaire.from,
+    '_comment': commentaire.comment,
+  };
+
+  final uri = Uri.https('app.easystudies.fr', '/api/comments.php', queryParams);
+
+  final response = await http.get(uri);
+
+  if (response.statusCode != 200) {
+    throw Exception('Failed to manage commentaire');
+  }
+}
+
+Future<void> manageNote(String token, String login, Eleve eleve, String action, Note note) async {
+  Map<String, dynamic> queryParams = {
+    '_token': token,
+    '_login': login,
+    '_identifier': eleve.identifier,
+    '_action': action,
+    '_idGrade': note.index,
+    '_comment': note.commentaire,
+    '_date': note.date,
+    '_type': note.type,
+    '_grade': note.note,
+  };
+
+  final uri = Uri.https('app.easystudies.fr', '/api/grades.php', queryParams);
+
+  final response = await http.get(uri);
+
+  if (response.statusCode != 200) {
+    throw Exception('Failed to add note');
+  }
+}
+
+Future<void> manageBilan(String token, String login, Eleve eleve, Bilan bilan) async {
+  final uri = Uri.parse('https://app.easystudies.fr/api/ajouter_bilan'); // TODO: à remplacer
+  final response = await http.post(
+    uri,
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token', // si l'authentification est nécessaire
+    },
+    body: jsonEncode({
+      '_login': login,
+      '_studentLogin': eleve.identifier,
+      // Autres attributs du bilan
+    }),
+  );
+
+  if (response.statusCode != 200) {
+    throw Exception('Failed to add bilan');
+  }
+}
+
 
 
 Future<List<Centre>> fetchCenterList(String token, String identifier) async {
@@ -554,67 +697,6 @@ Future<bool> add_Course(String token, String identifier, String centre, String d
   }
 }
 
-Future<void> manageComment(String token, String login, Eleve eleve, String action, Commentaire commentaire) async {
-  Map<String, dynamic> queryParams = {
-    '_token': token,
-    '_login': login,
-    '_identifier': eleve.identifier,
-    '_action': action,
-    '_idComment': commentaire.index, // Vide pour "add", et rempli pour "update"
-    '_from': commentaire.from,
-    '_comment': commentaire.comment,
-  };
-
-  final uri = Uri.https('app.easystudies.fr', '/api/comments.php', queryParams);
-
-  final response = await http.get(uri);
-
-  if (response.statusCode != 200) {
-    throw Exception('Failed to manage commentaire');
-  }
-}
-
-Future<void> manageNote(String token, String login, Eleve eleve, String action, Note note) async {
-  Map<String, dynamic> queryParams = {
-    '_token': token,
-    '_login': login,
-    '_identifier': eleve.identifier,
-    '_action': action,
-    '_idGrade': note.index,
-    '_comment': note.commentaire,
-    '_date': note.date,
-    '_type': note.type,
-    '_grade': note.note,
-  };
-
-  final uri = Uri.https('app.easystudies.fr', '/api/grades.php', queryParams);
-
-  final response = await http.get(uri);
-
-  if (response.statusCode != 200) {
-    throw Exception('Failed to add note');
-  }
-}
-
-Future<void> manageBilan(String token, String login, Eleve eleve, Bilan bilan) async {
-  final uri = Uri.parse('https://app.easystudies.fr/api/ajouter_bilan'); // TODO: à remplacer
-  final response = await http.post(
-    uri,
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer $token', // si l'authentification est nécessaire
-    },
-    body: jsonEncode({
-      '_login': login,
-      '_studentLogin': eleve.identifier,
-      // Autres attributs du bilan
-    }),
-  );
-
-  if (response.statusCode != 200) {
-    throw Exception('Failed to add bilan');
-  }
-}
 
 
 

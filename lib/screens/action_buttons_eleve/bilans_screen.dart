@@ -75,8 +75,30 @@ class BilanBlock extends StatelessWidget {
     Map<String, List<DataRow>> bilanRows = createBilanRows(eleve);
 
     Widget buildHeaderRow() {
+      final theme = Theme.of(context);
       if (bilanRows[eleve.identifier] == null || bilanRows[eleve.identifier]!.isEmpty) {
-        return const SizedBox(height: 10);
+        return Container(
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: orangePerso,
+              width: epaisseurContour,
+            ),
+            borderRadius: const BorderRadius.only(
+              bottomLeft: Radius.circular(arrondiBox),
+              bottomRight: Radius.circular(arrondiBox),
+            ),
+          ),
+          child: Container(
+            height: 10,
+            decoration: BoxDecoration(
+              color: theme.colorScheme.background,
+              borderRadius: const BorderRadius.only(
+                bottomLeft: Radius.circular(arrondiBox - 3),
+                bottomRight: Radius.circular(arrondiBox - 3),
+              ),
+            ),
+          ),
+        );
       }
       return Flex(
         direction: Axis.horizontal,
