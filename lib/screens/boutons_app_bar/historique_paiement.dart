@@ -4,6 +4,90 @@ import '../../utilities/constantes.dart';
 
 import '../../utils.dart';
 
+class EleveComptabiliteBlock extends StatelessWidget {
+  final Eleve eleve;
+
+  const EleveComptabiliteBlock({required this.eleve, Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return FractionallySizedBox(
+      widthFactor: 0.95,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          Container(
+            decoration: BoxDecoration(
+              color: orangePerso,
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(arrondiBox),
+                topRight: Radius.circular(arrondiBox),
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.2),
+                  spreadRadius: 1,
+                  blurRadius: 2,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Text(
+                  'Comptabilité - ${eleve.prenom}',
+                  style: TextStyle(
+                    color: Theme.of(context).primaryColor,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'NotoSans',
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.grey[200],
+              borderRadius: const BorderRadius.only(
+                bottomLeft: Radius.circular(arrondiBox),
+                bottomRight: Radius.circular(arrondiBox),
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.2),
+                  spreadRadius: 1,
+                  blurRadius: 2,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(8),
+              child: Row(
+                children: <Widget>[
+                  Expanded(
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text("Solde : ${eleve.solde} €"),
+                    ),
+                  ),
+                  Expanded(
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text("Prévisionnel : ${eleve.prev} €"),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
 
 class HistoryPaiementBlock extends StatelessWidget {
   final Eleve eleve;
@@ -191,6 +275,8 @@ class HistoryPaiementScreenState extends State<HistoryPaiementScreen> {
           child: Center(
             child: Column(
               children: [
+                const SizedBox(height: 20),
+                EleveComptabiliteBlock(eleve: widget.eleve),
                 const SizedBox(height: 20),
                 HistoryPaiementBlock(eleve: widget.eleve),
                 const SizedBox(height: 120),

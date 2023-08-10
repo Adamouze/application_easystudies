@@ -1552,7 +1552,7 @@ class DetailsEleveState extends State<DetailsEleve> {
                 ),
               ),
             ),
-            floatingActionButton: FancyFab(eleve: widget.eleve),
+            floatingActionButton: FancyFab(eleve: eleve),
           );
         }
       },

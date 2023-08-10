@@ -508,118 +508,6 @@ class EleveContactBlock extends StatelessWidget {
   }
 }
 
-class EleveComptabiliteBlock extends StatelessWidget {
-  final Eleve eleve;
-
-  const EleveComptabiliteBlock({required this.eleve, Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return FractionallySizedBox(
-      widthFactor: 0.95,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          ExpandableNotifier(
-            child: ScrollOnExpand(
-              scrollOnExpand: false,
-              scrollOnCollapse: true,
-              child: Column(
-                children: <Widget>[
-                  ExpandablePanel(
-                    theme: const ExpandableThemeData(
-                      headerAlignment: ExpandablePanelHeaderAlignment.center,
-                      tapBodyToCollapse: true,
-                      hasIcon: false, // This disables the default icon
-                    ),
-                    header: Container(
-                      decoration: BoxDecoration(
-                        color: orangePerso,
-                        borderRadius: BorderRadius.circular(arrondiBox),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.2),
-                            spreadRadius: 1,
-                            blurRadius: 2,
-                            offset: const Offset(0, 2),
-                          ),
-                        ],
-                      ),
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Text(
-                            '${'Comptabilité -'} ${eleve.prenom}',
-                            style: TextStyle(
-                              color: Theme.of(context).primaryColor,
-                              fontWeight: FontWeight.bold,
-                              fontFamily: 'NotoSans',
-                            ),
-                          ),
-                          ExpandableIcon(  // use this instead of Icon
-                            theme: ExpandableThemeData(
-                              expandIcon: Icons.keyboard_arrow_down,
-                              collapseIcon: Icons.keyboard_arrow_up,
-                              iconColor: theme.iconTheme.color,
-                              iconSize: 28.0,
-                              iconRotationAngle: - math.pi,
-                              iconPadding: const EdgeInsets.only(right: 5),
-                              hasIcon: false,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    collapsed: Container(),
-                    expanded: Padding(
-                      padding: const EdgeInsets.only(top: 2),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.grey[200],
-                          borderRadius: BorderRadius.circular(arrondiBox),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.2),
-                              spreadRadius: 1,
-                              blurRadius: 2,
-                              offset: const Offset(0, 2),
-                            ),
-                          ],
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(8),
-                          child: Row(
-                            children: <Widget>[
-                              Expanded(
-                                child: Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: Text("Solde : ${eleve.solde} €"),
-                                ),
-                              ),
-                              Expanded(
-                                child: Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: Text("Prévisionnel : ${eleve.prev} €"),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
 
 class ProfilScreen extends StatefulWidget {
   final Eleve eleve;
@@ -635,7 +523,6 @@ class ProfilScreenState extends State<ProfilScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final authState = Provider.of<AuthState>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: orangePerso,
@@ -658,9 +545,6 @@ class ProfilScreenState extends State<ProfilScreen> {
                 EleveInfoBlock(eleve: widget.eleve),
                 const SizedBox(height: 20),
                 EleveContactBlock(eleve: widget.eleve),
-                const SizedBox(height: 20),
-                if (authState.userType == "eleve")
-                  EleveComptabiliteBlock(eleve: widget.eleve),
                 const SizedBox(height: 120),
               ],
             ),
