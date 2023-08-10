@@ -1451,9 +1451,9 @@ class FancyFabState extends State<FancyFab> with SingleTickerProviderStateMixin 
               );
             },
             tooltip: 'Historique de présence',
-            child: Image.asset(
-              'assets/divers/historique.png',
-              color: Colors.deepOrange, // Teinter l'image en blanc si en mode sombre
+            child: const Padding(
+              padding: EdgeInsets.all(3.0),
+              child: historiquePresence,
             ),
           ),
         ),

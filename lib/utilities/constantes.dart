@@ -48,9 +48,11 @@ const Image historiquePaiement = Image(
   colorBlendMode: BlendMode.srcIn,
 );
 
-const Image historique = Image(
+const Image historiquePresence = Image(
   image: AssetImage('assets/divers/historique.png'),
   alignment: Alignment.center,
+  color: Colors.deepOrange,
+  colorBlendMode: BlendMode.srcIn,
 );
 
 const Image detailsBilan = Image(
