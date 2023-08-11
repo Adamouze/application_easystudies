@@ -600,7 +600,7 @@ Future<Eleve> getAllProf(String token, String login, Eleve eleve) async {
   final jsonResponse = jsonDecode(response.body);
   Map<String, dynamic> details = jsonResponse;
 
-  Eleve prof = Eleve.basic(eleve.identifier, details["_nom"] ?? "", details["_prenom"] ?? "", "", details["_civilite"] ?? "", ""); // TODO à changer
+  Eleve prof = Eleve.basic(eleve.identifier, details["_nom"] ?? "", details["_prenom"] ?? "", "", details["_civilite"] ?? "", "");
 
   prof.numMobileEleve = details["_mobile"] ?? "";
   prof.emailEleve = details["_emailProf"] ?? "";
