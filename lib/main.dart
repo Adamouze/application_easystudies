@@ -1,4 +1,3 @@
-import 'package:EasyStudies/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -20,6 +19,7 @@ import 'utilities/constantes.dart';
 import 'utilities/theme_provider.dart';
 
 import 'logs/auth_stat.dart';
+import 'utils.dart';
 
 
 
@@ -130,7 +130,6 @@ class MyApp extends StatelessWidget {
           ),
 
           themeMode: themeProvider.themeMode,
-
 
           localizationsDelegates: const [
             GlobalMaterialLocalizations.delegate,

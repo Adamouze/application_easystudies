@@ -1,6 +1,10 @@
 import 'utils.dart';
 import 'utilities/constantes.dart';
 
+/*
+* Ce fichier ne sert plus à rien. Il nous permettait de créer les
+* */
+
 Eleve createEleve() {
   Eleve eleve_exemple = Eleve.basic("H9GZH3", "GAJENDRAN", "Ajanthan", "Term G", "M", "34");
   eleve_exemple.photo = "https://covers-ng3.hosting-media.net/art/r288/641835.jpg";
@@ -47,84 +51,3 @@ List<Eleve> createEleves() {
 
   return [eleve1, eleve2, eleve3];
 }
-
-
-/*
-* final Map<int, List<DataRow>> bilansEleves = {
-      1: [
-        DataRow(
-          cells: <DataCell>[
-            const DataCell(Center(child: Text('1'))), // centrage du contenu
-            const DataCell(Center(child: Text('12/07/2023'))),
-            const DataCell(Center(child: smiley1)),
-            const DataCell(Center(child: smiley2)),
-            const DataCell(Center(child: smiley3)),
-            const DataCell(Center(child: smiley5)),
-            DataCell(
-              Center(
-                child: TextButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => DetailsContent(eleve: widget.eleve, bilan: widget.bilan)),
-                    );
-                  },
-                  child: const Text('Détails'),
-                ),
-              ),
-            ),
-          ],
-        ),
-        DataRow(
-          cells: <DataCell>[
-            const DataCell(Center(child: Text('2'))),
-            const DataCell(Center(child: Text('13/07/2023'))),
-            const DataCell(Center(child: smiley4)),
-            const DataCell(Center(child: smiley4)),
-            const DataCell(Center(child: smiley4)),
-            const DataCell(Center(child: smiley1)),
-            DataCell(
-              Center(
-                child: TextButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => DetailsContent(eleve: widget.eleve, bilan: widget.bilan_ex)),
-                    );
-                  },
-                  child: const Text('Détails'),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ],
-
-      2: [
-        DataRow(
-          cells: <DataCell>[
-            const DataCell(Center(child: Text('1'))), // centrage du contenu
-            const DataCell(Center(child: Text('12/07/2023'))),
-            const DataCell(Center(child: smiley5)),
-            const DataCell(Center(child: smiley4)),
-            const DataCell(Center(child: smiley4)),
-            const DataCell(Center(child: smiley2)),
-            DataCell(
-              Center(
-                child: TextButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => DetailsContent(eleve: widget.eleve, bilan: widget.bilan_ex)),
-                    );
-                  },
-                  child: const Text('Détails'),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ],
-      // Ajoutez plus d'élèves si nécessaire
-    };
-* */

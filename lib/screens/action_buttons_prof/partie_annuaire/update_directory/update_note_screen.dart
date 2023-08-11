@@ -472,7 +472,7 @@ class UpdateNoteState extends State<UpdateNote> {
       appBar: AppBar(
         backgroundColor: orangePerso,
         title: Text(
-          'Nouvelle note - ${widget.eleve.prenom}',
+          'Modification de la note',
           style: TextStyle(
             fontWeight: FontWeight.bold,
             color: theme.primaryColor,

@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import '../../../utilities/constantes.dart';
 import 'details_bilan.dart';
 import 'add_directory/add_bilan_screen.dart';
+import 'update_directory/update_bilan_screen.dart';
 import '../../../logs/auth_stat.dart';
 import '../../../../utils.dart';
 
@@ -26,6 +27,16 @@ class BilanBlockState extends State<BilanBlock> {
   final int tailleAssidu = 2;
   final int tailleDM = 2;
   final int tailleDetails = 2;
+
+  void refreshBilans() async {
+    final authState = Provider.of<AuthState>(context, listen: false);
+    final token = authState.token ?? "";
+    final login = authState.identifier ?? "";
+    final newEleve = await getBilansEleve(token, login, widget.eleve);
+    setState(() {
+      widget.eleve.bilans = newEleve.bilans;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -133,21 +144,69 @@ class BilanBlockState extends State<BilanBlock> {
         tailleDM,
         tailleDetails,
       ];
+
+      final theme = Theme.of(context); // Pour utiliser le thème dans le dialogue
+
       return List<Widget>.generate(bilanRowsList.length, (int index) {
         DataRow row = bilanRowsList[index];
-        return Container(
-          color: index % 2 == 0 ? Colors.grey[300] : Colors.grey[400], // recréer l'alternance des gris
-          child: Flex(
-            direction: Axis.horizontal,
-            children: List<Widget>.generate(row.cells.length, (int cellIndex) {
-              return Expanded(
-                flex: flexValues[cellIndex],
-                child: Padding(
-                  padding: const EdgeInsets.all(4.0), // Marge au sein des cases du tableau
-                  child: row.cells[cellIndex].child,
+        Bilan currentBilan = widget.eleve.bilans[index];  // Assumant que les bilans sont dans le même ordre que bilanRowsList
+
+        return GestureDetector(
+          onLongPress: () {
+            showDialog(
+              context: context,
+              builder: (context) => Theme(
+                data: ThemeData(
+                  dialogBackgroundColor: theme.primaryColor, // Couleur de fond du dialogue
                 ),
-              );
-            }),
+                child: SimpleDialog(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20), // Bords arrondis
+                    side: const BorderSide(
+                      color: orangePerso, // Couleur de la bordure
+                      width: 3, // Largeur de la bordure
+                    ),
+                  ),
+                  children: [
+                    Center(
+                      child: SimpleDialogOption(
+                        onPressed: () {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => UpdateBilan(eleve: widget.eleve, bilan: currentBilan, onBilanUpdate: refreshBilans),
+                            ),
+                          );
+                        },
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min, // Pour que la Row n'occupe que l'espace nécessaire
+                          children: [
+                            Icon(Icons.edit, color: theme.primaryIconTheme.color),
+                            const SizedBox(width: 10.0),
+                            Text("Modifier le bilan", style: TextStyle(color: theme.textTheme.bodyLarge?.color, fontFamily: 'NotoSans')),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+          child: Container(
+            color: index % 2 == 0 ? Colors.grey[300] : Colors.grey[400], // recréer l'alternance des gris
+            child: Flex(
+              direction: Axis.horizontal,
+              children: List<Widget>.generate(row.cells.length, (int cellIndex) {
+                return Expanded(
+                  flex: flexValues[cellIndex],
+                  child: Padding(
+                    padding: const EdgeInsets.all(4.0), // Marge au sein des cases du tableau
+                    child: row.cells[cellIndex].child,
+                  ),
+                );
+              }),
+            ),
           ),
         );
       });
@@ -245,10 +304,39 @@ class BilanScreenState extends State<BilanScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+
+    // Contenu du corps selon la condition
+    Widget bodyContent;
+
+    if (widget.eleve.bilans.isEmpty) {
+      bodyContent = const Center(
+        child: Text(
+          "Pas de bilans ici",
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.grey,
+            fontSize: 18,
+          ),
+        ),
+      );
+    } else {
+      bodyContent = SingleChildScrollView(
+          child: Center(
+            child: Column(
+              children: [
+                const SizedBox(height: 20),
+                BilanBlock(eleve: widget.eleve),
+                const SizedBox(height: 120)
+              ],
+            ),
+          )
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: orangePerso,
-        title:Text(
+        title: Text(
           'Détails des bilans',
           style: TextStyle(
             fontWeight: FontWeight.bold,
@@ -259,17 +347,7 @@ class BilanScreenState extends State<BilanScreen> {
           color: theme.primaryColor, // Définissez ici la couleur souhaitée pour l'icône
         ),
       ),
-      body: SingleChildScrollView(
-          child: Center(
-            child: Column(
-              children: [
-                const SizedBox(height: 20),
-                BilanBlock(eleve: widget.eleve),
-                const SizedBox(height: 120)
-              ],
-            ),
-          )
-      ),
+      body: bodyContent,
       floatingActionButton: Padding(
         padding: const EdgeInsets.only(bottom: 16.0, right: 16.0), // Écartement aux bords
         child: Transform.scale(
@@ -291,4 +369,5 @@ class BilanScreenState extends State<BilanScreen> {
       ),
     );
   }
+
 }

@@ -255,7 +255,7 @@ class BilanBlock extends StatefulWidget {
 
 class BilanBlockState extends State<BilanBlock> {
 
-  ValueNotifier<bool> isBilanBlockValidNotifier = ValueNotifier<bool>(true);
+  ValueNotifier<bool> isBilanBlockValidNotifier = ValueNotifier<bool>(false);
 
   void _checkMatieresValidity() {
     bool isAtLeastOneMatiereSelected = matieres.values.any((value) => value);
@@ -414,7 +414,9 @@ class BilanBlockState extends State<BilanBlock> {
                                 onChanged: (bool? value) {
                                   setState(() {
                                     matieres[key] = value ?? false;
+                                    print("Avant: ${widget.bilanNotifier.value.subjects}");
                                     updateSubjects();
+                                    print("Après: ${widget.bilanNotifier.value.subjects}");
                                     _checkMatieresValidity();  // Ajouté cette ligne
                                   });
                                 },
@@ -557,6 +559,8 @@ class SoumettreButtonState extends State<SoumettreButton> {
 
   @override
   Widget build(BuildContext context) {
+    print("Voici l'état actuel des matières : ${widget.bilan.subjects}");
+
     return ValueListenableBuilder<bool>(
       valueListenable: widget.isBilanValidNotifier,
       builder: (context, isValid, child) {

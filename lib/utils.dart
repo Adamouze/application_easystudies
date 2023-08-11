@@ -628,8 +628,6 @@ Future<void> manageBilan(String token, String login, Eleve eleve, String action,
 
   final uri = Uri.https('app.easystudies.fr', '/api/bilans.php', queryParams);
 
-  print(uri);
-
   final response = await http.get(uri);
 
   if (response.statusCode != 200) {
