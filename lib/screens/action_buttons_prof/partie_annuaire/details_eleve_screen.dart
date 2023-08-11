@@ -584,14 +584,9 @@ class DevoirBlockState extends State<DevoirBlock> {
                           children: [
                             ClipOval(
                               child: Container(
+                                padding: const EdgeInsets.all(6.0), // Espace entre l'icône et la bordure
                                 color: const Color.fromRGBO(128, 128, 128, 0.2), // Gris avec 20% d'opacité
-                                child: IconButton(
-                                  padding: EdgeInsets.zero,  // Pas de padding
-                                  icon: Icon(determineIcon(devoir.stateStudent), color: determineColor(devoir.stateStudent)),
-                                  onPressed: () {
-                                    // Gérer la logique pour devoir.state_student
-                                  },
-                                ),
+                                child: Icon(determineIcon(devoir.stateStudent), color: determineColor(devoir.stateStudent)),
                               ),
                             ),
                             const Text("Élève"),
@@ -602,14 +597,9 @@ class DevoirBlockState extends State<DevoirBlock> {
                           children: [
                             ClipOval(
                               child: Container(
+                                padding: const EdgeInsets.all(6.0), // Espace entre l'icône et la bordure
                                 color: const Color.fromRGBO(128, 128, 128, 0.2), // Gris avec 20% d'opacité
-                                child: IconButton(
-                                  padding: EdgeInsets.zero,  // Pas de padding
-                                  icon: Icon(determineIcon(devoir.stateProf), color: determineColor(devoir.stateProf)),
-                                  onPressed: () {
-                                    // Gérer la logique pour devoir.state_prof
-                                  },
-                                ),
+                                child: Icon(determineIcon(devoir.stateProf), color: determineColor(devoir.stateProf)),
                               ),
                             ),
                             const Text("Prof"),
@@ -620,14 +610,24 @@ class DevoirBlockState extends State<DevoirBlock> {
                   ],
                 ),
                 const Divider(color: Colors.black, thickness: 1, height: 10),
-                Text(
-                  devoir.content.isEmpty ? "non renseigné" : devoir.content,
-                  style: devoir.content.isEmpty
-                      ? TextStyle(fontWeight: FontWeight.normal, fontStyle: FontStyle.italic, color: Colors.grey[700])
-                      : const TextStyle(fontStyle: FontStyle.normal, color: Colors.black),
-                  maxLines: 2, // Limite à deux lignes
-                  overflow: TextOverflow.ellipsis, // Ajoute des ellipses à la fin si le texte est trop long
+                const SizedBox(height: 5),
+                RichText(
+                  text: TextSpan(
+                    children: [
+                      const TextSpan(
+                        text: 'À faire : \n',
+                        style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+                      ),
+                      TextSpan(
+                        text: devoir.content,
+                        style: const TextStyle(color: Colors.black),
+                      ),
+                    ],
+                  ),
+                  maxLines: 3, // Une ligne pour "À faire :" et deux lignes pour devoir.content
+                  overflow: TextOverflow.ellipsis,
                 ),
+                const SizedBox(height: 6),
               ],
             ),
           ),
@@ -1388,8 +1388,8 @@ class FancyFabState extends State<FancyFab> with SingleTickerProviderStateMixin 
     _animateIcon =
         Tween<double>(begin: 0.0, end: 1.0).animate(_animationController);
     _buttonColor = ColorTween(
-      begin: Colors.blue,
-      end: Colors.red,
+      begin: Colors.grey[300],
+      end: Colors.red[300],
     ).animate(CurvedAnimation(
       parent: _animationController,
       curve: const Interval(

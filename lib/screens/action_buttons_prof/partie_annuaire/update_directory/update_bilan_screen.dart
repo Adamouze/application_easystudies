@@ -482,6 +482,7 @@ class BilanBlockState extends State<BilanBlock> {
                   padding: const EdgeInsets.all(10.0), // Ajout de marge extérieure
                   child: TextField(
                     controller: _toImproveController,
+                    minLines: 3,
                     maxLines: null,
                     keyboardType: TextInputType.multiline,
                     decoration: const InputDecoration(
@@ -502,6 +503,7 @@ class BilanBlockState extends State<BilanBlock> {
                   padding: const EdgeInsets.all(10.0), // Ajout de marge extérieure
                   child: TextField(
                     controller: _goodController,
+                    minLines: 3,
                     maxLines: null, // permet plusieurs lignes
                     keyboardType: TextInputType.multiline,
                     decoration: const InputDecoration(
@@ -522,6 +524,7 @@ class BilanBlockState extends State<BilanBlock> {
                   padding: const EdgeInsets.all(10.0), // Ajout de marge extérieure
                   child: TextField(
                     controller: _commentController,
+                    minLines: 3,
                     maxLines: null, // permet plusieurs lignes
                     keyboardType: TextInputType.multiline,
                     decoration: const InputDecoration(

@@ -180,6 +180,7 @@ class DevoirBlockState extends State<DevoirBlock> {
                   padding: const EdgeInsets.all(10.0), // Ajout de marge extérieure
                   child: TextField(
                       controller: _controller,
+                      minLines: 3,
                       maxLines: null, // permet plusieurs lignes
                       keyboardType: TextInputType.multiline,
                       decoration: InputDecoration(

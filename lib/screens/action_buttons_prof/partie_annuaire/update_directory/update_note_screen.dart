@@ -292,6 +292,7 @@ class NoteBlockState extends State<NoteBlock> {
                   padding: const EdgeInsets.all(10.0), // Ajout de marge extérieure
                   child: TextField(
                       controller: _commentController,
+                      minLines: 3,
                       maxLines: null, // permet plusieurs lignes
                       keyboardType: TextInputType.multiline,
                       decoration: InputDecoration(
