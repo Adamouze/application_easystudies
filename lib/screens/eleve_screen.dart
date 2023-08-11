@@ -95,24 +95,21 @@ class EleveScreenState extends State<EleveScreen> {
 
               floatingActionButton: Padding(
                 padding: const EdgeInsets.all(16.0),
-                child: Transform.scale(
-                  scale: 1.4,
-                  child: FloatingActionButton(
-                    backgroundColor: Colors.blue,
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => const QRCodeScreen()),
-                      );
-                    },
-                    tooltip: 'QR Code',
-                    elevation: 6.0,
-                    shape: const CircleBorder(),
-                    child: const Icon(
-                      Icons.qr_code_2_sharp,
-                      color: couleurIcone,
-                      size: 32.0,
-                    ),
+                child: FloatingActionButton(
+                  backgroundColor: Colors.blue,
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const QRCodeScreen()),
+                    );
+                  },
+                  tooltip: 'QR Code',
+                  elevation: 6.0,
+                  shape: const CircleBorder(),
+                  child: const Icon(
+                    Icons.qr_code_2_sharp,
+                    color: couleurIcone,
+                    size: 32.0,
                   ),
                 ),
               ),

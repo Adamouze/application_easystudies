@@ -619,7 +619,7 @@ class DevoirBlockState extends State<DevoirBlock> {
                     )
                   ],
                 ),
-                const Divider(color: Colors.black, thickness: 0.5, height: 10),
+                const Divider(color: Colors.black, thickness: 1, height: 10),
                 Text(
                   devoir.content.isEmpty ? "non renseigné" : devoir.content,
                   style: devoir.content.isEmpty

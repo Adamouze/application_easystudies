@@ -148,7 +148,7 @@ class HistoryPresenceBlock extends StatelessWidget {
                 ],
               ),
 
-              const Divider(color: Colors.black, thickness: 0.5, height: 10),
+              const Divider(color: Colors.black, thickness: 1, height: 10),
               // const SizedBox(height: 5),
 
               Text(
