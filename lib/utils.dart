@@ -591,6 +591,41 @@ Future<Eleve> getAllEleve(String token, String login, Eleve eleve) async {
 }
 
 Future<Eleve> getAllProf(String token, String login, Eleve eleve) async {
+
+  List<Presence> processPresenceResponse(Map<String, dynamic> jsonResponse, Eleve eleve) {
+    if (jsonResponse['_data'] == null || !jsonResponse['_data']["_result"]) {
+      throw Exception('Invalid data received');
+    }
+
+    Map<String, dynamic> dataMap = jsonResponse['_data'];
+    List<dynamic> data = dataMap.entries.where((entry) => entry.value is Map && entry.value.containsKey("_idClass")).map((entry) => entry.value).toList();
+
+    List<Presence> listPresences = [];
+
+    for (var u in data) {
+      Presence presence = Presence(
+          identifier: eleve.identifier,
+          nom: eleve.nom,
+          prenom: eleve.prenom,
+          classe: eleve.classe,
+          idClass: u["_idClass"],
+          nbHeures: u["_nbHeures"],
+          prix: u["_prix"]
+      );
+      presence.cours = Course(
+          index: u["_index"] ?? "0",  // Assuming default index is "0" if not provided
+          date: u["_date"],
+          type: u["_type"],
+          centre: u["_center"],
+          comment: u["_comment"]
+      );
+      listPresences.add(presence);
+    }
+
+    return listPresences;
+  }
+
+  // Première requête API
   final response = await http.get(Uri.parse('https://app.easystudies.fr/api/login.php?_token=$token&_login=$login&_pwd='));
 
   if (response.statusCode != 200) {
@@ -604,6 +639,17 @@ Future<Eleve> getAllProf(String token, String login, Eleve eleve) async {
 
   prof.numMobileEleve = details["_mobile"] ?? "";
   prof.emailEleve = details["_emailProf"] ?? "";
+
+  // Deuxième requête API après la première
+  final presenceResponse = await http.get(Uri.parse('https://app.easystudies.fr/api/student_presences.php?_token=$token&_login=$login&_identifier=${eleve.identifier}&_action=list_presences'));
+
+  if (presenceResponse.statusCode != 200) {
+    throw Exception('Failed to load student presences');
+  }
+
+  final presenceJsonResponse = jsonDecode(presenceResponse.body);
+
+  prof.presences = processPresenceResponse(presenceJsonResponse, prof);
 
   return prof;
 }
