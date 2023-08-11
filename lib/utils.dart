@@ -123,21 +123,31 @@ class Eleve {
 
 class Devoir {
   String _index;
-  String _date;
-  String _comment;
-  String _fait;
+  String _date_start;
+  String _date_end;
+  String _content;
+  String _state_student;
+  String _state_prof;
+  String _from;
 
-  Devoir(this._index, this._date, this._comment, this._fait);
+  Devoir(this._index, this._date_start, this._date_end, this._content,
+      this._state_student, this._state_prof, this._from);
 
   String get index => _index;
-  String get date => _date;
-  String get comment => _comment;
-  String get fait => _fait;
+  String get dateStart => _date_start;
+  String get dateEnd => _date_end;
+  String get content => _content;
+  String get stateStudent => _state_student;
+  String get stateProf => _state_prof;
+  String get from => _from;
 
   set index(String value) {_index = value;}
-  set date(String value) {_date = value;}
-  set comment(String value) {_comment = value;}
-  set fait(String value) {_fait = value;}
+  set dateStart(String value) {_date_start = value;}
+  set dateEnd(String value) {_date_end = value;}
+  set content(String value) {_content = value;}
+  set stateStudent(String value) {_state_student = value;}
+  set stateProf(String value) {_state_prof = value;}
+  set from(String value) {_from = value;}
 }
 
 class Commentaire {
@@ -381,6 +391,36 @@ Future<Eleve> getDetailsEleve(String token, String login, Eleve eleve) async {
   return newEleve;
 }
 
+Future<Eleve> getDevoirsEleve(String token, String login, Eleve eleve) async {
+  final response = await http.get(
+    Uri.parse('https://app.easystudies.fr/api/devoirs.php?_token=$token&_login=$login&_action=list&_idDevoirs=&_date_start=&_date_end=&_identifier=${eleve.identifier}&_content=&_state_student=&_state_prof=&_from='),
+  );
+
+  if (response.statusCode != 200) {
+    throw Exception('Échec de chargement des devoirs de l\'élève');
+  }
+
+  final jsonResponse = jsonDecode(response.body);
+  List<dynamic> devoirsData = jsonResponse["_data"];
+
+  List<Devoir> devoirs = [];
+  for (var u in devoirsData) {
+    Devoir devoir = Devoir(
+        u["_index"],
+        u["_date_start"],
+        u["_date_end"],
+        u["_content"],
+        u["_state_student"],
+        u["_state_prof"],
+        u["_from"]
+    );
+    devoirs.add(devoir);
+  }
+
+  eleve.devoirs = devoirs;
+  return eleve;
+}
+
 Future<Eleve> getCommentsEleve(String token, String login, Eleve eleve) async {
   final response = await http.get(Uri.parse('https://app.easystudies.fr/api/comments_get.php?_token=$token&_login=$login&_studentLogin=${eleve.identifier}'));
 
@@ -519,8 +559,10 @@ Future<Eleve> getHistoryPaiementsEleve(String token, String login, Eleve eleve) 
   return eleve;
 }
 
+
 Future<Eleve> getAllEleve(String token, String login, Eleve eleve) async {
   final detailsFuture = getDetailsEleve(token, login, eleve);
+  final devoirsFuture = getDevoirsEleve(token, login, eleve);
   final commentsFuture = getCommentsEleve(token, login, eleve);
   final notesFuture = getNotesEleve(token, login, eleve);
   final bilansFuture = getBilansEleve(token, login, eleve);
@@ -528,15 +570,17 @@ Future<Eleve> getAllEleve(String token, String login, Eleve eleve) async {
   final paiementsFuture = getHistoryPaiementsEleve(token, login, eleve);
 
 
-  final responses = await Future.wait([detailsFuture, commentsFuture, notesFuture, bilansFuture, presencesFuture, paiementsFuture]);
+  final responses = await Future.wait([detailsFuture, devoirsFuture, commentsFuture, notesFuture, bilansFuture, presencesFuture, paiementsFuture]);
 
   Eleve detailedEleve = responses[0];
-  Eleve eleveWithComments = responses[1];
-  Eleve eleveWithNotes = responses[2];
-  Eleve eleveWithBilans = responses[3];
-  Eleve eleveWithPresences = responses[4];
-  Eleve eleveWithPaiements = responses[5];
+  Eleve eleveWithDevoirs = responses[1];
+  Eleve eleveWithComments = responses[2];
+  Eleve eleveWithNotes = responses[3];
+  Eleve eleveWithBilans = responses[4];
+  Eleve eleveWithPresences = responses[5];
+  Eleve eleveWithPaiements = responses[6];
 
+  detailedEleve.devoirs = eleveWithDevoirs.devoirs;
   detailedEleve.commentaires = eleveWithComments.commentaires;
   detailedEleve.notes = eleveWithNotes.notes;
   detailedEleve.bilans = eleveWithBilans.bilans;
@@ -564,6 +608,30 @@ Future<Eleve> getAllProf(String token, String login, Eleve eleve) async {
   return prof;
 }
 
+
+Future<void> manageDevoir(String token, String login, Eleve eleve, String action, Devoir devoir) async {
+  Map<String, dynamic> queryParams = {
+    '_token': token,
+    '_login': login,
+    '_identifier': eleve.identifier,
+    '_action': action,
+    '_idDevoirs': devoir.index,
+    '_date_start': devoir.dateStart,
+    '_date_end': devoir.dateEnd,
+    '_content': devoir.content,
+    '_state_student': devoir.stateStudent,
+    '_state_prof': devoir.stateProf,
+    '_from': devoir.from,
+  };
+
+  final uri = Uri.https('app.easystudies.fr', '/api/devoirs.php', queryParams);
+
+  final response = await http.get(uri);
+
+  if (response.statusCode != 200) {
+    throw Exception('Failed to manage devoir');
+  }
+}
 
 Future<void> manageComment(String token, String login, Eleve eleve, String action, Commentaire commentaire) async {
   Map<String, dynamic> queryParams = {
@@ -704,9 +772,6 @@ Future<bool> add_Course(String token, String identifier, String centre, String d
     throw Exception('Failed to add the course. StatusCode: ${response.statusCode}.');
   }
 }
-
-
-
 
 
 String afficherDate(String date) {

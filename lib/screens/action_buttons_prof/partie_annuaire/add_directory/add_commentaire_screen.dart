@@ -222,18 +222,12 @@ class AddCommentaireState extends State<AddCommentaire> {
   final Commentaire commentaire = Commentaire("", "", "", "", "");
 
   void handleSubmitCommentaire(String token, String login) async {
-    try {
+    commentaire.comment = commentaire.comment.replaceAll('\n', '\r\n');
+    await manageComment(token, login, widget.eleve, "add", commentaire);
 
-      commentaire.comment = commentaire.comment.replaceAll('\n', '\r\n');
-      await manageComment(token, login, widget.eleve, "add", commentaire);
-      print('Commentaire ajouté avec succès.');
-
-      // Appel au callback pour rafraîchir la liste des commentaires
-      if (widget.onCommentAdded != null) {
-        widget.onCommentAdded!();
-      }
-    } catch (e) {
-      print('Erreur lors de l\'ajout du commentaire: $e');
+    // Appel au callback pour rafraîchir la liste des commentaires
+    if (widget.onCommentAdded != null) {
+      widget.onCommentAdded!();
     }
   }
 

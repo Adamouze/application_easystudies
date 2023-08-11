@@ -414,9 +414,7 @@ class BilanBlockState extends State<BilanBlock> {
                                 onChanged: (bool? value) {
                                   setState(() {
                                     matieres[key] = value ?? false;
-                                    print("Avant: ${widget.bilanNotifier.value.subjects}");
                                     updateSubjects();
-                                    print("Après: ${widget.bilanNotifier.value.subjects}");
                                     _checkMatieresValidity();  // Ajouté cette ligne
                                   });
                                 },
@@ -559,8 +557,6 @@ class SoumettreButtonState extends State<SoumettreButton> {
 
   @override
   Widget build(BuildContext context) {
-    print("Voici l'état actuel des matières : ${widget.bilan.subjects}");
-
     return ValueListenableBuilder<bool>(
       valueListenable: widget.isBilanValidNotifier,
       builder: (context, isValid, child) {
@@ -620,36 +616,29 @@ class AddBilanState extends State<AddBilan> {
 
 
   void handleSubmitBilan(String token, String login, String user, String prenom) async {
-    try {
+    bilanNotifier.value.toImprove = bilanNotifier.value.toImprove.replaceAll('\n', '\r\n');
+    bilanNotifier.value.good = bilanNotifier.value.good.replaceAll('\n', '\r\n');
+    bilanNotifier.value.comment = bilanNotifier.value.comment.replaceAll('\n', '\r\n');
 
-      bilanNotifier.value.toImprove = bilanNotifier.value.toImprove.replaceAll('\n', '\r\n');
-      bilanNotifier.value.good = bilanNotifier.value.good.replaceAll('\n', '\r\n');
-      bilanNotifier.value.comment = bilanNotifier.value.comment.replaceAll('\n', '\r\n');
+    if (bilanNotifier.value.comment.trim().isEmpty) {
+      // Si le commentaire est vide, assignez seulement "Entré par: $user ($prenom)"
+      bilanNotifier.value.comment = 'Entré par: $user ($prenom)';
+    } else if (bilanNotifier.value.comment.contains("Entré par")) {
+      // Si "Entré par" existe, remplacez la partie après cela
+      bilanNotifier.value.comment = bilanNotifier.value.comment.replaceAllMapped(
+          RegExp(r'Entré par:.*'),
+              (match) => 'Entré par: $user ($prenom)'
+      );
+    } else {
+      // Sinon, ajoutez simplement à la fin
+      bilanNotifier.value.comment = '${bilanNotifier.value.comment}\r\n\r\nEntré par: $user ($prenom)';
+    }
 
-      if (bilanNotifier.value.comment.trim().isEmpty) {
-        // Si le commentaire est vide, assignez seulement "Entré par: $user ($prenom)"
-        bilanNotifier.value.comment = 'Entré par: $user ($prenom)';
-      } else if (bilanNotifier.value.comment.contains("Entré par")) {
-        // Si "Entré par" existe, remplacez la partie après cela
-        bilanNotifier.value.comment = bilanNotifier.value.comment.replaceAllMapped(
-            RegExp(r'Entré par:.*'),
-                (match) => 'Entré par: $user ($prenom)'
-        );
-      } else {
-        // Sinon, ajoutez simplement à la fin
-        bilanNotifier.value.comment = '${bilanNotifier.value.comment}\r\n\r\nEntré par: $user ($prenom)';
-      }
+    await manageBilan(token, login, widget.eleve, "add", bilanNotifier.value);
 
-      await manageBilan(token, login, widget.eleve, "add", bilanNotifier.value);
-      print('Bilan ajouté avec succès.');
-
-      // Appel au callback pour rafraîchir la liste des commentaires
-      if (widget.onBilanAdded != null) {
-        widget.onBilanAdded!();
-      }
-
-    } catch (e) {
-      print('Erreur lors de l\'ajout du bilan: $e');
+    // Appel au callback pour rafraîchir la liste des commentaires
+    if (widget.onBilanAdded != null) {
+      widget.onBilanAdded!();
     }
   }
 

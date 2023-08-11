@@ -411,36 +411,31 @@ class UpdateNoteState extends State<UpdateNote> {
   final GlobalKey<NoteBlockState> noteBlockKey = GlobalKey<NoteBlockState>();
 
   void handleSubmitNote(String token, String login, String user, String prenom) async {
-    try {
-      widget.note.commentaire = widget.note.commentaire.replaceAll('\n', '\r\n');
-      if (widget.note.commentaire.trim().isEmpty) {
-        // Si le commentaire est vide, assignez seulement "Modifié par: $user ($prenom)"
-        widget.note.commentaire = 'Modifiée par: $user ($prenom)';
-      } else if (widget.note.commentaire.contains("Modifiée par")) {
-        // Si "Modifié par" existe, remplacez la partie après cela
-        widget.note.commentaire = widget.note.commentaire.replaceAllMapped(
-            RegExp(r'Modifiée par:.*'),
-                (match) => 'Modifiée par: $user ($prenom)'
-        );
-      } else if (widget.note.commentaire.contains("Entrée par")) {
-        // Si "Entrée par" existe, ajoutez "Modifié par: $user ($prenom)" après une nouvelle ligne
-        widget.note.commentaire = '${widget.note.commentaire}\r\nModifiée par: $user ($prenom)';
-      } else {
-        // Sinon, ajoutez simplement à la fin
-        widget.note.commentaire = '${widget.note.commentaire}\r\n\r\nModifiée par: $user ($prenom)';
-      }
+    widget.note.commentaire = widget.note.commentaire.replaceAll('\n', '\r\n');
+    if (widget.note.commentaire.trim().isEmpty) {
+      // Si le commentaire est vide, assignez seulement "Modifié par: $user ($prenom)"
+      widget.note.commentaire = 'Modifiée par: $user ($prenom)';
+    } else if (widget.note.commentaire.contains("Modifiée par")) {
+      // Si "Modifié par" existe, remplacez la partie après cela
+      widget.note.commentaire = widget.note.commentaire.replaceAllMapped(
+          RegExp(r'Modifiée par:.*'),
+              (match) => 'Modifiée par: $user ($prenom)'
+      );
+    } else if (widget.note.commentaire.contains("Entrée par")) {
+      // Si "Entrée par" existe, ajoutez "Modifié par: $user ($prenom)" après une nouvelle ligne
+      widget.note.commentaire = '${widget.note.commentaire}\r\nModifiée par: $user ($prenom)';
+    } else {
+      // Sinon, ajoutez simplement à la fin
+      widget.note.commentaire = '${widget.note.commentaire}\r\n\r\nModifiée par: $user ($prenom)';
+    }
 
 
 
-      await manageNote(token, login, widget.eleve, "update", widget.note);
-      print('Note ajoutée avec succès.');
+    await manageNote(token, login, widget.eleve, "update", widget.note);
 
-// Appel au callback pour rafraîchir la liste des commentaires
-      if (widget.onNoteUpdate != null) {
-        widget.onNoteUpdate!();
-      }
-    } catch (e) {
-      print('Erreur lors de l\'ajout de la note : $e');
+    // Appel au callback pour rafraîchir la liste des commentaires
+    if (widget.onNoteUpdate != null) {
+      widget.onNoteUpdate!();
     }
   }
 

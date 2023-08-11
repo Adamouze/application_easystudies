@@ -3,13 +3,13 @@ import 'package:provider/provider.dart';
 
 import '../logs/auth_stat.dart';
 
-
+import '../screens/action_buttons_eleve/qrcode_screen.dart';
 import '../utilities/constantes.dart';
 import '../utils.dart';
 import 'app_bar.dart';
 import 'body.dart';
 
-import 'boutons_app_bar/historique_presence.dart';
+import 'action_buttons_eleve/devoirs_screen.dart';
 import 'action_buttons_eleve/bilans_screen.dart';
 import 'action_buttons_eleve/commentaires_screen.dart';
 import 'action_buttons_eleve/notes_screen.dart';
@@ -50,13 +50,13 @@ class EleveScreenState extends State<EleveScreen> {
       case 0:
         return const HomeContent();
       case 1:
-        return NoteBlock(eleve: eleve);
+        return DevoirBlock(eleve: eleve);
       case 2:
-        return BilanBlock(eleve: eleve);
-      case 3:
         return CommentaireBlock(eleve: eleve);
+      case 3:
+        return NoteBlock(eleve: eleve);
       case 4:
-        return HistoryPresenceScreen(eleve: eleve);
+        return BilanBlock(eleve: eleve);
       default:
         return const HomeContent();
     }
@@ -90,7 +90,33 @@ class EleveScreenState extends State<EleveScreen> {
             onWillPop: _onWillPop,
             child: Scaffold(
               appBar: CustomAppBar(context: context, eleve: eleve),
+
               body: getScreen(_selectedIndex, eleve),
+
+              floatingActionButton: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Transform.scale(
+                  scale: 1.4,
+                  child: FloatingActionButton(
+                    backgroundColor: Colors.blue,
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const QRCodeScreen()),
+                      );
+                    },
+                    tooltip: 'QR Code',
+                    elevation: 6.0,
+                    shape: const CircleBorder(),
+                    child: const Icon(
+                      Icons.qr_code_2_sharp,
+                      color: couleurIcone,
+                      size: 32.0,
+                    ),
+                  ),
+                ),
+              ),
+
               bottomNavigationBar: Theme(
                 data: theme.copyWith(
                   splashColor: couleurSplashBottomBar.withOpacity(0.3),
@@ -106,20 +132,20 @@ class EleveScreenState extends State<EleveScreen> {
                       label: 'Accueil',
                     ),
                     BottomNavigationBarItem(
-                      icon: Icon(Icons.check_circle),
-                      label: 'Notes',
-                    ),
-                    BottomNavigationBarItem(
-                      icon: Icon(Icons.fact_check),
-                      label: 'Bilan',
+                      icon: Icon(Icons.menu_book),
+                      label: 'Devoirs',
                     ),
                     BottomNavigationBarItem(
                       icon: Icon(Icons.comment),
                       label: 'Commentaires',
                     ),
                     BottomNavigationBarItem(
-                      icon: Icon(Icons.history),
-                      label: 'Historique',
+                      icon: Icon(Icons.check_circle),
+                      label: 'Notes',
+                    ),
+                    BottomNavigationBarItem(
+                      icon: Icon(Icons.fact_check),
+                      label: 'Bilan',
                     ),
                   ],
                   currentIndex: _selectedIndex,

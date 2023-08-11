@@ -483,47 +483,148 @@ class DevoirBlock extends StatefulWidget {
 
 class DevoirBlockState extends State<DevoirBlock> {
 
+  IconData determineIcon(String state) {
+    switch (state) {
+      case "1":
+        return Icons.close;  // Icône de croix
+      case "2":
+        return Icons.warning;  // Icône de point d'exclamation
+      case "3":
+        return Icons.check;  // Icône de check
+      default:
+        return Icons.help; // Icône par défaut si la valeur est inconnue
+    }
+  }
+
+  Color determineColor(String state) {
+    switch (state) {
+      case "1":
+        return Colors.red;
+      case "2":
+        return Colors.orange;
+      case "3":
+        return Colors.green;
+      default:
+        return Colors.grey; // Couleur par défaut si la valeur est inconnue
+    }
+  }
+
   Widget buildDevoirRow(Devoir devoir, int index, Color color) {
-    return InkWell(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => DevoirScreen(eleve: widget.eleve),
-          ),
-        );
-      },
-      child: SizedBox(
-        width: double.infinity,
-        child: Card(
-          color: color,
-          margin: const EdgeInsets.only(left: 8.0, right: 8.0, top: 8.0),
+    return SizedBox(
+      width: double.infinity,
+      child: Card(
+        color: color,
+        margin: const EdgeInsets.only(left: 8.0, right: 8.0, top: 8.0),
+        child: InkWell(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => DevoirScreen(eleve: widget.eleve), // Vous devrez ajuster les arguments selon vos besoins
+              ),
+            );
+          },
           child: Padding(
             padding: const EdgeInsets.all(5.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                RichText(
-                  text: TextSpan(
-                    text: "Date: ",
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                    children: <TextSpan>[
-                      TextSpan(
-                        text: afficherDate(devoir.date),
-                        style: afficherDate(devoir.date) == "non renseigné"
-                            ? TextStyle(fontWeight: FontWeight.normal, fontStyle: FontStyle.italic, color: Colors.grey[700])
-                            : const TextStyle(fontStyle: FontStyle.normal, color: Colors.black),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Date de début
+                          RichText(
+                            text: TextSpan(
+                              text: "Début: ",
+                              style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+                              children: <TextSpan>[
+                                TextSpan(
+                                  text: afficherDate(devoir.dateStart),
+                                  style: afficherDate(devoir.dateStart) == "non renseigné"
+                                      ? TextStyle(fontWeight: FontWeight.normal, fontStyle: FontStyle.italic, color: Colors.grey[700])
+                                      : const TextStyle(fontStyle: FontStyle.normal, color: Colors.black),
+                                ),
+                              ],
+                            ),
+                          ),
+                          // Date de fin
+                          RichText(
+                            text: TextSpan(
+                              text: "Fin: ",
+                              style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+                              children: <TextSpan>[
+                                TextSpan(
+                                  text: afficherDate(devoir.dateEnd),
+                                  style: afficherDate(devoir.dateEnd) == "non renseigné"
+                                      ? TextStyle(fontWeight: FontWeight.normal, fontStyle: FontStyle.italic, color: Colors.grey[700])
+                                      : const TextStyle(fontStyle: FontStyle.normal, color: Colors.black),
+                                ),
+                              ],
+                            ),
+                          ),
+                          // From
+                          RichText(
+                            text: TextSpan(
+                              text: "De: ${devoir.from}",
+                              style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+                            ),
+                          ),
+                        ],
                       ),
-                      TextSpan(
-                        text: "   Fait: ${devoir.fait}",
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                  ),
+                    ),
+                    // Deux boutons carrés
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Column(
+                          children: [
+                            ClipOval(
+                              child: Container(
+                                color: const Color.fromRGBO(128, 128, 128, 0.2), // Gris avec 20% d'opacité
+                                child: IconButton(
+                                  padding: EdgeInsets.zero,  // Pas de padding
+                                  icon: Icon(determineIcon(devoir.stateStudent), color: determineColor(devoir.stateStudent)),
+                                  onPressed: () {
+                                    // Gérer la logique pour devoir.state_student
+                                  },
+                                ),
+                              ),
+                            ),
+                            const Text("Élève"),
+                          ],
+                        ),
+                        const SizedBox(width: 5),  // Espace entre les deux boutons
+                        Column(
+                          children: [
+                            ClipOval(
+                              child: Container(
+                                color: const Color.fromRGBO(128, 128, 128, 0.2), // Gris avec 20% d'opacité
+                                child: IconButton(
+                                  padding: EdgeInsets.zero,  // Pas de padding
+                                  icon: Icon(determineIcon(devoir.stateProf), color: determineColor(devoir.stateProf)),
+                                  onPressed: () {
+                                    // Gérer la logique pour devoir.state_prof
+                                  },
+                                ),
+                              ),
+                            ),
+                            const Text("Prof"),
+                          ],
+                        ),
+                      ],
+                    )
+                  ],
                 ),
-                const SizedBox(height: 5),
+                const Divider(color: Colors.black, thickness: 0.5, height: 10),
                 Text(
-                  devoir.comment,
+                  devoir.content.isEmpty ? "non renseigné" : devoir.content,
+                  style: devoir.content.isEmpty
+                      ? TextStyle(fontWeight: FontWeight.normal, fontStyle: FontStyle.italic, color: Colors.grey[700])
+                      : const TextStyle(fontStyle: FontStyle.normal, color: Colors.black),
                   maxLines: 2, // Limite à deux lignes
                   overflow: TextOverflow.ellipsis, // Ajoute des ellipses à la fin si le texte est trop long
                 ),
@@ -685,7 +786,7 @@ class CommentaireBlockState extends State<CommentaireBlock> {
                             : const TextStyle(fontStyle: FontStyle.normal, color: Colors.black),
                       ),
                       TextSpan(
-                        text: "   Par: ${commentaire.from}",
+                        text: "   De: ${commentaire.from}",
                         style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
                     ],

@@ -325,36 +325,37 @@ class CustomAppBar extends PreferredSize {
                           },
                         ),
                       ),
+
+                      // 3e bouton : Redirection vers la page "historique de présence"
+                      PopupMenuItem(
+                        value: 3,
+                        child: Builder(
+                          builder: (newContext) {
+                            final themeProvider = Provider.of<ThemeProvider>(newContext, listen: false);
+                            return Row(
+                              children: [
+                                IconTheme(
+                                  data: IconThemeData(
+                                      color: themeProvider.isDarkTheme ? Colors.black : Colors.white),
+                                  child: const Icon(Icons.history),
+                                ),
+                                Text(
+                                  'Historique de présence',
+                                  style: TextStyle(
+                                    color: themeProvider.isDarkTheme ? Colors.black : Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: 'NotoSans',
+                                  ),
+                                ),
+                              ],
+                            );
+                          },
+                        ),
+                      ),
                     ];
 
                     if(authState.userType == "eleve") {
                       items.addAll([
-                        // 3e bouton : Redirection vers la page "historique de présence"
-                        PopupMenuItem(
-                          value: 3,
-                          child: Builder(
-                            builder: (newContext) {
-                              final themeProvider = Provider.of<ThemeProvider>(newContext, listen: false);
-                              return Row(
-                                children: [
-                                  IconTheme(
-                                    data: IconThemeData(
-                                        color: themeProvider.isDarkTheme ? Colors.black : Colors.white),
-                                    child: const Icon(Icons.history),
-                                  ),
-                                  Text(
-                                    'Historique de présence',
-                                    style: TextStyle(
-                                      color: themeProvider.isDarkTheme ? Colors.black : Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                      fontFamily: 'NotoSans',
-                                    ),
-                                  ),
-                                ],
-                              );
-                            },
-                          ),
-                        ),
                         // 4e bouton : Redirection vers la page "historique de paiement"
                         PopupMenuItem(
                           value: 4,

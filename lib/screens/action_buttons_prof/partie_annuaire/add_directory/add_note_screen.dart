@@ -362,31 +362,27 @@ class AddNoteState extends State<AddNote> {
   final Note note = Note("", "", "", "", "");
 
   void handleSubmitNote(String token, String login, String user, String prenom) async {
-    try {
-      note.commentaire = note.commentaire.replaceAll('\n', '\r\n');
-      if (note.commentaire.trim().isEmpty) {
-        // Si le commentaire est vide, assignez seulement "Entrée par: $user ($prenom)"
-        note.commentaire = 'Entrée par: $user ($prenom)';
-      } else if (note.commentaire.contains("Entrée par")) {
-        // Si "Entrée par" existe, remplacez la partie après cela
-        note.commentaire = note.commentaire.replaceAllMapped(
-            RegExp(r'Entrée par:.*'),
-                (match) => 'Entrée par: $user ($prenom)'
-        );
-      } else {
-        // Sinon, ajoutez simplement à la fin
-        note.commentaire = '${note.commentaire}\r\n\r\nEntrée par: $user ($prenom)';
-      }
+    note.commentaire = note.commentaire.replaceAll('\n', '\r\n');
+    if (note.commentaire.trim().isEmpty) {
+      // Si le commentaire est vide, assignez seulement "Entrée par: $user ($prenom)"
+      note.commentaire = 'Entrée par: $user ($prenom)';
+    } else if (note.commentaire.contains("Entrée par")) {
+      // Si "Entrée par" existe, remplacez la partie après cela
+      note.commentaire = note.commentaire.replaceAllMapped(
+          RegExp(r'Entrée par:.*'),
+              (match) => 'Entrée par: $user ($prenom)'
+      );
+    } else {
+      // Sinon, ajoutez simplement à la fin
+      note.commentaire = '${note.commentaire}\r\n\r\nEntrée par: $user ($prenom)';
+    }
 
-      await manageNote(token, login, widget.eleve, "add", note);
-      print('Note ajoutée avec succès.');
+    await manageNote(token, login, widget.eleve, "add", note);
+    print('Note ajoutée avec succès.');
 
-      // Appel au callback pour rafraîchir la liste des commentaires
-      if (widget.onNoteAdded != null) {
-        widget.onNoteAdded!();
-      }
-    } catch (e) {
-      print('Erreur lors de l\'ajout de la note : $e');
+    // Appel au callback pour rafraîchir la liste des commentaires
+    if (widget.onNoteAdded != null) {
+      widget.onNoteAdded!();
     }
   }
 

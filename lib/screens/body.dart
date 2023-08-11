@@ -5,8 +5,6 @@ import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:provider/provider.dart';
 
-import '../screens/action_buttons_eleve/qrcode_screen.dart';
-
 import '../logs/auth_stat.dart';
 
 import '../utilities/constantes.dart';
@@ -586,34 +584,7 @@ class _CustomBodyState extends State<CustomBody> {
                 ),
               ),
 
-              const SizedBox(height: 16),
-
-              if (widget.userType == "eleve")
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Transform.scale(
-                    scale: 1.4,
-                    child: FloatingActionButton(
-                      backgroundColor: Colors.blue,
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => const QRCodeScreen()),
-                        );
-                      },
-                      tooltip: 'QR Code',
-                      elevation: 6.0,
-                      shape: const CircleBorder(),
-                      child: const Icon(
-                        Icons.qr_code_2_sharp,
-                        color: couleurIcone,
-                        size: 32.0,
-                      ),
-                    ),
-                  ),
-                ),
-
-              const SizedBox(height: 20),
+              const SizedBox(height: 120),
             ],
           ),
         ),

@@ -120,7 +120,7 @@ class CommentaireBlockState extends State<CommentaireBlock> {
                             : const TextStyle(fontStyle: FontStyle.normal, color: Colors.black),
                       ),
                       TextSpan(
-                        text: "   Par: ${commentaire.from}",
+                        text: "   De: ${commentaire.from}",
                         style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
                     ],

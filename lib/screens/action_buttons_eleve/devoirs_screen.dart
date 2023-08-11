@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'add_directory/add_devoir_screen.dart';
 import '../../../utilities/constantes.dart';
 import '../../../logs/auth_stat.dart';
 import '../../../utils.dart';
@@ -210,135 +209,71 @@ class DevoirBlockState extends State<DevoirBlock> {
   @override
   Widget build(BuildContext context) {
     List<Widget> devoirRows = createDevoirRows(widget.eleve);
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(arrondiBox),
-      child: FractionallySizedBox(
-        widthFactor: 0.95,
+
+    return SingleChildScrollView(
+      child: Center(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            Container(
-              decoration: const BoxDecoration(
-                color: orangePerso,
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(arrondiBox),
-                  topRight: Radius.circular(arrondiBox),
-                ),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.only(right: 8, left: 8, top: 8, bottom: 8 - epaisseurContour),
-                child: Text(
-                  'Devoirs',
-                  style: TextStyle(
-                    color: Theme.of(context).primaryColor,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: 'NotoSans',
-                  ),
+          children: [
+            const SizedBox(height: 20),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(arrondiBox),
+              child: FractionallySizedBox(
+                widthFactor: 0.95,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: <Widget>[
+                    Container(
+                      decoration: const BoxDecoration(
+                        color: orangePerso,
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(arrondiBox),
+                          topRight: Radius.circular(arrondiBox),
+                        ),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 8, left: 8, top: 8, bottom: 8 - epaisseurContour),
+                        child: Text(
+                          'Devoirs',
+                          style: TextStyle(
+                            color: Theme.of(context).primaryColor,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: 'NotoSans',
+                          ),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: orangePerso,
+                          width: epaisseurContour,
+                        ),
+                        borderRadius: const BorderRadius.only(
+                          bottomLeft: Radius.circular(arrondiBox),
+                          bottomRight: Radius.circular(arrondiBox),
+                        ),
+                      ),
+                      child: devoirRows.isEmpty
+                          ? Container(
+                        height: 10,
+                        decoration: const BoxDecoration(
+                          color: Colors.transparent,
+                          borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(arrondiBox - 3),
+                            bottomRight: Radius.circular(arrondiBox - 3),
+                          ),
+                        ),
+                      )
+                          : Column(
+                        children: devoirRows,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
-            Container(
-              decoration: BoxDecoration(
-                border: Border.all(
-                  color: orangePerso,
-                  width: epaisseurContour,
-                ),
-                borderRadius: const BorderRadius.only(
-                  bottomLeft: Radius.circular(arrondiBox),
-                  bottomRight: Radius.circular(arrondiBox),
-                ),
-              ),
-              child: devoirRows.isEmpty
-                  ? Container(
-                height: 10,
-                decoration: const BoxDecoration(
-                  color: Colors.transparent,
-                  borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(arrondiBox - 3),
-                    bottomRight: Radius.circular(arrondiBox - 3),
-                  ),
-                ),
-              )
-                  : Column(
-                children: devoirRows,
-              ),
-            ),
+            const SizedBox(height: 100),
           ],
-        ),
-      ),
-    );  }
-}
-
-class DevoirScreen extends StatefulWidget {
-  final Eleve eleve;
-
-  const DevoirScreen({required this.eleve, Key? key}) : super(key: key);
-
-  @override
-  DevoirScreenState createState() => DevoirScreenState();
-}
-
-class DevoirScreenState extends State<DevoirScreen> {
-
-  void refreshDevoirs() async {
-    final authState = Provider.of<AuthState>(context, listen: false);
-    final token = authState.token ?? "";
-    final login = authState.identifier ?? "";
-    final newEleve = await getDevoirsEleve(token, login, widget.eleve);
-    setState(() {
-      widget.eleve.devoirs = newEleve.devoirs;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: orangePerso,
-        title:Text(
-          'Détails des devoirs',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            color: theme.primaryColor,
-          ),
-        ),
-        iconTheme: IconThemeData(
-          color: theme.primaryColor, // Définissez ici la couleur souhaitée pour l'icône
-        ),
-      ),
-      body: SingleChildScrollView(
-        child: Center(
-          child: Column(
-            children: [
-              const SizedBox(height: 20),
-              DevoirBlock(eleve: widget.eleve),
-              const SizedBox(height: 20),
-            ],
-          ),
-        )
-      ),
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.only(bottom: 16.0, right: 16.0), // Écartement aux bords
-        child: Transform.scale(
-          scale: 1.3,
-          child: FloatingActionButton(
-            backgroundColor: orangePerso,
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => AddDevoir(eleve: widget.eleve, onDevoirAdded: refreshDevoirs)),
-              );
-            },
-            tooltip: "Ajout d'un devoir",
-            elevation: 10.0, // Rehaussement
-            shape: const CircleBorder(),
-            child: ColorFiltered(
-              colorFilter: ColorFilter.mode(
-                  theme.iconTheme.color ?? Colors.white, BlendMode.srcIn),
-              child: addDevoirs,
-            ),
-          ),
         ),
       ),
     );

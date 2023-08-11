@@ -226,28 +226,23 @@ class UpdateCommentaireState extends State<UpdateCommentaire> {
   final GlobalKey<CommentaireBlockState> commentaireBlockKey = GlobalKey<CommentaireBlockState>();
 
   void handleSubmitCommentaire(String token, String login, String user, String prenom) async {
-    try {
-      widget.commentaire.comment = widget.commentaire.comment.replaceAll('\n', '\r\n');
-      if (widget.commentaire.comment.contains("Modifié par")) {
-        // Si "Modifié par" existe, on remplace la partie après cela
-        widget.commentaire.comment = widget.commentaire.comment.replaceAllMapped(
-            RegExp(r'Modifié par:.*'),
-                (match) => 'Modifié par: $user ($prenom)'
-        );
-      } else {
-        // Sinon, on ajoute simplement à la fin
-        widget.commentaire.comment = '${widget.commentaire.comment}\r\n\r\nModifié par: $user ($prenom)';
-      }
+    widget.commentaire.comment = widget.commentaire.comment.replaceAll('\n', '\r\n');
+    if (widget.commentaire.comment.contains("Modifié par")) {
+      // Si "Modifié par" existe, on remplace la partie après cela
+      widget.commentaire.comment = widget.commentaire.comment.replaceAllMapped(
+          RegExp(r'Modifié par:.*'),
+              (match) => 'Modifié par: $user ($prenom)'
+      );
+    } else {
+      // Sinon, on ajoute simplement à la fin
+      widget.commentaire.comment = '${widget.commentaire.comment}\r\n\r\nModifié par: $user ($prenom)';
+    }
 
-      await manageComment(token, login, widget.eleve, "update", widget.commentaire);
-      print('Commentaire ajouté avec succès.');
+    await manageComment(token, login, widget.eleve, "update", widget.commentaire);
 
-      // Appel au callback pour rafraîchir la liste des commentaires
-      if (widget.onCommentUpdate != null) {
-        widget.onCommentUpdate!();
-      }
-    } catch (e) {
-      print('Erreur lors de l\'ajout du commentaire: $e');
+    // Appel au callback pour rafraîchir la liste des commentaires
+    if (widget.onCommentUpdate != null) {
+      widget.onCommentUpdate!();
     }
   }
 
