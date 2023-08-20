@@ -1,5 +1,6 @@
 // ignore_for_file: deprecated_member_use, constant_identifier_names, non_constant_identifier_names, duplicate_ignore, library_private_types_in_public_api, use_build_context_synchronously
 
+import 'package:EasyStudies/screens/action_buttons_eleve/qrcode_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -236,11 +237,13 @@ class _CustomBodyState extends State<CustomBody> {
     final nom = (authState.nom ?? '').replaceAll('ë', 'Ë');
 
     return WillPopScope(
-      onWillPop: _onWillPop,
-      child: Align(
+        onWillPop: _onWillPop,
+        child: Align(
         alignment: Alignment.topCenter,
-        child: SingleChildScrollView(
-          child: Column(
+        child: SizedBox(
+        width: MediaQuery.of(context).size.width,
+    child: SingleChildScrollView(
+    child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               const SizedBox(height: 10),
@@ -254,6 +257,7 @@ class _CustomBodyState extends State<CustomBody> {
               if (widget.userType != "eleve" && widget.userType != "prof")
                 const SizedBox(height: 16),
 
+              /*                      Les news ne sont pas encore mis en place
               FractionallySizedBox(
                 widthFactor: 0.95,
                 child: Column(
@@ -318,9 +322,7 @@ class _CustomBodyState extends State<CustomBody> {
                     ),
                   ],
                 ),
-              ),
-
-              const SizedBox(height: 16),
+              ),*/
 
               FractionallySizedBox(
                 widthFactor: 0.95,
@@ -584,11 +586,37 @@ class _CustomBodyState extends State<CustomBody> {
                 ),
               ),
 
-              const SizedBox(height: 120),
+              const SizedBox(height: 28),
+
+              if (widget.userType == "eleve")
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Transform.scale(
+                  scale: 1.4,
+                  child: FloatingActionButton(
+                    backgroundColor: Colors.blue,
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const QRCodeScreen()),
+                      );
+                    },
+                    tooltip: 'QR Code',
+                    elevation: 6.0,
+                    shape: const CircleBorder(),
+                    child: const Icon(
+                      Icons.qr_code_2_sharp,
+                      color: couleurIcone,
+                      size: 32.0,
+                    ),
+                  ),
+                ),
+              ),
             ],
           ),
         ),
       ),
+    ),
     );
   }
 }
