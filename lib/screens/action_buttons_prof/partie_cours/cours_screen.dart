@@ -123,6 +123,7 @@ class _CourseDialogState extends State<CourseDialog> with SingleTickerProviderSt
 
                         DropdownButtonFormField<Centre>(
                           value: _selectedCentre,
+                          icon: Icon(Icons.arrow_drop_down, color: theme.primaryIconTheme.color),
                           decoration: InputDecoration(
                             fillColor: theme.primaryColor,
                             filled: true,
@@ -139,7 +140,13 @@ class _CourseDialogState extends State<CourseDialog> with SingleTickerProviderSt
                             items: centres.map((Centre centre) {
                               return DropdownMenuItem<Centre>(
                                 value: centre,
-                                child: Text(centre.nomCentre, style: const TextStyle(fontWeight: FontWeight.normal)),
+                                child: Text(
+                                  centre.nomCentre,
+                                  style: TextStyle(
+                                      color: theme.textTheme.bodyLarge?.color,
+                                      fontWeight: FontWeight.normal
+                                  )
+                                ),
                               );
                             }).toList(),
                             onChanged: (Centre? newValue) {
@@ -159,6 +166,7 @@ class _CourseDialogState extends State<CourseDialog> with SingleTickerProviderSt
 
                         DropdownButtonFormField<String>(
                           value: _selectedType,
+                          icon: Icon(Icons.arrow_drop_down, color: theme.primaryIconTheme.color),
                           decoration:  InputDecoration(
                             fillColor: theme.primaryColor,
                             filled: true,
@@ -176,8 +184,13 @@ class _CourseDialogState extends State<CourseDialog> with SingleTickerProviderSt
                               String value) {
                             return DropdownMenuItem<String>(
                               value: value,
-                              child: Text(value, style: const TextStyle(
-                                  fontWeight: FontWeight.normal)),
+                              child: Text(
+                                value,
+                                style: TextStyle(
+                                    color: theme.textTheme.bodyLarge?.color,
+                                    fontWeight: FontWeight.normal
+                                )
+                              ),
                             );
                           }).toList(),
                           onChanged: (String? newValue) {
@@ -298,6 +311,7 @@ class _CourseDialogState extends State<CourseDialog> with SingleTickerProviderSt
   }
 }
 
+
 class CoursScreen extends StatefulWidget {
   const CoursScreen({Key? key}) : super(key: key);
 
@@ -375,7 +389,7 @@ class _CoursScreenState extends State<CoursScreen> {
                         decoration: BoxDecoration(
                           color: orangePerso,
                           borderRadius: const BorderRadius.vertical(
-                            top: Radius.circular(10),
+                            top: Radius.circular(arrondiBox),
                           ),
                           border: Border.all(
                             color: orangePerso,
@@ -418,7 +432,7 @@ class _CoursScreenState extends State<CoursScreen> {
                         child: Container(
                           decoration: BoxDecoration(
                             borderRadius: const BorderRadius.vertical(
-                              bottom: Radius.circular(10),
+                              bottom: Radius.circular(arrondiBox),
                             ),
                             border: Border.all(
                               color: orangePerso,
@@ -426,9 +440,19 @@ class _CoursScreenState extends State<CoursScreen> {
                             ),
                           ),
                           child: ListView.builder(
-                            itemCount: _coursList[_selectedLocation]?.length ?? 0,
+                            itemCount: (_coursList[_selectedLocation]?.length ?? 0) + 2,
                             itemBuilder: (context, index) {
-                              Course currentCourse = _coursList[_selectedLocation]![index];
+
+                              if (index == 0) {
+                                // Pour le premier item
+                                return const SizedBox(height: 6);
+                              } else if (index == (_coursList[_selectedLocation]?.length ?? 0) + 1) {
+                                // Pour le dernier item
+                                return const SizedBox(height: 80);
+                              }
+                              // Adjust the index to get the correct Course object
+                              Course currentCourse = _coursList[_selectedLocation]![index - 1];
+
                               return Card(
                                 color: theme.cardColor,
                                 child: ListTile(
@@ -485,8 +509,8 @@ class _CoursScreenState extends State<CoursScreen> {
                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                             shape: const RoundedRectangleBorder(
                               borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(10),
-                                topRight: Radius.circular(10),
+                                topLeft: Radius.circular(arrondiBox),
+                                topRight: Radius.circular(arrondiBox),
                               ),
                             ),
                             backgroundColor: Colors.green,

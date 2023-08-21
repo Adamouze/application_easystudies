@@ -12,6 +12,8 @@ import 'action_buttons_eleve/devoirs_screen.dart';
 import 'action_buttons_eleve/bilans_screen.dart';
 import 'action_buttons_eleve/commentaires_screen.dart';
 import 'action_buttons_eleve/notes_screen.dart';
+import 'action_buttons_eleve/qrcode_screen.dart';
+
 
 class HomeContent extends StatelessWidget {
   const HomeContent({Key? key}) : super(key: key);
@@ -91,6 +93,27 @@ class EleveScreenState extends State<EleveScreen> {
               appBar: CustomAppBar(context: context, eleve: eleve),
 
               body: getScreen(_selectedIndex, eleve),
+
+              floatingActionButton: _selectedIndex == 0 ? Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: FloatingActionButton(
+                  backgroundColor: Colors.blue,
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const QRCodeScreen()),
+                    );
+                  },
+                  tooltip: 'QR Code',
+                  elevation: 6.0,
+                  shape: const CircleBorder(),
+                  child: const Icon(
+                    Icons.qr_code_2_sharp,
+                    color: couleurIcone,
+                    size: 36.0,
+                  ),
+                ),
+              ) : null,
 
               bottomNavigationBar: Theme(
                 data: theme.copyWith(

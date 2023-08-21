@@ -1,4 +1,5 @@
 import 'dart:convert'; // Pour encoder/décoder en JSON.
+import 'dart:io';
 import 'package:http/http.dart' as http; // Pour faire des requêtes HTTP.
 
 import 'package:flutter/foundation.dart'; // Pour la gestion d'état et les listeners.
@@ -22,6 +23,8 @@ class AuthState with ChangeNotifier {
   String? _prenom;
   String? _nom;
 
+  String? _errorMessage;
+
   // Getters pour permettre l'accès en lecture à ces variables en dehors de cette classe.
   bool get isAuthenticated => _isAuthenticated;
   String? get userType => _userType;
@@ -29,6 +32,9 @@ class AuthState with ChangeNotifier {
   String? get token => _token;
   String? get prenom => _prenom;
   String? get nom => _nom;
+
+  String? get errorMessage => _errorMessage;
+
 
   // Constructeur qui charge les données initiales.
   AuthState() {
@@ -73,18 +79,26 @@ class AuthState with ChangeNotifier {
 
   // Fonction pour vérifier la validité du token en interagissant avec une API.
   Future<void> checkTokenValidity() async {
-    // Requête à l'API pour vérifier la validité du token.
-    final response = await http.get(Uri.parse(
-        'https://app.easystudies.fr/api/login.php?_token=$_token&_login=$_identifier&_pwd='));
+    try {
+      // Requête à l'API pour vérifier la validité du token.
+      final response = await http.get(Uri.parse(
+          'https://app.easystudies.fr/api/login.php?_token=$_token&_login=$_identifier&_pwd='));
 
-    if (response.statusCode == 200) { // Si le statut de la réponse est 200 (OK).
-      Map<String, dynamic> jsonResponse = jsonDecode(response.body); // Décodage de la réponse JSON.
-      if (jsonResponse['_valid'] != true) { // Si le token n'est pas valide, on déconnecte l'utilisateur.
-        logout();
+      if (response.statusCode == 200) {
+        Map<String, dynamic> jsonResponse = jsonDecode(response.body);
+        if (jsonResponse['_valid'] != true) {
+          logout();
+        }
+      } else {
+        throw Exception('Failed to load data from API');
       }
-    }
-    else {
-      throw Exception('Failed to load data from API'); // Lance une exception en cas d'échec.
+    } catch (error) {
+      if (error is SocketException) {
+        _errorMessage = "La connexion internet n'a pas pu s'établir.";
+      } else {
+        _errorMessage = error.toString();
+      }
+      notifyListeners();
     }
   }
 

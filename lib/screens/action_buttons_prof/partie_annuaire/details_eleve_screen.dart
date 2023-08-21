@@ -54,7 +54,7 @@ class EleveInfoBlock extends StatelessWidget {
             ),
             child: Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Text(
+              child: SelectableText(
                 '${'Éleve -'} ${eleve.identifier}',
                 style: TextStyle(
                   color: Theme.of(context).primaryColor,
@@ -106,16 +106,20 @@ class EleveInfoBlock extends StatelessWidget {
                         Text(eleve.civilite),
                         Tooltip(
                           message: eleve.nom,
-                          child: Text(
-                            eleve.nom,
-                            overflow: TextOverflow.ellipsis,
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: SelectableText(
+                              eleve.nom,
+                            ),
                           ),
                         ),
                         Tooltip(
                           message: eleve.prenom,
-                          child: Text(
-                            eleve.prenom,
-                            overflow: TextOverflow.ellipsis,
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: SelectableText(
+                              eleve.prenom,
+                            ),
                           ),
                         ),
                         Text(eleve.dob),
@@ -280,25 +284,39 @@ class EleveContactBlock extends StatelessWidget {
                                       children: <Widget>[
                                         eleve.numFix == ""
                                             ? Text("non renseigné", style: TextStyle(color: theme.textTheme.bodySmall?.color, fontStyle: FontStyle.italic))
-                                            : Text(eleve.numFix),
-                                        Text(eleve.numMobileEleve),
-                                        Text(eleve.numMobileParents),
+                                            : SelectableText(eleve.numFix),
+                                        SelectableText(eleve.numMobileEleve),
+                                        SelectableText(eleve.numMobileParents),
                                         Tooltip(
                                           message: eleve.emailEleve,
-                                          child: Text(
-                                            eleve.emailEleve,
-                                            overflow: TextOverflow.ellipsis,
+                                          child: SingleChildScrollView(
+                                            scrollDirection: Axis.horizontal,
+                                            child: SelectableText(
+                                              eleve.emailEleve,
+                                            ),
                                           ),
                                         ),
                                         Tooltip(
                                           message: eleve.emailParents,
-                                          child: Text(
-                                            eleve.emailParents,
-                                            overflow: TextOverflow.ellipsis,
+                                          child: SingleChildScrollView(
+                                            scrollDirection: Axis.horizontal,
+                                            child: SelectableText(
+                                              eleve.emailParents,
+                                            ),
                                           ),
                                         ),
-                                        Text(eleve.adresse),
-                                        Text(eleve.ville),
+                                        SelectableText(
+                                          eleve.adresse.isNotEmpty ? eleve.adresse : "non renseigné",
+                                          style: eleve.adresse.isEmpty
+                                              ? TextStyle(fontWeight: FontWeight.normal, fontStyle: FontStyle.italic, color: Colors.grey[700])
+                                              : null,
+                                        ),
+                                        SelectableText(
+                                          eleve.ville.isNotEmpty ? eleve.ville : "non renseigné",
+                                          style: eleve.classe.isEmpty
+                                              ? TextStyle(fontWeight: FontWeight.normal, fontStyle: FontStyle.italic, color: Colors.grey[700])
+                                              : null,
+                                        ),
                                       ],
                                     ),
                                   ),

@@ -309,7 +309,7 @@ class NoteScreenState extends State<NoteScreen> {
             child: ColorFiltered(
               colorFilter: ColorFilter.mode(
                   theme.iconTheme.color ?? Colors.white, BlendMode.srcIn),
-              child: addDevoirs,
+              child: addNote,
             ),
           ),
         ),

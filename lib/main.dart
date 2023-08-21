@@ -69,10 +69,13 @@ class MyApp extends StatelessWidget {
               ),
             ),
             dividerColor: orangePerso,
-            textSelectionTheme: const TextSelectionThemeData(
-              cursorColor: orangePerso,
-              selectionColor: orangePerso,
-              selectionHandleColor: orangePerso,
+            textSelectionTheme: TextSelectionThemeData(
+              cursorColor: Colors.blue,
+              selectionColor: Colors.blue.withOpacity(0.3),
+              selectionHandleColor: Colors.blue,
+            ),
+            popupMenuTheme: const PopupMenuThemeData(
+              color: Colors.white,
             ),
             colorScheme: ColorScheme.fromSeed(seedColor: orangePerso).copyWith(
               background: Colors.white,  // Couleur de fond pour le thème clair
@@ -101,10 +104,13 @@ class MyApp extends StatelessWidget {
             scrollbarTheme: ScrollbarThemeData(
               thumbColor: MaterialStateProperty.all(Colors.blueAccent),
             ),
-            textSelectionTheme: const TextSelectionThemeData(
-              cursorColor: orangePerso,
-              selectionColor: orangePerso,
-              selectionHandleColor: orangePerso,
+            textSelectionTheme: TextSelectionThemeData(
+              cursorColor: Colors.blue[800],
+              selectionColor: Colors.blue.withOpacity(0.3),
+              selectionHandleColor: Colors.blue[800],
+            ),
+            popupMenuTheme: const PopupMenuThemeData(
+              color: Colors.white,
             ),
             colorScheme: ColorScheme.fromSeed(seedColor: orangePerso).copyWith(
               background: Colors.grey[850],  // Couleur de fond pour le thème sombre
@@ -191,6 +197,19 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    var authState = Provider.of<AuthState>(context);
+
+    if (authState.errorMessage != null) {
+      WidgetsBinding.instance.addPostFrameCallback(
+            (_) => ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(authState.errorMessage!),
+            duration: const Duration(seconds: 6),
+          ),
+        ),
+      );
+    }
+
     return Scaffold(
       appBar: CustomAppBar(context: context),
       body: const CustomBody(),
