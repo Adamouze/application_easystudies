@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'dart:async';
 
 import '../logs/auth_stat.dart';
 import '../utilities/constantes.dart';
@@ -7,6 +8,7 @@ import '../utilities/theme_provider.dart';
 import 'boutons_app_bar/historique_paiement.dart';
 import 'boutons_app_bar/historique_presence.dart';
 import 'login_screen.dart';
+import 'easter_egg.dart';
 import 'boutons_app_bar/profil_screen.dart';
 import '../utils.dart';
 
@@ -184,11 +186,70 @@ class LogoutDialogState extends State<LogoutDialog> with SingleTickerProviderSta
   }
 }
 
+class LogoWithEasterEgg extends StatefulWidget {
+  const LogoWithEasterEgg({super.key});
+
+  @override
+  LogoWithEasterEggState createState() => LogoWithEasterEggState();
+}
+
+class LogoWithEasterEggState extends State<LogoWithEasterEgg> {
+  int tapCount = 0;
+  Timer? tapTimer;
+
+  @override
+  Widget build(BuildContext context) {
+    return Positioned(
+      bottom: 2,
+      child: GestureDetector(
+        onTap: () {
+          if (tapTimer != null && tapTimer!.isActive) tapTimer!.cancel(); // Annuler le Timer précédent
+
+          tapCount++;
+
+          if (tapCount == 6) {
+            Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => const EasterEggPage(),  // Votre page "secrète"
+            ));
+            tapCount = 0; // Réinitialiser le compteur
+          }
+
+          // Réinitialisez le compteur après 2 secondes d'inactivité
+          tapTimer = Timer(const Duration(seconds: 2), () {
+            tapCount = 0;
+          });
+        },
+        child: Container(
+          width: 65,
+          height: 65,
+          decoration: const BoxDecoration(
+            shape: BoxShape.circle,
+            color: Colors.transparent,
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(120),
+            child: Image.asset(
+              'assets/images/logo.png',
+              fit: BoxFit.contain,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    tapTimer?.cancel();
+    super.dispose();
+  }
+}
+
+
 
 class CustomAppBar extends PreferredSize {
   final BuildContext context;
   final Eleve? eleve;
-
 
   CustomAppBar({Key? key, this.eleve, required this.context}) : super(
     key: key,
@@ -215,27 +276,11 @@ class CustomAppBar extends PreferredSize {
                     ),
                   ),
                 ),
-                Positioned(
-                  bottom: 2, // match this with Container's top
-                  child: Container(
-                    width: 65,
-                    height: 65,
-                    decoration: const BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.transparent,
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(120), // n'importe quoi > 35
-                      child: Image.asset(
-                        'assets/images/logo.png',
-                        fit: BoxFit.contain,
-                      ),
-                    ),
-                  ),
-                ),
+                const LogoWithEasterEgg(),
               ],
             ),
           ),
+
 
           const Spacer(),
 
