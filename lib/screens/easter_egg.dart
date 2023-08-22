@@ -1,31 +1,9 @@
 import 'package:flutter/material.dart';
-import 'dart:math';
-
 import '../utilities/constantes.dart';
 
 
-class EasterEggPage extends StatefulWidget {
+class EasterEggPage extends StatelessWidget {
   const EasterEggPage({Key? key}) : super(key: key);
-
-  @override
-  EasterEggState createState() => EasterEggState();
-}
-
-class EasterEggState extends State<EasterEggPage> {
-
-  final GlobalKey centerKey = GlobalKey();
-  double? centerHeight;
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      setState(() {
-        centerHeight = centerKey.currentContext!.size!.height;
-      });
-    });
-  }
-
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +39,6 @@ class EasterEggState extends State<EasterEggPage> {
                 ),
 
                 Center(
-                  key: centerKey,
                   child: Column(
                     children: [
                       // Bloc de texte
@@ -135,7 +112,7 @@ class EasterEggState extends State<EasterEggPage> {
 
                 // Espace pour les œufs en bas
                 SizedBox(
-                  height: max(screenHeight - oeufsHeight - (centerHeight ?? 0) - oeufsHeight, screenHeight - oeufsHeight - (centerHeight ?? 0) - oeufsHeight - 205), // Dernière valeur totalement artificielle, mais ça marche !
+                  height: screenHeight - 2 * oeufsHeight - 500, // Dernière valeur totalement artificielle, mais ça marche !
                 ),
               ],
             ),
