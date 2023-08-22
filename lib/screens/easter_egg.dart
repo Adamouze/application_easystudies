@@ -26,7 +26,6 @@ class EasterEggPage extends StatelessWidget {
         ),
         backgroundColor: orangePerso,
         centerTitle: true,
-        automaticallyImplyLeading: false,
       ),
       body: Stack(
         children: [
