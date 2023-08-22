@@ -147,7 +147,12 @@ class RepertoryScreenState extends State<RepertoryScreen> {
                               title: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text('${eleves[index].nom} ${eleves[index].prenom}'), // Nom et Prénom de l'élève
+                                  Text(
+                                    '${eleves[index].nom} ${eleves[index].prenom}',
+                                    style: TextStyle(
+                                      color: theme.textTheme.bodyLarge?.color,
+                                    ),
+                                  ), // Nom et Prénom de l'élève
                                   Text(
                                     eleves[index].classe, // Classe de l'élève
                                     style: TextStyle(

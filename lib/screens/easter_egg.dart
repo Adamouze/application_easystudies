@@ -55,7 +55,7 @@ class EasterEggPage extends StatelessWidget {
                           Padding(
                               padding: const EdgeInsets.all(8),
                               child: Text(
-                                "C'était sympa de bosser sur cette application pendant un peu plus de 2 mois. Nous espérons que tu apprecies le résultat final !",
+                                "C'était sympa de bosser sur cette application chez Atchuthen pendant un peu plus de 2 mois. Nous espérons que tu apprecies le résultat final !",
                                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: theme.textTheme.bodyLarge?.color),
                                 textAlign: TextAlign.center,
                               )
