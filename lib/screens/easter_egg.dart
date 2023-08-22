@@ -21,7 +21,7 @@ class EasterEggPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'Surprise !',
+          'Easter egg !',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         backgroundColor: orangePerso,
