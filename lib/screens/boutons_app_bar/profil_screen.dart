@@ -93,11 +93,11 @@ class EleveInfoBlock extends StatelessWidget {
                       children: <Widget>[
                         Text(eleve.civilite),
                         Tooltip(
-                          message: eleve.nom,
+                          message: (eleve.nom).replaceAll('ë', 'Ë'),
                           child: SingleChildScrollView(
                             scrollDirection: Axis.horizontal,
                             child: SelectableText(
-                              eleve.nom,
+                              (eleve.nom).replaceAll('ë', 'Ë'),
                             ),
                           ),
                         ),
