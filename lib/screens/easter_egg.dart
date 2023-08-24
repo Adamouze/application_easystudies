@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../utilities/constantes.dart';
 
 
@@ -7,6 +8,13 @@ class EasterEggPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    // Force l'orientation en mode portrait
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+
     final theme = Theme.of(context);
 
     final screenHeight = MediaQuery.of(context).size.height;
