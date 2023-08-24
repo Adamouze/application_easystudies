@@ -30,7 +30,7 @@ apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 android {
-    applicationId "com.atchuthen.easystudies"
+    namespace "com.atchuthen.easystudies"
     compileSdkVersion flutter.compileSdkVersion
     ndkVersion flutter.ndkVersion
 
