@@ -118,73 +118,90 @@ class NoteBlock extends StatelessWidget {
   Widget build(BuildContext context) {
 
     List<Widget> noteRows = createNoteRows(eleve);
-    return SingleChildScrollView(
-      child: Center(
-        child: Column(
-          children: [
-            const SizedBox(height: 20),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(arrondiBox),
-            child: FractionallySizedBox(
-              widthFactor: 0.95,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: <Widget>[
-                  Container(
-                    decoration: const BoxDecoration(
-                      color: orangePerso,
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(arrondiBox),
-                        topRight: Radius.circular(arrondiBox),
-                      ),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.only(right: 8, left: 8, top: 8, bottom: 8 - epaisseurContour),
-                      child: Text(
-                        'Notes',
-                        style: TextStyle(
-                          color: Theme.of(context).primaryColor,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: 'NotoSans',
-                        ),
-                      ),
-                    ),
-                  ),
-                  Container(
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: orangePerso,
-                        width: epaisseurContour,
-                      ),
-                      borderRadius: const BorderRadius.only(
-                        bottomLeft: Radius.circular(arrondiBox),
-                        bottomRight: Radius.circular(arrondiBox),
-                      ),
-                    ),
-                    child: noteRows.isEmpty
-                        ? Container(
-                      height: 10,
-                      decoration: const BoxDecoration(
-                        color: Colors.transparent,
-                        borderRadius: BorderRadius.only(
-                          bottomLeft: Radius.circular(arrondiBox - 3),
-                          bottomRight: Radius.circular(arrondiBox - 3),
-                        ),
-                      ),
-                    )
-                        : Column(
-                      children: noteRows,
-                    ),
-                  ),
-                ],
-              ),
-            ),
+
+    if (eleve.notes.isEmpty) {
+      return const Center(
+        child: Text(
+          "Pas de notes ici",
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.grey,
+            fontSize: 18,
           ),
-          const SizedBox(height: 100),
-          ],
         ),
-      )
-    );
+      );
+    } else {
+      return SingleChildScrollView(
+          child: Center(
+            child: Column(
+              children: [
+                const SizedBox(height: 20),
+
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(arrondiBox),
+                  child: FractionallySizedBox(
+                    widthFactor: 0.95,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: <Widget>[
+                        Container(
+                          decoration: const BoxDecoration(
+                            color: orangePerso,
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(arrondiBox),
+                              topRight: Radius.circular(arrondiBox),
+                            ),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.only(right: 8, left: 8, top: 8, bottom: 8 - epaisseurContour),
+                            child: Text(
+                              'Notes',
+                              style: TextStyle(
+                                color: Theme.of(context).primaryColor,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: 'NotoSans',
+                              ),
+                            ),
+                          ),
+                        ),
+                        Container(
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: orangePerso,
+                              width: epaisseurContour,
+                            ),
+                            borderRadius: const BorderRadius.only(
+                              bottomLeft: Radius.circular(arrondiBox),
+                              bottomRight: Radius.circular(arrondiBox),
+                            ),
+                          ),
+                          child: noteRows.isEmpty
+                              ? Container(
+                            height: 10,
+                            decoration: const BoxDecoration(
+                              color: Colors.transparent,
+                              borderRadius: BorderRadius.only(
+                                bottomLeft: Radius.circular(arrondiBox - 3),
+                                bottomRight: Radius.circular(arrondiBox - 3),
+                              ),
+                            ),
+                          )
+                              : Column(
+                            children: noteRows,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 100),
+              ],
+            ),
+          )
+      );
+    }
+
   }
 }
 

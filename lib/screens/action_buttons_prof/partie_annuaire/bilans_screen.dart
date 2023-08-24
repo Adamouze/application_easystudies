@@ -92,31 +92,6 @@ class BilanBlockState extends State<BilanBlock> {
     Map<String, List<DataRow>> bilanRows = createBilanRows(widget.eleve);
 
     Widget buildHeaderRow() {
-      final theme = Theme.of(context);
-      if (bilanRows[widget.eleve.identifier] == null || bilanRows[widget.eleve.identifier]!.isEmpty) {
-        return Container(
-          decoration: BoxDecoration(
-            border: Border.all(
-              color: orangePerso,
-              width: epaisseurContour,
-            ),
-            borderRadius: const BorderRadius.only(
-              bottomLeft: Radius.circular(arrondiBox),
-              bottomRight: Radius.circular(arrondiBox),
-            ),
-          ),
-          child: Container(
-            height: 10,
-            decoration: BoxDecoration(
-              color: theme.colorScheme.background,
-              borderRadius: const BorderRadius.only(
-                bottomLeft: Radius.circular(arrondiBox - 3),
-                bottomRight: Radius.circular(arrondiBox - 3),
-              ),
-            ),
-          ),
-        );
-      }
       return Flex(
         direction: Axis.horizontal,
         children: <Widget>[
@@ -369,5 +344,4 @@ class BilanScreenState extends State<BilanScreen> {
       ),
     );
   }
-
 }

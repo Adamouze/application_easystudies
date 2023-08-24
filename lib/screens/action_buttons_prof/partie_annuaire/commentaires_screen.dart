@@ -195,18 +195,7 @@ class CommentaireBlockState extends State<CommentaireBlock> {
                   bottomRight: Radius.circular(arrondiBox),
                 ),
               ),
-              child: commentaireRows.isEmpty
-                ? Container(
-                height: 10,
-                decoration: const BoxDecoration(
-                  color: Colors.transparent,
-                  borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(arrondiBox - 3),
-                    bottomRight: Radius.circular(arrondiBox - 3),
-                  ),
-                ),
-              )
-                : Column(
+              child: Column(
                 children: commentaireRows,
               ),
             ),
@@ -240,6 +229,36 @@ class CommentaireScreenState extends State<CommentaireScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+
+    // Contenu du corps selon la condition
+    Widget bodyContent;
+
+    if (widget.eleve.commentaires.isEmpty) {
+      bodyContent = const Center(
+        child: Text(
+          "Pas de commentaires ici",
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.grey,
+            fontSize: 18,
+          ),
+        ),
+      );
+    } else {
+      bodyContent = SingleChildScrollView(
+          child: Center(
+            child: Column(
+              children: [
+                const SizedBox(height: 20),
+                CommentaireBlock(eleve: widget.eleve),
+                const SizedBox(height: 120)
+              ],
+            ),
+          )
+      );
+    }
+
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: orangePerso,
@@ -254,17 +273,7 @@ class CommentaireScreenState extends State<CommentaireScreen> {
           color: theme.primaryColor, // Définissez ici la couleur souhaitée pour l'icône
         ),
       ),
-      body: SingleChildScrollView(
-        child: Center(
-          child: Column(
-            children: [
-              const SizedBox(height: 20),
-              CommentaireBlock(eleve: widget.eleve),
-              const SizedBox(height: 120),
-            ],
-          ),
-        )
-      ),
+      body: bodyContent,
       floatingActionButton: Padding(
         padding: const EdgeInsets.only(bottom: 16.0, right: 16.0), // Écartement aux bords
         child: Transform.scale(

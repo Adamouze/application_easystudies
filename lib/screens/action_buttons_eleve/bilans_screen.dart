@@ -145,80 +145,95 @@ class BilanBlock extends StatelessWidget {
       });
     }
 
-    return SingleChildScrollView(
-      child: Center(
-        child: Column(
-          children: [
-          const SizedBox(height: 20),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(arrondiBox),
-            child: FractionallySizedBox(
-              widthFactor: 0.95,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: <Widget>[
-                  Container(
-                    decoration: BoxDecoration(
-                      color: orangePerso,
-                      borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(arrondiBox),
-                        topRight: Radius.circular(arrondiBox),
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.2),
-                          spreadRadius: 1,
-                          blurRadius: 2,
-                          offset: const Offset(0, 2), // changes position of shadow
-                        ),
-                      ],
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        'Bilans',
-                        style: TextStyle(
-                          color: Theme.of(context).primaryColor,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: 'NotoSans',
-                        ),
-                      ),
-                    ),
-                  ),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.grey[200],
-                      borderRadius: const BorderRadius.only(
-                        bottomLeft: Radius.circular(arrondiBox),
-                        bottomRight: Radius.circular(arrondiBox),
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.2),
-                          spreadRadius: 1,
-                          blurRadius: 2,
-                          offset: const Offset(0, 2), // changes position of shadow
-                        ),
-                      ],
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 0.0),
-                      child: Column(
-                        children: [
-                          buildHeaderRow(),
-                          ...buildBilanRows(),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
+    if (eleve.bilans.isEmpty) {
+      return const Center(
+        child: Text(
+          "Pas de bilans ici",
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.grey,
+            fontSize: 18,
           ),
-          const SizedBox(height: 100),
-          ],
         ),
-      ),
-    );
+      );
+    } else {
+      return SingleChildScrollView(
+        child: Center(
+          child: Column(
+            children: [
+              const SizedBox(height: 20),
+
+              ClipRRect(
+                borderRadius: BorderRadius.circular(arrondiBox),
+                child: FractionallySizedBox(
+                  widthFactor: 0.95,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: <Widget>[
+                      Container(
+                        decoration: BoxDecoration(
+                          color: orangePerso,
+                          borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(arrondiBox),
+                            topRight: Radius.circular(arrondiBox),
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.2),
+                              spreadRadius: 1,
+                              blurRadius: 2,
+                              offset: const Offset(0, 2), // changes position of shadow
+                            ),
+                          ],
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            'Bilans',
+                            style: TextStyle(
+                              color: Theme.of(context).primaryColor,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: 'NotoSans',
+                            ),
+                          ),
+                        ),
+                      ),
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Colors.grey[200],
+                          borderRadius: const BorderRadius.only(
+                            bottomLeft: Radius.circular(arrondiBox),
+                            bottomRight: Radius.circular(arrondiBox),
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.2),
+                              spreadRadius: 1,
+                              blurRadius: 2,
+                              offset: const Offset(0, 2), // changes position of shadow
+                            ),
+                          ],
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 0.0),
+                          child: Column(
+                            children: [
+                              buildHeaderRow(),
+                              ...buildBilanRows(),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 100),
+            ],
+          ),
+        ),
+      );
+    }
   }
 }

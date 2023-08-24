@@ -221,18 +221,7 @@ class NoteBlockState extends State<NoteBlock> {
                   bottomRight: Radius.circular(arrondiBox),
                 ),
               ),
-              child: noteRows.isEmpty
-                  ? Container(
-                height: 10,
-                decoration: const BoxDecoration(
-                  color: Colors.transparent,
-                  borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(arrondiBox - 3),
-                    bottomRight: Radius.circular(arrondiBox - 3),
-                  ),
-                ),
-              )
-                  : Column(
+              child: Column(
                 children: noteRows,
               ),
             ),
@@ -266,6 +255,35 @@ class NoteScreenState extends State<NoteScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+
+    // Contenu du corps selon la condition
+    Widget bodyContent;
+
+    if (widget.eleve.notes.isEmpty) {
+      bodyContent = const Center(
+        child: Text(
+          "Pas de notes ici",
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.grey,
+            fontSize: 18,
+          ),
+        ),
+      );
+    } else {
+      bodyContent = SingleChildScrollView(
+          child: Center(
+            child: Column(
+              children: [
+                const SizedBox(height: 20),
+                NoteBlock(eleve: widget.eleve),
+                const SizedBox(height: 120)
+              ],
+            ),
+          )
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: orangePerso,
@@ -280,17 +298,7 @@ class NoteScreenState extends State<NoteScreen> {
           color: theme.primaryColor, // Définissez ici la couleur souhaitée pour l'icône
         ),
       ),
-      body: SingleChildScrollView(
-        child: Center(
-          child: Column(
-            children: [
-              const SizedBox(height: 20),
-              NoteBlock(eleve: widget.eleve),
-              const SizedBox(height: 120),
-            ],
-          ),
-        ),
-      ),
+      body: bodyContent,
       floatingActionButton: Padding(
         padding: const EdgeInsets.only(bottom: 16.0, right: 16.0), // Écartement aux bords
         child: Transform.scale(

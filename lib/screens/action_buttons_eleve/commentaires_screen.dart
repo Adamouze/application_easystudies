@@ -69,11 +69,25 @@ class CommentaireBlock extends StatelessWidget {
   Widget build(BuildContext context) {
 
     List<Widget> commentaireRows = createCommentaireRows(eleve);
-    return SingleChildScrollView(
+
+    if (eleve.commentaires.isEmpty) {
+      return const Center(
+        child: Text(
+          "Pas de commentaires ici",
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.grey,
+            fontSize: 18,
+          ),
+        ),
+      );
+    } else {
+      return SingleChildScrollView(
         child: Center(
           child: Column(
             children: [
               const SizedBox(height: 20),
+
               ClipRRect(
                 borderRadius: BorderRadius.circular(arrondiBox),
                 child: FractionallySizedBox(
@@ -131,11 +145,14 @@ class CommentaireBlock extends StatelessWidget {
                   ),
                 ),
               ),
+
               const SizedBox(height: 100),
             ],
           ),
-        )
-    );
+        ),
+      );
+    }
+
   }
 }
 

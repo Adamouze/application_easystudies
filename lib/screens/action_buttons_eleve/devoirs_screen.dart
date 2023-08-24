@@ -216,75 +216,92 @@ class DevoirBlockState extends State<DevoirBlock> {
 
   @override
   Widget build(BuildContext context) {
+
     List<Widget> devoirRows = createDevoirRows(widget.eleve);
 
-    return SingleChildScrollView(
-      child: Center(
-        child: Column(
-          children: [
-            const SizedBox(height: 20),
-            ClipRRect(
-              borderRadius: BorderRadius.circular(arrondiBox),
-              child: FractionallySizedBox(
-                widthFactor: 0.95,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: <Widget>[
-                    Container(
-                      decoration: const BoxDecoration(
-                        color: orangePerso,
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(arrondiBox),
-                          topRight: Radius.circular(arrondiBox),
-                        ),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.only(right: 8, left: 8, top: 8, bottom: 8 - epaisseurContour),
-                        child: Text(
-                          'Devoirs',
-                          style: TextStyle(
-                            color: Theme.of(context).primaryColor,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: 'NotoSans',
-                          ),
-                        ),
-                      ),
-                    ),
-                    Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: orangePerso,
-                          width: epaisseurContour,
-                        ),
-                        borderRadius: const BorderRadius.only(
-                          bottomLeft: Radius.circular(arrondiBox),
-                          bottomRight: Radius.circular(arrondiBox),
-                        ),
-                      ),
-                      child: devoirRows.isEmpty
-                          ? Container(
-                        height: 10,
+    if (widget.eleve.devoirs.isEmpty) {
+      return const Center(
+        child: Text(
+          "Pas de devoirs ici",
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.grey,
+            fontSize: 18,
+          ),
+        ),
+      );
+    } else {
+      return SingleChildScrollView(
+        child: Center(
+          child: Column(
+            children: [
+              const SizedBox(height: 20),
+
+              ClipRRect(
+                borderRadius: BorderRadius.circular(arrondiBox),
+                child: FractionallySizedBox(
+                  widthFactor: 0.95,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: <Widget>[
+                      Container(
                         decoration: const BoxDecoration(
-                          color: Colors.transparent,
+                          color: orangePerso,
                           borderRadius: BorderRadius.only(
-                            bottomLeft: Radius.circular(arrondiBox - 3),
-                            bottomRight: Radius.circular(arrondiBox - 3),
+                            topLeft: Radius.circular(arrondiBox),
+                            topRight: Radius.circular(arrondiBox),
                           ),
                         ),
-                      )
-                          : Column(
-                        children: devoirRows,
+                        child: Padding(
+                          padding: const EdgeInsets.only(right: 8, left: 8, top: 8, bottom: 8 - epaisseurContour),
+                          child: Text(
+                            'Devoirs',
+                            style: TextStyle(
+                              color: Theme.of(context).primaryColor,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: 'NotoSans',
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
-                  ],
+                      Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: orangePerso,
+                            width: epaisseurContour,
+                          ),
+                          borderRadius: const BorderRadius.only(
+                            bottomLeft: Radius.circular(arrondiBox),
+                            bottomRight: Radius.circular(arrondiBox),
+                          ),
+                        ),
+                        child: devoirRows.isEmpty
+                            ? Container(
+                          height: 10,
+                          decoration: const BoxDecoration(
+                            color: Colors.transparent,
+                            borderRadius: BorderRadius.only(
+                              bottomLeft: Radius.circular(arrondiBox - 3),
+                              bottomRight: Radius.circular(arrondiBox - 3),
+                            ),
+                          ),
+                        )
+                            : Column(
+                          children: devoirRows,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-            const SizedBox(height: 100),
-          ],
+
+              const SizedBox(height: 100),
+            ],
+          ),
         ),
-      ),
-    );
+      );
+    }
+
   }
 }
 
