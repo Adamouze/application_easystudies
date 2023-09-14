@@ -55,11 +55,21 @@ android {
         multiDexEnabled true
     }
 
+    signingConfigs {
+        release {
+            keyAlias 'key_easystudies'
+            keyPassword 'AdamouzeAlaska577215'
+            storeFile file('key.jks')
+            storePassword 'AdamouzeAlaska577215'
+        }
+    }
+
     buildTypes {
         release {
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
+            // signingConfig signingConfigs.debug
         }
     }
 }
