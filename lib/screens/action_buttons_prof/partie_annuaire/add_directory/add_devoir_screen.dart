@@ -347,7 +347,7 @@ class AddDevoirState extends State<AddDevoir> {
       appBar: AppBar(
         backgroundColor: orangePerso,
         title: Text(
-          'Nouvelle note - ${widget.eleve.prenom}',
+          'Nouveau devoir - ${widget.eleve.prenom}',
           style: TextStyle(
             fontWeight: FontWeight.bold,
             color: theme.primaryColor,
