@@ -58,9 +58,9 @@ android {
     signingConfigs {
         release {
             keyAlias 'key_easystudies'
-            keyPassword 'AdamouzeAlaska577215'
+            keyPassword 'Paullangevin8'
             storeFile file('key.jks')
-            storePassword 'AdamouzeAlaska577215'
+            storePassword 'Paullangevin8'
         }
     }
 
